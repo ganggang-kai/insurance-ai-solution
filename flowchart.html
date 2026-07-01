@@ -70,6 +70,34 @@
   /* Mermaid container */
   .mermaid-wrapper { min-width: 1400px; text-align: center; }
 
+  /* Fullscreen button */
+  .fs-btn {
+    float: right; background: none; border: 1px solid #cbd5e1; border-radius: 6px;
+    padding: 4px 12px; font-size: 13px; cursor: pointer; color: #64748b;
+    margin-top: -2px; transition: all 0.15s;
+  }
+  .fs-btn:hover { background: #f1f5f9; color: #1e293b; border-color: #94a3b8; }
+
+  /* Fullscreen overlay */
+  .fs-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 9998;
+  }
+  .fs-overlay.active { display: block; }
+
+  /* Fullscreen card */
+  .flowchart-card.fullscreen {
+    position: fixed; inset: 16px; z-index: 9999;
+    max-height: none !important; overflow: auto !important;
+    border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .flowchart-card.fullscreen .fs-btn {
+    position: sticky; top: 0; z-index: 1;
+    background: #fff; border-color: #ef4444; color: #ef4444;
+    font-weight: 600;
+  }
+  .flowchart-card.fullscreen .fs-btn:hover { background: #fef2f2; }
+
   /* Summary cards */
   .summary-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -198,7 +226,7 @@
 
   <!-- ====== 流程图 ====== -->
   <div class="flowchart-card">
-    <h2>🔄 全链路流程图（可缩放）</h2>
+    <h2>🔄 全链路流程图（可缩放）<button class="fs-btn" onclick="toggleFS(this)" title="全屏查看">⛶ 全屏</button></h2>
     <div class="mermaid-wrapper">
       <div class="mermaid">
 flowchart TD
@@ -345,7 +373,7 @@ flowchart TD
 
   <!-- ====== 画布节点设计流程图 ====== -->
   <div class="flowchart-card">
-    <h2>🧩 画布节点设计（含节点类型标注）</h2>
+    <h2>🧩 画布节点设计（含节点类型标注）<button class="fs-btn" onclick="toggleFS(this)" title="全屏查看">⛶ 全屏</button></h2>
     <div class="mermaid-wrapper">
       <div class="mermaid">
 flowchart TD
@@ -670,6 +698,34 @@ flowchart TD
     },
     securityLevel: 'loose',
   });
+</script>
+
+<div class="fs-overlay" id="fsOverlay" onclick="closeFS()"></div>
+<script>
+function toggleFS(btn) {
+  var card = btn.closest('.flowchart-card');
+  var overlay = document.getElementById('fsOverlay');
+  if (card.classList.contains('fullscreen')) {
+    card.classList.remove('fullscreen');
+    overlay.classList.remove('active');
+    btn.textContent = '⛶ 全屏';
+  } else {
+    card.classList.add('fullscreen');
+    overlay.classList.add('active');
+    btn.textContent = '✕ 退出全屏';
+  }
+}
+function closeFS() {
+  var card = document.querySelector('.flowchart-card.fullscreen');
+  if (card) {
+    card.classList.remove('fullscreen');
+    document.getElementById('fsOverlay').classList.remove('active');
+    card.querySelector('.fs-btn').textContent = '⛶ 全屏';
+  }
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeFS();
+});
 </script>
 
 </body>
