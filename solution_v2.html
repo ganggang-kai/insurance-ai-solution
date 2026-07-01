@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI外呼+公众号 保险智能转化解决方案</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-dark: #1e3a5f;
+    --accent: #0ea5e9;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --success: #16a34a;
+    --warning: #ea580c;
+    --danger: #dc2626;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #1a56db 100%);
+    color: #fff;
+    padding: 80px 40px 64px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 60px;
+    background: var(--bg);
+    clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 100%);
+  }
+  .hero .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 6px 20px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+  }
+  .hero h1 { font-size: 40px; font-weight: 800; margin-bottom: 16px; letter-spacing: 1px; }
+  .hero .subtitle { font-size: 18px; opacity: 0.85; max-width: 680px; margin: 0 auto; }
+  .hero .meta { margin-top: 32px; font-size: 13px; opacity: 0.6; }
+
+  /* ── Container ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── Section ── */
+  .section { padding: 56px 0; }
+  .section-alt { background: #fff; }
+  .section h2 {
+    font-size: 28px; font-weight: 700; color: var(--primary-dark);
+    margin-bottom: 8px; position: relative;
+  }
+  .section h2::after {
+    content: '';
+    display: block; width: 48px; height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    margin-top: 10px; border-radius: 2px;
+  }
+  .section h3 { font-size: 20px; font-weight: 600; color: var(--primary-dark); margin: 28px 0 12px; }
+  .section p { color: var(--text-secondary); margin-bottom: 16px; }
+
+  /* ── Cards ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin: 24px 0; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 28px 24px;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+  .card .icon { font-size: 32px; margin-bottom: 12px; }
+  .card h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--primary-dark); }
+  .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+
+  /* ── Table ── */
+  .info-table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+    margin: 20px 0; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .info-table th {
+    background: #f1f5f9; text-align: left; padding: 12px 16px;
+    font-weight: 600; color: #475569; border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+  .info-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); }
+  .info-table tr:last-child td { border-bottom: none; }
+
+  /* ── Flow Steps ── */
+  .flow-list { list-style: none; counter-reset: step; margin: 24px 0; }
+  .flow-list li {
+    counter-increment: step; display: flex; align-items: flex-start; gap: 16px;
+    padding: 20px 24px; margin-bottom: 12px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    position: relative;
+  }
+  .flow-list li::before {
+    content: counter(step);
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .flow-list li .step-content h4 { font-size: 16px; margin-bottom: 4px; }
+  .flow-list li .step-content p { font-size: 13px; color: var(--text-secondary); margin: 0; }
+
+  /* ── Highlight box ── */
+  .highlight-box {
+    background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 10px 10px 0; padding: 20px 24px; margin: 24px 0;
+  }
+  .highlight-box.orange {
+    background: linear-gradient(135deg, #fff7ed, #ffedd5);
+    border-left-color: var(--warning);
+  }
+  .highlight-box.green {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border-left-color: var(--success);
+  }
+  .highlight-box h4 { font-size: 16px; margin-bottom: 6px; }
+
+  /* ── Timeline ── */
+  .timeline { position: relative; padding-left: 32px; margin: 24px 0; }
+  .timeline::before {
+    content: ''; position: absolute; left: 11px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .timeline-item { position: relative; margin-bottom: 28px; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -25px; top: 4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--primary); border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--primary);
+  }
+  .timeline-item h4 { font-size: 16px; margin-bottom: 4px; }
+  .timeline-item .period { font-size: 12px; color: var(--primary); font-weight: 600; margin-bottom: 4px; }
+  .timeline-item p { font-size: 14px; color: var(--text-secondary); }
+
+  /* ── Footer ── */
+  .footer {
+    background: var(--primary-dark); color: rgba(255,255,255,0.7);
+    text-align: center; padding: 40px 32px; font-size: 13px;
+  }
+  .footer strong { color: #fff; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .hero { padding: 56px 20px 48px; }
+    .hero h1 { font-size: 28px; }
+    .container { padding: 0 20px; }
+    .section h2 { font-size: 23px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero">
+  <div class="badge">保险科技 · 智能转化</div>
+  <h1>AI外呼 + 公众号<br>保险智能转化解决方案</h1>
+  <p class="subtitle">
+    基于AI语音外呼精准筛选意向客户，实时引导客户进入微信公众号完成投保全流程，
+    配套短信兜底与人工坐席升级，实现从「触达→转化→成交」的端到端闭环。
+  </p>
+  <p class="meta">版本 V1.0 ｜ 2026年7月 ｜ 仅供合作方参阅</p>
+</section>
+
+<div class="container">
+
+<!-- ════════════════ 项目概述 ════════════════ -->
+<section class="section">
+  <h2>一、项目概述</h2>
+  <p>
+    本项目旨在构建一套<strong>「AI外呼筛意向 → 公众号自助投保」</strong>的智能化客户转化体系。
+    利用AI语音机器人完成批量外呼，精准识别意向客户后，通过专属码机制将客户无缝引导至微信公众号，
+    在公众号内完成信息填写、健康告知、在线支付，最终实现保单生效。
+    全程数据埋点可追踪，AI根据客户行为实时调整引导策略，最大化提升转化率。
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="icon">📞</div>
+      <h4>AI智能外呼</h4>
+      <p>冷启动批量外呼，LLM语义识别意向与信任度，毫秒级判断客户意图并分流处理。</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔗</div>
+      <h4>专属码无缝衔接</h4>
+      <p>每位客户分配四位专属码，公众号输入后自动反显手机号，零手动输入，降低流失。</p>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <h4>全链路埋点追踪</h4>
+      <p>从公众号关注到支付成功，每个节点行为数据实时回传，AI动态调整跟进策略。</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ════════════════ 技术架构 ════════════════ -->
+<section class="section section-alt">
+  <div class="container">
+  <h2>二、技术架构</h2>
+
+  <h3>2.1 整体架构图</h3>
+
+  <style>
+    .arch-diagram { margin: 20px 0; font-size: 13px; line-height: 1.6; }
+
+    /* 顶层：客户旅程横排 */
+    .arch-journey {
+      display: flex; align-items: center; gap: 0;
+      background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 12px;
+      padding: 16px 20px; margin-bottom: 16px;
+    }
+    .arch-journey .label {
+      font-size: 14px; font-weight: 700; color: #1e40af;
+      white-space: nowrap; margin-right: 16px; flex-shrink: 0;
+    }
+    .arch-journey .steps { display: flex; align-items: center; gap: 0; flex: 1; overflow-x: auto; }
+    .arch-journey .step {
+      display: flex; align-items: center; gap: 6px;
+      background: #fff; border-radius: 8px; padding: 8px 14px;
+      font-weight: 500; font-size: 12px; white-space: nowrap;
+      border: 1px solid #bfdbfe;
+    }
+    .arch-journey .step .dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #3b82f6; color: #fff; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .arch-journey .step.done { background: #dcfce7; border-color: #86efac; }
+    .arch-journey .step.done .dot { background: #16a34a; }
+    .arch-journey .arrow { color: #93c5fd; font-size: 16px; padding: 0 6px; flex-shrink: 0; }
+
+    /* 底层：双栏 */
+    .arch-bottom { display: flex; gap: 16px; }
+    .arch-col { border-radius: 12px; padding: 24px 20px; }
+    .arch-col.platform { flex: 1; background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%); border: 2px solid #86efac; }
+    .arch-col.coop { flex: 0 0 240px; background: #fff7ed; border: 2px solid #fed7aa; }
+
+    .arch-col h4 {
+      font-size: 15px; font-weight: 700; margin: 0 0 16px 0; text-align: center;
+      padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .arch-col.platform h4 { color: #166534; }
+    .arch-col.coop h4 { color: #9a3412; }
+
+    .arch-step {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 8px 12px; margin-bottom: 8px; border-radius: 8px;
+      background: rgba(255,255,255,0.7); font-weight: 500;
+    }
+    .arch-step .dot {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .arch-step.coop-s .dot { background: #ea580c; }
+
+    .arch-module {
+      background: #fff; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px;
+      border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .arch-module h5 { font-size: 14px; font-weight: 700; margin: 0 0 4px 0; color: #166534; }
+    .arch-module .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .arch-module .tag {
+      font-size: 11px; padding: 2px 10px; border-radius: 10px;
+      background: #dcfce7; color: #166534; font-weight: 500;
+    }
+    .arch-module .tag.blue { background: #dbeafe; color: #1e40af; }
+    .arch-module .tag.purple { background: #f3e8ff; color: #7c3aed; }
+    .arch-module .tag.orange { background: #fff7ed; color: #c2410c; }
+
+    .arch-divider {
+      text-align: center; margin: 14px 0; position: relative;
+    }
+    .arch-divider::before {
+      content: ''; position: absolute; left: 10%; right: 10%; top: 50%;
+      height: 1px; background: #d1d5db;
+    }
+    .arch-divider span {
+      position: relative; background: #ecfdf5; padding: 0 12px;
+      font-size: 12px; color: #6b7280; font-weight: 500;
+    }
+
+    @media (max-width: 900px) {
+      .arch-bottom { flex-direction: column; }
+      .arch-col.coop { flex: auto; }
+      .arch-journey { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .arch-journey .steps { flex-wrap: wrap; }
+    }
+  </style>
+
+  <div class="arch-diagram">
+    <!-- 顶层：客户旅程横排流程 -->
+    <div class="arch-journey">
+      <span class="label">👤 客户旅程</span>
+      <div class="steps">
+        <div class="step"><span class="dot">1</span> 接听AI来电</div>
+        <span class="arrow">→</span>
+        <div class="step"><span class="dot">2</span> 微信搜索公众号</div>
+        <span class="arrow">→</span>
+        <div class="step"><span class="dot">3</span> 关注公众号</div>
+        <span class="arrow">→</span>
+        <div class="step"><span class="dot">4</span> 输入专属码</div>
+        <span class="arrow">→</span>
+        <div class="step"><span class="dot">5</span> 填写投保信息</div>
+        <span class="arrow">→</span>
+        <div class="step"><span class="dot">6</span> 在线支付</div>
+        <span class="arrow">→</span>
+        <div class="step done"><span class="dot">✓</span> 投保成功</div>
+      </div>
+    </div>
+
+    <!-- 底层：我司平台 + 客户配合 -->
+    <div class="arch-bottom">
+      <!-- 左：我司核心能力平台 -->
+      <div class="arch-col platform">
+        <h4>⚙️ 我司核心能力平台</h4>
+
+        <div class="arch-module">
+          <h5>🎙️ AI外呼引擎</h5>
+          <p style="margin:0;font-size:12px;color:#6b7280;">批量外呼 · 语音合成 · 多轮会话 · 挂机短信自动触达</p>
+          <div class="tags">
+            <span class="tag blue">LLM意图分类</span>
+            <span class="tag blue">信任度判断</span>
+          </div>
+        </div>
+
+        <div class="arch-module">
+          <h5>🧩 画布流程引擎</h5>
+          <p style="margin:0;font-size:12px;color:#6b7280;">可视化节点编排 · 18节点全流程 · 正负分支全覆盖</p>
+          <div class="tags">
+            <span class="tag">普通节点</span>
+            <span class="tag purple">跳转节点(轮询)</span>
+            <span class="tag blue">LLM分类节点</span>
+            <span class="tag">判断节点</span>
+          </div>
+        </div>
+
+        <div class="arch-module">
+          <h5>📊 埋点数据调用与策略匹配</h5>
+          <p style="margin:0;font-size:12px;color:#6b7280;"><em style="color:#ea580c;">客户提供埋点API</em> · 我方轮询调用 · 分级话术匹配 · 超时降级</p>
+          <div class="tags">
+            <span class="tag orange">对接客户API</span>
+            <span class="tag">实时轮询</span>
+            <span class="tag">策略匹配</span>
+          </div>
+        </div>
+
+        <div class="arch-module">
+          <h5>📈 运营报表与看板</h5>
+          <p style="margin:0;font-size:12px;color:#6b7280;">转化漏斗报表 · 节点流失分析 · 话术效果对比 · 简易看板</p>
+          <div class="tags">
+            <span class="tag">日报/周报</span>
+            <span class="tag">漏斗可视化</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 右：客户需配合 -->
+      <div class="arch-col coop">
+        <h4>🤝 客户需配合</h4>
+        <div class="arch-step coop-s"><span class="dot">1</span> <span>白名单数据<br><span style="font-size:11px;color:#9ca3af;">合规授权客户手机号</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">2</span> <span>公众号配置<br><span style="font-size:11px;color:#9ca3af;">菜单·模板消息·自动回复</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">3</span> <span>投保H5页面<br><span style="font-size:11px;color:#9ca3af;">含埋点SDK</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">4</span> <span>API接口对接<br><span style="font-size:11px;color:#9ca3af;">关注·埋点·核保·支付状态</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">5</span> <span>合规审核<br><span style="font-size:11px;color:#9ca3af;">话术合规确认</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>2.2 核心技术能力</h3>
+  <table class="info-table">
+    <thead>
+      <tr><th style="width:140px;">模块</th><th>技术方案</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>AI外呼引擎</strong></td><td>流程画布 + LLM分类节点</td><td>固定合规话术由画布编排，复杂语义分流（意向识别、信任判断）由LLM分类完成，兼顾可控性与灵活性</td></tr>
+      <tr><td><strong>画布流程引擎</strong></td><td>跳转节点 + 按时间轮询</td><td>利用跳转节点的「静默时间 + 重复次数」机制实现API定时轮询（关注状态 / 埋点行为 / 支付状态），无需额外开发定时任务</td></tr>
+      <tr><td><strong>专属码机制</strong></td><td>四位数字码 + 短信同步</td><td>外呼中口播四位专属码并同步短信，客户在公众号输入后自动关联手机号并打开投保页，实现电话→公众号无缝衔接</td></tr>
+      <tr><td><strong>公众号埋点</strong></td><td>客户提供埋点API + 我方调用</td><td>客户在投保H5页面预置埋点SDK，提供查询接口。我方画布流程引擎通过跳转节点定时轮询，根据返回的行为数据匹配分级话术策略</td></tr>
+      <tr><td><strong>运营报表</strong></td><td>运营数据报表 + 简易看板</td><td>提供日报/周报形式的运营数据、节点流失分析、话术效果对比，支持简易可视化看板</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ════════════════ 核心流程 ════════════════ -->
+<section class="section">
+  <div class="container">
+  <h2>三、核心业务流程</h2>
+  <p>全链路共7个阶段、18个关键节点，AI根据客户行为实时调整策略：</p>
+
+  <ol class="flow-list">
+    <li>
+      <div class="step-content">
+        <h4>📞 接通建信</h4>
+        <p>AI外呼开场说明来意 → LLM语义筛选意向 → LLM判断信任度。冷启动场景下自动判别客户质疑类型并分流。</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>📲 微信搜索与关注</h4>
+        <p>语音引导客户搜索公众号 → API定时查询关注状态（5秒/次，最长等待60秒）→ 未关注则降级为短信直链。</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>🎯 入口行为引导</h4>
+        <p>引导客户在公众号首页找到指定入口。根据客户行为分级介入——15秒无操作提示、30秒换方式引导、超时短信提醒。</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>🔑 专属码交付与输入</h4>
+        <p>口播四位专属码 + 同步短信发送。客户在入口页面输入专属码后自动反显预留手机号，零手动输入。</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>📝 信息填写与健告</h4>
+        <p>轮询确认姓名身份证填写完成 → 调用核保API判断健告结果。</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>⚕️ 支付与成交</h4>
+        <p>查询支付状态 → 根据支付失败原因向客户给出对应建议（如余额不足引导换卡、网络问题引导重试等）→ 超时未支付短信提醒。</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-content">
+        <h4>🏁 闭环</h4>
+        <p>投保成功 → 告知保障生效时间，流程结束。</p>
+      </div>
+    </li>
+  </ol>
+  </div>
+</section>
+
+<!-- ════════════════ 我司工作内容 ════════════════ -->
+<section class="section section-alt">
+  <div class="container">
+  <h2>四、我司工作内容</h2>
+
+  <div class="highlight-box">
+    <h4>📍 我方交付范围</h4>
+    <p style="margin:0;">以下所有工作由我方团队完成，无需客户投入研发资源。</p>
+  </div>
+
+  <table class="info-table">
+    <thead>
+      <tr><th style="width:40px;">#</th><th>工作项</th><th>详细内容</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>AI外呼话术设计</strong></td>
+        <td>7阶段全链路话术编写：包括开场建信、异议处理、微信引导、专属码口播、埋点跟进、支付引导、投保成功闭环</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>流程画布搭建</strong></td>
+        <td>在画布平台上完成全部18个节点的编排与调试：普通节点（固定话术）、LLM分类节点（意向/信任分流）、跳转节点（API轮询循环）、判断节点（二进制分流）</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>LLM分类配置</strong></td>
+        <td>配置意向筛选与信任验证两个LLM分类节点的Prompt指令、分类标签、上下文轮数、分流分支</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>埋点对接与策略配置</strong></td>
+        <td>对接客户提供的公众号埋点API，配置画布轮询策略（轮询频率、超时阈值、分级话术匹配规则），实现根据客户行为实时调整引导策略</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>联调测试</strong></td>
+        <td>端到端全链路测试：外呼→公众号关注→投保→支付→保单生效。覆盖正向流程及各负向分支</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>上线后运营支持</strong></td>
+        <td>提供首月运营数据分析、话术效果评估、画布节点迭代优化</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ════════════════ 客户配合内容 ════════════════ -->
+<section class="section">
+  <div class="container">
+  <h2>五、客户需配合内容</h2>
+
+  <div class="highlight-box orange">
+    <h4>📍 客户侧需提供</h4>
+    <p style="margin:0;">以下内容需客户侧配合提供或完成配置，我方提供全程技术指导。</p>
+  </div>
+
+  <table class="info-table">
+    <thead>
+      <tr><th style="width:40px;">#</th><th>配合项</th><th>具体内容</th><th>预计耗时</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>白名单数据提供</strong></td>
+        <td>提供合规授权的客户手机号列表（用于AI外呼），需确保数据来源合法、已获用户授权</td>
+        <td>1 个工作日</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>公众号配置</strong></td>
+        <td>配合完成公众号菜单设置（添加「领保障」入口）、模板消息配置、关注自动回复设置</td>
+        <td>1-2 个工作日</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>投保页面准备</strong></td>
+        <td>提供投保H5页面链接，需支持：①专属码参数接收 ②手机号自动反显 ③姓名身份证填写 ④健康告知问卷 ⑤在线支付。页面内需预置埋点SDK</td>
+        <td>3-5 个工作日</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>API接口提供</strong></td>
+        <td>提供以下接口供我方调用：①关注状态查询 ②保单纯核结果 ③支付状态回传。按我方接口规范对接</td>
+        <td>3-5 个工作日</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>合规审核</strong></td>
+        <td>对AI外呼话术脚本内容进行合规审核确认，确保符合保险销售监管要求</td>
+        <td>2-3 个工作日</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ════════════════ 实施周期 ════════════════ -->
+<section class="section section-alt">
+  <div class="container">
+  <h2>六、实施周期</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="period">第 1 周</div>
+      <h4>需求对齐与资源准备</h4>
+      <p>确认产品方案、白名单数据交付、公众号配置、API接口规范对齐、合规审核启动</p>
+    </div>
+    <div class="timeline-item">
+      <div class="period">第 2 周</div>
+      <h4>技术开发与联调</h4>
+      <p>画布流程搭建、LLM分类配置、API接口开发对接、短信模板配置、投保页面埋点接入</p>
+    </div>
+    <div class="timeline-item">
+      <div class="period">第 3 周</div>
+      <h4>端到端测试</h4>
+      <p>全链路正向/负向分支测试、转人工升级演练、短信降级验证、话术合规终审</p>
+    </div>
+    <div class="timeline-item">
+      <div class="period">第 4 周</div>
+      <h4>灰度上线</h4>
+      <p>小批量外呼灰度（建议1000通）、转化漏斗监控、话术A/B调优、问题修复</p>
+    </div>
+    <div class="timeline-item">
+      <div class="period">第 5 周</div>
+      <h4>正式放量</h4>
+      <p>全量外呼上线、运营数据监控、月度复盘优化</p>
+    </div>
+  </div>
+
+  <div class="highlight-box green" style="margin-top:20px;">
+    <h4>⏱ 从启动到正式上线预计 4-5 周</h4>
+    <p style="margin:0;">实际周期取决于客户侧资源配合速度，历史同类项目平均交付周期为 4 周。</p>
+  </div>
+
+  </section>
+
+  </div>
+
+  <!-- ════════════════ FOOTER ════════════════ -->
+<footer class="footer">
+  <strong>AI外呼 + 公众号 保险智能转化解决方案</strong><br>
+  版本 V1.0 · 2026年7月 · 仅供合作方参阅<br>
+  如有疑问，请联系项目团队获取更多技术细节
+</footer>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'default',
+  flowchart: { useMaxWidth: true, htmlLabels: false, curve: 'basis', padding: 15 },
+  securityLevel: 'loose',
+});
+</script>
+
+</body>
+</html>
