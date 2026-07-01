@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI外呼 → 公众号投保 全链路流程图</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --card-bg: #ffffff;
+    --text: #2c3e50;
+    --text-secondary: #5a6c7d;
+    --border: #e2e8f0;
+    --accent: #2563eb;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #ea580c;
+    --info: #2563eb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+    color: #fff;
+    padding: 32px 40px;
+    text-align: center;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+  .header p { font-size: 14px; opacity: 0.85; }
+
+  /* Container */
+  .container { max-width: 1600px; margin: 0 auto; padding: 24px 40px; }
+
+  /* Legend bar */
+  .legend-bar {
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 24px; margin-bottom: 24px;
+  }
+  .legend-bar .title { font-weight: 700; font-size: 14px; margin-right: 8px; color: var(--text-secondary); }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+  .legend-dot.green { background: #4CAF50; }
+  .legend-dot.purple { background: #9C27B0; }
+  .legend-dot.blue { background: #2196F3; }
+  .legend-dot.orange { background: #FF9800; }
+  .legend-dot.red { background: #FF5722; }
+
+  /* Flowchart card */
+  .flowchart-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 32px; margin-bottom: 24px;
+    overflow: auto;
+    max-height: 75vh;
+  }
+  .flowchart-card h2 {
+    font-size: 18px; margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 2px solid var(--border); color: #1e3a5f;
+  }
+
+  /* Mermaid container */
+  .mermaid-wrapper { min-width: 1400px; text-align: center; }
+
+  /* Summary cards */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  .summary-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; text-align: center;
+  }
+  .summary-card .num { font-size: 36px; font-weight: 800; }
+  .summary-card .label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+  .summary-card.green .num { color: #16a34a; }
+  .summary-card.red .num { color: #dc2626; }
+  .summary-card.orange .num { color: #ea580c; }
+  .summary-card.blue .num { color: #2563eb; }
+
+  /* Table */
+  .info-table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+    background: var(--card-bg); border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .info-table th {
+    background: #f1f5f9; text-align: left; padding: 12px 16px;
+    font-weight: 600; color: #475569; border-bottom: 2px solid var(--border);
+  }
+  .info-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  .info-table tr:last-child td { border-bottom: none; }
+  .info-table .stage-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 500;
+  }
+  .tag-s1 { background: #ede9fe; color: #7c3aed; }
+  .tag-s2 { background: #dbeafe; color: #2563eb; }
+  .tag-s3 { background: #fef3c7; color: #d97706; }
+  .tag-s4 { background: #e0f2fe; color: #0284c7; }
+  .tag-s5 { background: #fce7f3; color: #db2777; }
+  .tag-s6 { background: #ffedd5; color: #ea580c; }
+  .tag-s7 { background: #dcfce7; color: #16a34a; }
+
+  /* Section */
+  .section-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; margin-bottom: 24px;
+  }
+  .section-card h2 {
+    font-size: 18px; margin-bottom: 16px; color: #1e3a5f;
+    padding-bottom: 10px; border-bottom: 2px solid var(--border);
+  }
+
+  /* Escalation rules */
+  .escalation-list { list-style: none; }
+  .escalation-list li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px; border-radius: 8px; margin-bottom: 8px;
+  }
+  .escalation-list li:nth-child(1) { background: #fef2f2; }
+  .escalation-list li:nth-child(2) { background: #fff7ed; }
+  .escalation-list li:nth-child(3) { background: #fef2f2; }
+  .escalation-list li:nth-child(4) { background: #fff7ed; }
+  .escalation-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #dc2626; color: #fff; display: flex;
+    align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .escalation-text strong { display: block; margin-bottom: 2px; }
+  .escalation-text span { font-size: 13px; color: var(--text-secondary); }
+
+  /* SMS list */
+  .sms-list { list-style: none; }
+  .sms-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; font-size: 13px;
+    border-left: 3px solid #FF9800; margin-bottom: 6px;
+    background: #fff7ed; border-radius: 0 6px 6px 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container { padding: 16px; }
+    .header { padding: 24px 20px; }
+    .header h1 { font-size: 22px; }
+    .legend-bar { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📋 AI外呼 → 公众号投保 全链路流程图</h1>
+  <p>7大阶段 · 18个判断节点 · 实时埋点轮询 · 短信兜底 · 转人工阈值</p>
+</div>
+
+<div class="container">
+
+  <!-- ====== 全局概览卡片 ====== -->
+  <div class="summary-grid">
+    <div class="summary-card blue">
+      <div class="num">7</div>
+      <div class="label">业务阶段</div>
+    </div>
+    <div class="summary-card purple" style="--c:#9C27B0">
+      <div class="num" style="color:#9C27B0">18</div>
+      <div class="label">判断节点 (N00–N15)</div>
+    </div>
+    <div class="summary-card red">
+      <div class="num">4</div>
+      <div class="label">转人工阈值</div>
+    </div>
+    <div class="summary-card orange">
+      <div class="num">7</div>
+      <div class="label">短信兜底节点</div>
+    </div>
+  </div>
+
+  <!-- ====== 图例 ====== -->
+  <div class="legend-bar">
+    <span class="title">📋 图例：</span>
+    <div class="legend-item"><span class="legend-dot green"></span> 起点 / 终点</div>
+    <div class="legend-item"><span class="legend-dot purple"></span> 判断节点（菱形）</div>
+    <div class="legend-item"><span class="legend-dot blue"></span> 实时轮询（AI查埋点）</div>
+    <div class="legend-item"><span class="legend-dot orange"></span> 短信兜底路径</div>
+    <div class="legend-item"><span class="legend-dot red"></span> 🆘 转人工坐席</div>
+  </div>
+
+  <!-- ====== 流程图 ====== -->
+  <div class="flowchart-card">
+    <h2>🔄 全链路流程图（可缩放）</h2>
+    <div class="mermaid-wrapper">
+      <div class="mermaid">
+flowchart TD
+    START([🏁 AI外呼发起]) --> N00
+
+    subgraph S1["📞 阶段一：接通建信"]
+        N00{接通确认<br/>本人? 有时间?}
+        N00 -->|✅ 本人接听| N01
+        N00 -->|❌ 非本人| SMS_A["📱 挂机+短信<br/>择时回拨"]
+        N00 -->|❌ 忙/挂断| SMS_B["📱 挂机+短信<br/>含公众号名+专属码"]
+
+        N01{意向筛选<br/>感兴趣?}
+        N01 -->|✅ 有兴趣| N02
+        N01 -->|⚠️ 第一次拒绝| SOFT["话术软化<br/>「看一眼不花钱」"] --> N02
+        N01 -->|❌ 二次拒绝| SMS_C["📱 挂机+短信<br/>标记无意向"]
+
+        N02{信任验证<br/>是否质疑?}
+        N02 -->|✅ 信任通过| N03
+        N02 -->|⚠️ 「哪家公司?」| TRUST["话术解释<br/>认证公众号验证"] --> N03
+        N02 -->|❌ 「是诈骗吗?」| TRANS1["🆘 转人工坐席"]
+    end
+
+    subgraph S2["📲 阶段二：微信搜索与关注"]
+        N03{确认微信环境<br/>有微信? 会用?}
+        N03 -->|✅ 有微信| GUIDE["语音引导<br/>「搜XX保」"]
+        N03 -->|❌ 无微信/不会用| SMS_D["📱 降级短信直链"]
+        
+        GUIDE --> N04
+
+        N04{关注公众号?<br/>查询关注状态API}
+        N04 -->|✅ 已关注| N05
+        N04 -->|30s未关注| PROMPT1["语音提示<br/>「点关注按钮」"] --> N04
+        N04 -->|60s未关注| SMS_D
+        N04 -->|❌ 「不愿意关注」| SMS_D
+    end
+
+    SMS_D --> N05_ALT[短信直达链接<br/>跳过关注步骤]
+    N05_ALT --> N06
+
+    subgraph S3["🔑 阶段三：专属码交付"]
+        N05["告知四位专属码<br/>+ 同步发送短信"]
+        N05 --> N05a{码确认<br/>听清了?}
+        N05a -->|✅ 记住了| N06
+        N05a -->|⚠️ 「再说一遍」| REPEAT["重复+放慢语速<br/>「短信里也有」"] --> N05a
+        N05a -->|❌ 「有什么用?」| VALUE["解释价值<br/>VIP专属通道"] --> N06
+    end
+
+    subgraph S4["🎯 阶段四：入口行为引导（实时轮询核心区）"]
+        N06["引导点击私信/首页入口<br/>「点底部菜单领保障」"]
+        N06 --> POLL["🔄 实时轮询埋点<br/>每5秒查询行为"]
+
+        POLL -->|15s无操作| HINT1["语音提示<br/>「看到了吗?」"]
+        HINT1 --> POLL
+        POLL -->|30s无操作| HINT2["换引导方式<br/>「或者点公众号消息」"]
+        HINT2 --> POLL
+        POLL -->|60s无操作| HINT3["再次引导<br/>「短信直达链接」"]
+        HINT3 --> POLL
+        POLL -->|120s无操作| SMS_E["📱 挂机+短信直达链接<br/>客户自闭环"]
+        POLL -->|❌ 点错菜单| CORRECT["纠正<br/>「点中间那个才对」"] --> POLL
+        POLL -->|✅ 已点击| N07
+
+        N07{点击指定链接?}
+        N07 -->|✅ 已点击| N08
+        N07 -->|❌ 「找不到」| HELP["「看蓝色立即领取按钮」"] --> N07
+
+        N08{输入专属码?}
+        N08 -->|✅ 正确| N09
+        N08 -->|❌ 错误×1| ERR1["「看短信里的码再试」"] --> N08
+        N08 -->|❌ 错误×2| ERR2["「我帮您核对?」"] --> N08
+        N08 -->|❌ 错误×3| TRANS2["🆘 转人工坐席"]
+    end
+
+    SMS_E --> N08_SMS["📱 客户通过短信链接<br/>自行输入专属码"]
+
+    subgraph S5["📝 阶段五：信息填写"]
+        N09{手机号反显确认<br/>号码正确?}
+        N09 -->|✅ 正确| N10
+        N09 -->|❌ 号码不对| EDIT["「直接修改即可」"] --> N09
+
+        N10["填写姓名+身份证号"]
+        N10 --> N10a["🔄 轮询埋点<br/>每15秒查询"]
+        N10a -->|✅ 已填完| N11
+        N10a -->|⚠️ 「怕泄露」| PRIVACY["安全解释<br/>「加密传输」"] --> N10a
+        N10a -->|⚠️ 「没带身份证」| RELAX["「24h有效 记得号就行」"] --> N10a
+        N10a -->|60s未填写| SMS_F["📱 挂机+短信提醒<br/>「链接24h有效」"]
+
+        N11{增员选择<br/>产品类型?}
+        N11 -->|单人版/选单人| N12
+        N11 -->|✅ 家庭版+加家人| ADD["引导填写家人信息"] --> N12
+        N11 -->|❌ 「只要我自己」| N12
+    end
+
+    subgraph S6["⚕️ 阶段六：健告与支付"]
+        N12{健康告知<br/>结果?}
+        N12 -->|✅ 全部否→通过| N13
+        N12 -->|⚠️ 部分异常→智能核保| UW["智能核保评估"]
+        UW -->|✅ 核保通过| N13
+        UW -->|❌ 核保拒保| TRANS3["🆘 转人工<br/>推荐替代产品"]
+
+        N13["进入支付页面"]
+        N13 --> N13a{支付结果?}
+        N13a -->|✅ 支付成功| N14
+        N13a -->|❌ 余额不足| RETRY_PAY["「换卡或用零钱」"] --> N13a
+        N13a -->|❌ 「太贵了」| PRICE["紧迫感话术<br/>「一天几块钱<br/>优惠今日过期」"] --> N13a
+        N13a -->|❌ 「再想想」| HESITATE["减压话术<br/>「犹豫期可全额退<br/>先把额度锁住」"] --> N13a
+        N13a -->|⏱ 挂机未支付| SMS_G["📱 30分钟后短信追回<br/>「优惠即将过期」"]
+
+        N14{支付确认<br/>核保状态?}
+        N14 -->|✅ 核保通过| N15
+        N14 -->|❌ 系统异常| TRANS4["🆘 转人工<br/>「资金安全<br/>24h内联系」"]
+    end
+
+    subgraph S7["🏁 阶段七：闭环"]
+        N15(["🎉 投保成功！<br/>保障明日零时生效<br/>保单公众号可查"])
+        N15 --> EXTEND["💡 延伸引导<br/>「家庭版入口/理赔指引」"]
+    end
+
+    subgraph LEGEND["📋 图例"]
+        L_POS["✅ 正向路径"]
+        L_NEG["❌ 负向分支"]
+        L_TRANS["🆘 转人工节点"]
+        L_SMS["📱 短信兜底"]
+        L_POLL["🔄 实时轮询"]
+    end
+
+    style START fill:#4CAF50,color:#fff,stroke:#388E3C
+    style N15 fill:#4CAF50,color:#fff,stroke:#388E3C
+    style TRANS1 fill:#FF5722,color:#fff,stroke:#D84315
+    style TRANS2 fill:#FF5722,color:#fff,stroke:#D84315
+    style TRANS3 fill:#FF5722,color:#fff,stroke:#D84315
+    style TRANS4 fill:#FF5722,color:#fff,stroke:#D84315
+    style SMS_A fill:#FF9800,color:#fff,stroke:#F57C00
+    style SMS_B fill:#FF9800,color:#fff,stroke:#F57C00
+    style SMS_C fill:#FF9800,color:#fff,stroke:#F57C00
+    style SMS_D fill:#FF9800,color:#fff,stroke:#F57C00
+    style SMS_E fill:#FF9800,color:#fff,stroke:#F57C00
+    style SMS_F fill:#FF9800,color:#fff,stroke:#F57C00
+    style SMS_G fill:#FF9800,color:#fff,stroke:#F57C00
+    style POLL fill:#2196F3,color:#fff,stroke:#1976D2
+    style N10a fill:#2196F3,color:#fff,stroke:#1976D2
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 画布节点设计流程图 ====== -->
+  <div class="flowchart-card">
+    <h2>🧩 画布节点设计（含节点类型标注）</h2>
+    <div class="mermaid-wrapper">
+      <div class="mermaid">
+flowchart TD
+    START([🏁 外呼发起]) --> N00
+
+    subgraph S1["📞 S1 接通建信"]
+        N00["N00 普通节点<br/>开场确认<br/>话术：您好，是XX先生吗？"]
+        N00 -->|意图：肯定| N01
+        N00 -->|意图：否定/无人声| END1["📱 结束+短信"]
+
+        N01["N01 LLM分类节点<br/>意向识别<br/>分类：有兴趣/犹豫/拒绝/已购买"]
+        N01 -->|分类：有兴趣| N02
+        N01 -->|分类：犹豫| SFT["N01-SOFT 普通节点<br/>话术软化<br/>「看一眼不花钱」"]
+        SFT --> N02
+        N01 -->|分类：拒绝| END2["📱 结束+短信<br/>标记无意向"]
+
+        N02["N02 LLM分类节点<br/>信任判断<br/>分类：信任/质疑可解释/诈骗"]
+        N02 -->|分类：信任| N03
+        N02 -->|分类：质疑可解释| TRST["N02-TRUST 普通节点<br/>解释话术<br/>「认证公众号验证」"]
+        TRST --> N03
+        N02 -->|分类：诈骗| TRANS1["🆘 转人工坐席"]
+    end
+
+    subgraph S2["📲 S2 微信搜索与关注"]
+        N03["N03 普通节点<br/>微信环境确认<br/>话术：您有微信吗？"]
+        N03 -->|意图：肯定| GD["GUIDE 普通节点<br/>语音引导<br/>「搜XX保」"]
+        N03 -->|意图：否定| SMS_D["📱 降级短信直链"]
+
+        GD --> N04
+
+        N04["N04 跳转节点 🔄<br/>查询关注状态API<br/>静默5s × 重复12次=60s"]
+        N04 -->|已关注| N05
+        N04 -->|未关注-循环中| PRMP["PROMPT 普通节点<br/>语音提示<br/>「点关注按钮」"]
+        PRMP --> N04
+        N04 -->|60s超时| SMS_D
+    end
+
+    SMS_D --> N05_ALT["短信直达链接<br/>跳过关注步骤"]
+    N05_ALT --> N06
+
+    subgraph S3["🔑 S3 专属码交付"]
+        N05["N05 普通节点<br/>告知四位专属码<br/>+ 同步发送短信"]
+        N05 --> N05a["N05a 判断节点<br/>码确认"]
+        N05a -->|肯定| N06
+        N05a -->|否定| RPT["REPEAT 普通节点<br/>重复+放慢<br/>「短信里也有」"]
+        RPT --> N05a
+    end
+
+    subgraph S4["🎯 S4 入口行为引导（埋点轮询核心）"]
+        N06["N06 普通节点<br/>引导点击入口<br/>「点底部菜单领保障」"]
+
+        N06 --> POLL
+
+        POLL["POLL 跳转节点 🔄<br/>查询埋点API<br/>静默5s × 重复24次=120s"]
+        POLL -->|15s/30s/60s无操作| HINT["HINT 普通节点<br/>分级语音提示<br/>「看到了吗？」"]
+        HINT --> POLL
+        POLL -->|点错菜单| CORR["CORRECT 普通节点<br/>纠正话术<br/>「点中间那个」"]
+        CORR --> POLL
+        POLL -->|120s超时| SMS_E["📱 挂机+短信<br/>客户自闭环"]
+        POLL -->|✅ 已点击链接| N07
+
+        N07["N07 判断节点<br/>点击指定链接？"]
+        N07 -->|已点击| N08
+        N07 -->|找不到| HLP["HELP 普通节点<br/>「看蓝色按钮」"]
+        HLP --> N07
+
+        N08["N08 判断节点<br/>输入专属码？"]
+        N08 -->|正确| N09
+        N08 -->|错误×1| ERR["ERR 普通节点<br/>「看短信再试」"]
+        ERR --> N08
+        N08 -->|错误×3| TRANS2["🆘 转人工坐席"]
+    end
+
+    subgraph S5["📝 S5 信息填写"]
+        N09["N09 判断节点<br/>手机号反显"]
+        N09 -->|正确| N10
+        N09 -->|不对| EDIT["EDIT 普通节点<br/>「直接修改」"]
+        EDIT --> N09
+
+        N10["N10 跳转节点 🔄<br/>查询埋点API<br/>静默15s × 重复4次=60s"]
+        N10 -->|已填完| N11
+        N10 -->|顾虑| PRIV["PRIVACY 普通节点<br/>安全解释"]
+        PRIV --> N10
+        N10 -->|60s超时| SMS_F["📱 短信提醒<br/>链接24h有效"]
+
+        N11["N11 判断节点<br/>增员选择"]
+        N11 -->|单人| N12
+        N11 -->|加家人| ADD["ADD 普通节点<br/>引导填写家人"]
+        ADD --> N12
+    end
+
+    subgraph S6["⚕️ S6 健告与支付"]
+        N12["N12 判断节点<br/>健康告知<br/>+ 查询核保API"]
+        N12 -->|通过| N13
+        N12 -->|智能核保| UW["UW 普通节点<br/>引导回答问题"]
+        UW -->|核保通过| N13
+        UW -->|核保拒保| TRANS3["🆘 转人工<br/>推荐替代产品"]
+
+        N13["N13 跳转节点 🔄<br/>查询支付状态API<br/>静默5s"]
+        N13 -->|支付成功| N14
+        N13 -->|余额不足| RPAY["RETRY_PAY 普通节点<br/>「换卡或零钱」"]
+        RPAY --> N13
+        N13 -->|犹豫| HES["HESITATE 普通节点<br/>「犹豫期可退」"]
+        HES --> N13
+        N13 -->|超时未付| SMS_G["📱 30min后短信追回"]
+
+        N14["N14 判断节点<br/>支付确认"]
+        N14 -->|核保通过| N15
+        N14 -->|系统异常| TRANS4["🆘 转人工"]
+    end
+
+    subgraph S7["🏁 S7 闭环"]
+        N15(["N15 普通节点<br/>🎉 投保成功"])
+        N15 --> EXT["EXTEND 普通节点<br/>延伸引导"]
+    end
+
+    style START fill:#4CAF50,color:#fff
+    style N15 fill:#4CAF50,color:#fff
+    style TRANS1 fill:#FF5722,color:#fff
+    style TRANS2 fill:#FF5722,color:#fff
+    style TRANS3 fill:#FF5722,color:#fff
+    style TRANS4 fill:#FF5722,color:#fff
+    style SMS_D fill:#FF9800,color:#fff
+    style SMS_E fill:#FF9800,color:#fff
+    style SMS_F fill:#FF9800,color:#fff
+    style SMS_G fill:#FF9800,color:#fff
+    style END1 fill:#FF9800,color:#fff
+    style END2 fill:#FF9800,color:#fff
+    style N04 fill:#8B5CF6,color:#fff
+    style POLL fill:#8B5CF6,color:#fff
+    style N10 fill:#8B5CF6,color:#fff
+    style N13 fill:#8B5CF6,color:#fff
+    style N01 fill:#06B6D4,color:#fff
+    style N02 fill:#06B6D4,color:#fff
+      </div>
+    </div>
+
+    <!-- 画布图例 -->
+    <div class="legend-bar" style="margin-top:16px;">
+      <span class="title">🧩 节点类型图例：</span>
+      <div class="legend-item"><span class="legend-dot" style="background:#374151"></span> 普通节点</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#8B5CF6"></span> 跳转节点（轮询循环）</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#06B6D4"></span> LLM分类节点</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#9C27B0"></span> 判断节点</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#FF5722"></span> 转人工</div>
+    </div>
+  </div>
+
+  <!-- ====== 关键节点配置 ====== -->
+  <div class="section-card">
+    <h2>⚙️ 关键跳转/LLM节点配置详情</h2>
+
+    <h3 style="margin-top:20px;color:#8B5CF6;">N04 — 关注状态查询（跳转节点）</h3>
+    <table class="info-table">
+      <tr><td style="width:140px;font-weight:600;">节点类型</td><td>跳转节点</td></tr>
+      <tr><td style="font-weight:600;">切换规则</td><td>按时间（每5秒触发一次）</td></tr>
+      <tr><td style="font-weight:600;">静默时间</td><td>5 秒</td></tr>
+      <tr><td style="font-weight:600;">重复次数</td><td>12 次（总计 60 秒等待窗口）</td></tr>
+      <tr><td style="font-weight:600;">动作</td><td>调用「查询关注状态 API」</td></tr>
+      <tr><td style="font-weight:600;">已关注 →</td><td>跳出循环 → N05 专属码交付</td></tr>
+      <tr><td style="font-weight:600;">60s 未关注 →</td><td>跳出循环 → 短信直链（降级通道）</td></tr>
+      <tr><td style="font-weight:600;">循环中</td><td>→ PROMPT 普通节点「点关注按钮」→ 回到 N04</td></tr>
+    </table>
+
+    <h3 style="margin-top:24px;color:#8B5CF6;">POLL — 埋点轮询引擎（跳转节点）</h3>
+    <table class="info-table">
+      <tr><td style="width:140px;font-weight:600;">节点类型</td><td>跳转节点</td></tr>
+      <tr><td style="font-weight:600;">切换规则</td><td>按时间（每5秒触发一次）</td></tr>
+      <tr><td style="font-weight:600;">静默时间</td><td>5 秒</td></tr>
+      <tr><td style="font-weight:600;">重复次数</td><td>24 次（总计 120 秒等待窗口）</td></tr>
+      <tr><td style="font-weight:600;">动作</td><td>调用「查询埋点 API」，传入 <code>exclusive_code</code></td></tr>
+      <tr><td style="font-weight:600;">0–60s 无操作</td><td>→ HINT 普通节点「看到了吗？」→ 回到 POLL</td></tr>
+      <tr><td style="font-weight:600;">60–120s 无操作</td><td>→ HINT 普通节点「短信直达链接」→ 回到 POLL</td></tr>
+      <tr><td style="font-weight:600;">120s 超时</td><td>→ 跳出循环 → 短信兜底（客户自闭环）</td></tr>
+      <tr><td style="font-weight:600;">✅ 已点击链接</td><td>→ 跳出循环 → N07</td></tr>
+    </table>
+
+    <h3 style="margin-top:24px;color:#06B6D4;">N01 — 意向筛选（LLM分类节点）</h3>
+    <table class="info-table">
+      <tr><td style="width:140px;font-weight:600;">节点类型</td><td>LLM分类节点</td></tr>
+      <tr><td style="font-weight:600;">分类项</td><td>有兴趣 / 犹豫想了解 / 明确不需要 / 已购买同类产品</td></tr>
+      <tr><td style="font-weight:600;">指令（Prompt）</td><td>根据用户回复判断其对医疗保障的兴趣。问细节/想了解→有兴趣；敷衍但没挂→犹豫；明确说不要→明确不需要；说已经买过→已购买</td></tr>
+      <tr><td style="font-weight:600;">上下文轮数</td><td>3</td></tr>
+      <tr><td style="font-weight:600;">分类→有兴趣</td><td>→ N02 信任验证</td></tr>
+      <tr><td style="font-weight:600;">分类→犹豫</td><td>→ N01-SOFT 话术软化 → N02</td></tr>
+      <tr><td style="font-weight:600;">分类→拒绝</td><td>→ 结束+短信（标记无意向）</td></tr>
+    </table>
+
+    <h3 style="margin-top:24px;color:#06B6D4;">N02 — 信任验证（LLM分类节点）</h3>
+    <table class="info-table">
+      <tr><td style="width:140px;font-weight:600;">节点类型</td><td>LLM分类节点</td></tr>
+      <tr><td style="font-weight:600;">分类项</td><td>信任通过 / 质疑但可解释 / 认为是诈骗</td></tr>
+      <tr><td style="font-weight:600;">指令（Prompt）</td><td>判断用户是否信任来电方。直接问保障内容→信任；问'哪家公司/怎么有我电话'→质疑但可解释；说'骗子/诈骗'→诈骗。诈骗分类直接转人工坐席</td></tr>
+      <tr><td style="font-weight:600;">上下文轮数</td><td>3</td></tr>
+      <tr><td style="font-weight:600;">分类→信任</td><td>→ N03 微信环境确认</td></tr>
+      <tr><td style="font-weight:600;">分类→质疑可解释</td><td>→ N02-TRUST 解释话术 → N03</td></tr>
+      <tr><td style="font-weight:600;">分类→诈骗</td><td>→ 🆘 转人工坐席（硬约束，不可被循环覆盖）</td></tr>
+    </table>
+
+    <h3 style="margin-top:24px;color:#8B5CF6;">N10 — 信息填写轮询（跳转节点）</h3>
+    <table class="info-table">
+      <tr><td style="width:140px;font-weight:600;">节点类型</td><td>跳转节点</td></tr>
+      <tr><td style="font-weight:600;">切换规则</td><td>按时间（每15秒触发一次）</td></tr>
+      <tr><td style="font-weight:600;">静默时间</td><td>15 秒</td></tr>
+      <tr><td style="font-weight:600;">重复次数</td><td>4 次（总计 60 秒等待窗口）</td></tr>
+      <tr><td style="font-weight:600;">动作</td><td>调用「查询埋点 API」</td></tr>
+      <tr><td style="font-weight:600;">已填完 →</td><td>跳出循环 → N11 增员</td></tr>
+      <tr><td style="font-weight:600;">60s 超时 →</td><td>跳出循环 → 短信提醒（链接 24h 有效）</td></tr>
+    </table>
+
+    <h3 style="margin-top:24px;color:#8B5CF6;">N13 — 支付状态轮询（跳转节点）</h3>
+    <table class="info-table">
+      <tr><td style="width:140px;font-weight:600;">节点类型</td><td>跳转节点</td></tr>
+      <tr><td style="font-weight:600;">切换规则</td><td>按时间（每5秒触发一次）</td></tr>
+      <tr><td style="font-weight:600;">静默时间</td><td>5 秒</td></tr>
+      <tr><td style="font-weight:600;">动作</td><td>调用「查询支付状态 API」</td></tr>
+      <tr><td style="font-weight:600;">支付成功 →</td><td>→ N14 支付确认</td></tr>
+      <tr><td style="font-weight:600;">超时未付 →</td><td>→ 📱 30分钟后自动短信追回</td></tr>
+    </table>
+  </div>
+
+  <!-- ====== 节点索引 ====== -->
+  <div class="section-card">
+    <h2>📊 节点索引 (N00–N15)</h2>
+    <table class="info-table">
+      <thead>
+        <tr>
+          <th>节点</th>
+          <th>名称</th>
+          <th>所属阶段</th>
+          <th>画布节点类型</th>
+          <th>类型</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>N00</strong></td><td>接通确认</td><td><span class="stage-tag tag-s1">S1 接通建信</span></td><td><strong>普通节点</strong></td><td>起点</td></tr>
+        <tr><td><strong>N01</strong></td><td>意向筛选</td><td><span class="stage-tag tag-s1">S1 接通建信</span></td><td><strong style="color:#06B6D4">LLM分类节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N02</strong></td><td>信任验证</td><td><span class="stage-tag tag-s1">S1 接通建信</span></td><td><strong style="color:#06B6D4">LLM分类节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N03</strong></td><td>微信环境确认</td><td><span class="stage-tag tag-s2">S2 微信搜索与关注</span></td><td><strong>普通节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N04</strong></td><td>关注状态查询（API）</td><td><span class="stage-tag tag-s2">S2 微信搜索与关注</span></td><td><strong style="color:#8B5CF6">跳转节点 🔄</strong></td><td>循环轮询</td></tr>
+        <tr><td><strong>N05</strong></td><td>专属码交付</td><td><span class="stage-tag tag-s3">S3 专属码交付</span></td><td><strong>普通节点</strong></td><td>动作</td></tr>
+        <tr><td><strong>N06</strong></td><td>引导点击入口</td><td><span class="stage-tag tag-s4">S4 入口行为引导</span></td><td><strong>普通节点</strong></td><td>动作</td></tr>
+        <tr><td><strong>POLL</strong></td><td>埋点轮询引擎</td><td><span class="stage-tag tag-s4">S4 入口行为引导</span></td><td><strong style="color:#8B5CF6">跳转节点 🔄</strong></td><td>循环轮询</td></tr>
+        <tr><td><strong>N07</strong></td><td>点击指定链接</td><td><span class="stage-tag tag-s4">S4 入口行为引导</span></td><td><strong>判断节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N08</strong></td><td>输入专属码</td><td><span class="stage-tag tag-s4">S4 入口行为引导</span></td><td><strong>判断节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N09</strong></td><td>手机号反显确认</td><td><span class="stage-tag tag-s5">S5 信息填写</span></td><td><strong>判断节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N10</strong></td><td>信息填写轮询</td><td><span class="stage-tag tag-s5">S5 信息填写</span></td><td><strong style="color:#8B5CF6">跳转节点 🔄</strong></td><td>循环轮询</td></tr>
+        <tr><td><strong>N11</strong></td><td>增员选择</td><td><span class="stage-tag tag-s5">S5 信息填写</span></td><td><strong>判断节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N12</strong></td><td>健康告知</td><td><span class="stage-tag tag-s6">S6 健告与支付</span></td><td><strong>判断节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N13</strong></td><td>支付状态轮询</td><td><span class="stage-tag tag-s6">S6 健告与支付</span></td><td><strong style="color:#8B5CF6">跳转节点 🔄</strong></td><td>循环轮询</td></tr>
+        <tr><td><strong>N14</strong></td><td>支付确认</td><td><span class="stage-tag tag-s6">S6 健告与支付</span></td><td><strong>判断节点</strong></td><td>判断</td></tr>
+        <tr><td><strong>N15</strong></td><td>投保成功闭环</td><td><span class="stage-tag tag-s7">S7 闭环</span></td><td><strong>普通节点</strong></td><td>终点</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ====== 转人工阈值 ====== -->
+  <div class="section-card">
+    <h2>🆘 四条转人工阈值（AI→坐席）</h2>
+    <ul class="escalation-list">
+      <li>
+        <span class="escalation-num">1</span>
+        <div class="escalation-text">
+          <strong>客户反复质疑真实性 / 「是不是诈骗」</strong>
+          <span>触发节点：N02 | 信任崩溃时AI无法自修复，必须人工建立信任</span>
+        </div>
+      </li>
+      <li>
+        <span class="escalation-num">2</span>
+        <div class="escalation-text">
+          <strong>专属码连续输入错误 ≥ 3 次</strong>
+          <span>触发节点：N08 | 系统侧或客户侧异常，AI无法诊断根因</span>
+        </div>
+      </li>
+      <li>
+        <span class="escalation-num">3</span>
+        <div class="escalation-text">
+          <strong>健康告知拒保（智能核保不通过）</strong>
+          <span>触发节点：N12 | 需人工推荐替代产品或解释核保结果</span>
+        </div>
+      </li>
+      <li>
+        <span class="escalation-num">4</span>
+        <div class="escalation-text">
+          <strong>支付成功但核保系统异常</strong>
+          <span>触发节点：N14 | 涉及资金安全，必须人工介入核保或退款</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ====== 短信兜底 ====== -->
+  <div class="section-card">
+    <h2>📱 短信兜底矩阵</h2>
+    <ul class="sms-list">
+      <li><strong>N00 未接通</strong> → 发送品牌名 + 公众号名 + 专属码</li>
+      <li><strong>N01 无意向</strong> → 发送公众号名 + 专属码（低打扰）</li>
+      <li><strong>N03/N04 无微信/不愿关注</strong> → 降级短信直达链接（跳过关注步骤）</li>
+      <li><strong>N06 入口操作超时 120s</strong> → 挂机 + 直达投保页链接</li>
+      <li><strong>N10 信息填写超时</strong> → 提醒链接 24h 有效</li>
+      <li><strong>N13 挂机未支付</strong> → 30 分钟后支付链接 + 优惠过期提醒</li>
+      <li><strong>N15 投保成功</strong> → 投保成功确认 + 保单查询方式</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: {
+      useMaxWidth: false,
+      htmlLabels: false,
+      curve: 'basis',
+      padding: 20,
+      nodeSpacing: 50,
+      rankSpacing: 70,
+    },
+    themeVariables: {
+      fontFamily: '"Microsoft YaHei", "PingFang SC", sans-serif',
+    },
+    securityLevel: 'loose',
+  });
+</script>
+
+</body>
+</html>
