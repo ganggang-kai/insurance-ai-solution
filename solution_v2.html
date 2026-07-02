@@ -343,7 +343,7 @@
 
         <div class="arch-module">
           <h5>🎙️ AI外呼引擎</h5>
-          <p style="margin:0;font-size:12px;color:#6b7280;">批量外呼 · 语音合成 · 多轮会话 · 挂机短信自动触达</p>
+          <p style="margin:0;font-size:12px;color:#6b7280;">批量外呼 · 语音合成 · 多轮会话 · 多标签触发外呼策略</p>
           <div class="tags">
             <span class="tag blue">LLM意图分类</span>
             <span class="tag blue">信任度判断</span>
@@ -363,7 +363,7 @@
 
         <div class="arch-module">
           <h5>📊 埋点数据调用与策略匹配</h5>
-          <p style="margin:0;font-size:12px;color:#6b7280;"><em style="color:#ea580c;">客户提供埋点API</em> · 我方轮询调用 · 分级话术匹配 · 超时降级</p>
+          <p style="margin:0;font-size:12px;color:#6b7280;"><em style="color:#ea580c;">客户提供埋点API</em> · 我方轮询调用 · 分级话术匹配 · 超时自动放行</p>
           <div class="tags">
             <span class="tag orange">对接客户API</span>
             <span class="tag">实时轮询</span>
@@ -389,7 +389,7 @@
         <div class="arch-step coop-s"><span class="dot">2</span> <span>公众号配置<br><span style="font-size:11px;color:#9ca3af;">菜单·模板消息·自动回复</span></span></div>
         <div class="arch-step coop-s"><span class="dot">3</span> <span>投保H5页面<br><span style="font-size:11px;color:#9ca3af;">含埋点SDK</span></span></div>
         <div class="arch-step coop-s"><span class="dot">4</span> <span>API接口对接<br><span style="font-size:11px;color:#9ca3af;">关注·埋点·核保·支付状态</span></span></div>
-        <div class="arch-step coop-s"><span class="dot">5</span> <span>合规审核<br><span style="font-size:11px;color:#9ca3af;">话术合规确认</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">5</span> <span>产品方案对接<br><span style="font-size:11px;color:#9ca3af;">保障范围·保费·投保规则</span></span></div>
       </div>
     </div>
   </div>
@@ -426,19 +426,19 @@
     <li>
       <div class="step-content">
         <h4>📲 微信搜索与关注</h4>
-        <p>语音引导客户搜索公众号 → API定时查询关注状态（5秒/次，最长等待60秒）→ 未关注则降级为短信直链。</p>
+        <p>语音引导客户搜索公众号 → API定时查询关注状态 → 未关注则触发引导话术，提示客户完成关注。</p>
       </div>
     </li>
     <li>
       <div class="step-content">
         <h4>🎯 入口行为引导</h4>
-        <p>引导客户在公众号首页找到指定入口。根据客户行为分级介入——15秒无操作提示、30秒换方式引导、超时短信提醒。</p>
+        <p>引导客户在公众号首页找到指定入口。根据客户行为分级介入——15秒无操作提示、30秒换方式引导。</p>
       </div>
     </li>
     <li>
       <div class="step-content">
         <h4>🔑 专属码交付与输入</h4>
-        <p>口播四位专属码 + 同步短信发送。客户在入口页面输入专属码后自动反显预留手机号，零手动输入。</p>
+        <p>口播四位专属码。客户在入口页面输入专属码后自动反显预留手机号，零手动输入。</p>
       </div>
     </li>
     <li>
@@ -549,14 +549,8 @@
       <tr>
         <td>4</td>
         <td><strong>API接口提供</strong></td>
-        <td>提供以下接口供我方调用：①关注状态查询 ②保单纯核结果 ③支付状态回传。按我方接口规范对接</td>
+        <td>提供以下接口供我方调用：①关注状态查询 ②保单纯核结果 ③支付状态回传。</td>
         <td>3-5 个工作日</td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td><strong>合规审核</strong></td>
-        <td>对AI外呼话术脚本内容进行合规审核确认，确保符合保险销售监管要求</td>
-        <td>2-3 个工作日</td>
       </tr>
     </tbody>
   </table>
@@ -572,33 +566,33 @@
     <div class="timeline-item">
       <div class="period">第 1 周</div>
       <h4>需求对齐与资源准备</h4>
-      <p>确认产品方案、白名单数据交付、公众号配置、API接口规范对齐、合规审核启动</p>
+      <p>确认产品方案、白名单数据交付、公众号配置、API接口规范对齐</p>
     </div>
     <div class="timeline-item">
       <div class="period">第 2 周</div>
+      <h4>语音Agent搭建 & 话术设计</h4>
+      <p>AI外呼Agent搭建与调试、7阶段全链路话术编写与录制、LLM分类节点配置</p>
+    </div>
+    <div class="timeline-item">
+      <div class="period">第 3–4 周</div>
       <h4>技术开发与联调</h4>
-      <p>画布流程搭建、LLM分类配置、API接口开发对接、短信模板配置、投保页面埋点接入</p>
-    </div>
-    <div class="timeline-item">
-      <div class="period">第 3 周</div>
-      <h4>端到端测试</h4>
-      <p>全链路正向/负向分支测试、转人工升级演练、短信降级验证、话术合规终审</p>
-    </div>
-    <div class="timeline-item">
-      <div class="period">第 4 周</div>
-      <h4>灰度上线</h4>
-      <p>小批量外呼灰度（建议1000通）、转化漏斗监控、话术A/B调优、问题修复</p>
+      <p>画布流程搭建、API接口对接、埋点策略配置、投保页面联调</p>
     </div>
     <div class="timeline-item">
       <div class="period">第 5 周</div>
+      <h4>端到端测试与灰度上线</h4>
+      <p>全链路正负向分支测试、小批量外呼灰度（建议1000通）、话术调优、问题修复</p>
+    </div>
+    <div class="timeline-item">
+      <div class="period">第 6 周</div>
       <h4>正式放量</h4>
-      <p>全量外呼上线、运营数据监控、月度复盘优化</p>
+      <p>全量外呼上线、运营数据监控、持续迭代优化</p>
     </div>
   </div>
 
   <div class="highlight-box green" style="margin-top:20px;">
-    <h4>⏱ 从启动到正式上线预计 4-5 周</h4>
-    <p style="margin:0;">实际周期取决于客户侧资源配合速度，历史同类项目平均交付周期为 4 周。</p>
+    <h4>⏱ 从启动到正式上线预计 5–6 周</h4>
+    <p style="margin:0;">以上周期为基于历史同类项目的预期估算，不作为正式上线承诺依据，实际进度以项目执行情况为准。</p>
   </div>
 
   </section>
