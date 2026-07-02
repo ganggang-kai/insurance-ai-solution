@@ -566,18 +566,18 @@
 
   <p>本项目基于流程画布技术方案，覆盖7大阶段、18个关键节点、约30个子节点，涉及4种节点类型（普通/跳转/LLM分类/判断）的组合编排。全链路正负分支超过40条路径需逐条调试验证。同时需对接客户侧至少4个API接口（关注状态、埋点数据、核保结果、支付状态），接口响应延迟和格式差异是联调阶段最核心的工程风险。</p>
 
-  <p>其中<strong>入口行为引导阶段（N06–N08、POLL）</strong>为全链路复杂度最高的环节：POLL跳转节点需编排「5秒×24次=120秒」四级分级轮询，画布上至少6条并行路径，任何一条分支的静默时间或跳转逻辑出错都将导致客户被错误分流。</p>
+  <p>其中<strong>入口行为引导阶段</strong>为全链路复杂度最高的环节：客户进入公众号后的每一步操作都需要AI实时感知并动态响应，画布上需编排多条并行路径来覆盖客户可能的各种行为（如点击正确入口、点错菜单、长时间无操作等），任何一个分支的时间控制或逻辑判断出错，都会导致客户被错误引导。</p>
 
   <div class="highlight-box orange">
     <h4>👥 预估人力与周期</h4>
     <table class="info-table" style="margin:8px 0;">
-      <thead><tr><th>角色</th><th>人数</th><th>投入周期</th><th>主要职责</th></tr></thead>
+      <thead><tr><th>角色</th><th>人数</th><th>主要职责</th></tr></thead>
       <tbody>
-        <tr><td>画布流程工程师</td><td>1–2 人</td><td>3–4 周</td><td>18节点编排、轮询策略配置、正负分支调试</td></tr>
-        <tr><td>LLM/Prompt工程师</td><td>1 人</td><td>2–3 周</td><td>意向识别、信任判断LLM分类节点Prompt调优</td></tr>
-        <tr><td>后端开发工程师</td><td>1 人</td><td>2–3 周</td><td>客户API对接、专属码生成、数据回传逻辑</td></tr>
-        <tr><td>话术设计师/产品经理</td><td>1 人</td><td>全程参与</td><td>7阶段话术撰写、客户沟通、联调协调</td></tr>
-        <tr style="background:#fff7ed;"><td><strong>合计</strong></td><td><strong>4–5 人</strong></td><td><strong>4–6 周</strong></td><td></td></tr>
+        <tr><td>画布流程工程师</td><td>1–2 人</td><td>18节点编排、轮询策略配置、正负分支调试</td></tr>
+        <tr><td>LLM/Prompt工程师</td><td>1 人</td><td>LLM分类节点Prompt调优</td></tr>
+        <tr><td>后端开发工程师</td><td>1 人</td><td>客户API对接、专属码生成、数据回传</td></tr>
+        <tr><td>话术设计师/产品经理</td><td>1 人</td><td>7阶段话术撰写、客户沟通、联调协调</td></tr>
+        <tr style="background:#fff7ed;"><td><strong>合计</strong></td><td><strong>4–5 人</strong></td><td><strong>预计整体落地周期 4–6 周</strong></td></tr>
       </tbody>
     </table>
   </div>
