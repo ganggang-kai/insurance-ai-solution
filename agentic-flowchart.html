@@ -52,7 +52,7 @@
 
 <div class="header">
   <h1>🤖 AI外呼 → 公众号投保 · Agentic AI 方案</h1>
-  <p>LLM 对话编排 · 6 个 Skill · 2 个 Tool · 双产品链路（0.6元短险 + 复购产品）</p>
+  <p>LLM 对话编排 · 5 个 Skill · 2 个 Tool · 双产品链路（0.6元短险 + 复购产品）</p>
 </div>
 
 <div class="container">
@@ -76,7 +76,6 @@ flowchart TB
         S3["🔑 code_delivery<br/>专属码管理"]
         S4["📝 insurance_guidance<br/>投保链路引导<br/>0.6元短险 + 复购产品"]
         S5["💳 bankcard_sign<br/>银行卡签约引导"]
-        S6["🔄 upgrade_handling<br/>升级过渡处理"]
     end
 
     subgraph TOOLS["🔧 Tools — 客户API封装"]
@@ -85,9 +84,6 @@ flowchart TB
     end
 
     subgraph CLIENT["📡 客户侧系统"]
-        C1["微信公众号"]
-        C2["投保H5页面<br/>含两个产品"]
-        C3["银行卡收银台"]
     end
 
     DEC -->|"调度"| S1
@@ -95,15 +91,10 @@ flowchart TB
     DEC -->|"调度"| S3
     DEC -->|"调度"| S4
     DEC -->|"调度"| S5
-    DEC -->|"调度"| S6
 
     S3 -.->|"调用"| T1
     S4 -.->|"调用"| T2
     S5 -.->|"调用"| T2
-
-    T1 -.->|"请求"| C2
-    T2 -.->|"请求"| C2
-    T2 -.->|"请求"| C3
 
     style LLM fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#5b21b6
     style SKILLS fill:#fdf4ff,stroke:#a855f7,stroke-width:2px,color:#7c3aed
@@ -165,9 +156,9 @@ flowchart TD
         D_SIGN_HELP --> D7
     end
 
-    subgraph STAGE5["阶段五：升级过渡 · skill: upgrade_handling"]
+    subgraph STAGE5["阶段五：升级过渡"]
         D8["跳转升级页面<br/>LLM简单告知"]
-        D9["3s后自动升级"]
+        D9["3s后自动升级<br/>无操作则自动跳转"]
         D8 --> D9
     end
 
@@ -184,7 +175,7 @@ flowchart TD
         E_SKIP --> E_DONE
     end
 
-    subgraph STAGE7["阶段七：完成 · skill: upgrade_handling"]
+    subgraph STAGE7["阶段七：完成"]
         E_DONE["跳转升级页面<br/>3s自动升级"]
         END_OK
     end
@@ -249,15 +240,7 @@ flowchart TD
       <tr><td style="width:120px;font-weight:600;">触发时机</td><td>客户点击《完善多重保障》后跳转至银行卡收银台</td></tr>
       <tr><td style="font-weight:600;">核心能力</td><td>LLM分步引导银行卡签约全流程：选择银行卡 → 输入手机号验证码 → 银行卡签约授权 → 等待自动扣款。调用 query_tracking 实时查询签约状态，失败时分析原因并引导重试</td></tr>
       <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">query_tracking</span>（查询签约页面状态及结果）</td></tr>
-      <tr><td style="font-weight:600;">出口</td><td>签约成功+扣款 → 触发 upgrade_handling</td></tr>
-    </table>
-
-    <h3><span class="tag skill">Skill</span> upgrade_handling — 升级过渡处理</h3>
-    <table class="info-table">
-      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>每次产品支付/签约完成后，页面跳转至升级页</td></tr>
-      <tr><td style="font-weight:600;">核心能力</td><td>LLM简单告知客户当前进展（如"已成功，正在为您升级保障"），等待3秒自动跳转至下一产品。两次调用：①0.6元完成后过渡到复购产品 ②复购完成后过渡到最终完成</td></tr>
-      <tr><td style="font-weight:600;">调用的 Tool</td><td>无（纯过渡，不调用外部接口）</td></tr>
-      <tr><td style="font-weight:600;">出口</td><td>跳转完成 → 触发 insurance_guidance（复购产品）或结束通话</td></tr>
+      <tr><td style="font-weight:600;">出口</td><td>签约成功+扣款 → 过渡升级页（3s后自动跳转下一产品）</td></tr>
     </table>
   </div>
 
@@ -283,7 +266,7 @@ flowchart TD
         <tr><th style="width:180px;">维度</th><th>流程画布方案</th><th>Agentic AI 方案</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>结构</strong></td><td>18 个固定节点 + 硬编码分支</td><td>6 个 Skill + 2 个 Tool，LLM 动态编排</td></tr>
+        <tr><td><strong>结构</strong></td><td>18 个固定节点 + 硬编码分支</td><td>5 个 Skill + 2 个 Tool，LLM 动态编排</td></tr>
         <tr><td><strong>话术</strong></td><td>预置在普通节点中，固定不变</td><td>LLM 根据上下文实时生成，千人千面</td></tr>
         <tr><td><strong>分支逻辑</strong></td><td>画布 jump 节点 + 超时阈值</td><td>LLM 语义理解 + Tool 实时查询，自主决策</td></tr>
         <tr><td><strong>适应性</strong></td><td>仅覆盖预设分支，意外情况需人工处理</td><td>LLM 可应对任意客户反应，无需预枚举</td></tr>
