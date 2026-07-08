@@ -90,8 +90,6 @@ flowchart TB
     DEC -->|"调度"| S4
     DEC -->|"调度"| S5
 
-    S1 -.->|"调用"| T1
-    S2 -.->|"调用"| T2
     S3 -.->|"调用"| T1
     S4 -.->|"调用"| T2
     S4 -.->|"调用"| T3
@@ -195,15 +193,13 @@ flowchart TD
     <table class="info-table">
       <tr><td style="width:120px;font-weight:600;">触发时机</td><td>外呼接通后，整个通话期间第一个被调用的 Skill</td></tr>
       <tr><td style="font-weight:600;">核心能力</td><td>开场说明来意 → 自然对话建立信任 → LLM 语义判断客户意向（有兴趣/犹豫/拒绝/质疑） → 根据分类结果动态生成下一步话术</td></tr>
-      <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">get_exclusive_code</span>（如需提前生成专属码）</td></tr>
       <tr><td style="font-weight:600;">出口</td><td>有意向 → 触发 wechat_guidance / 拒绝 → 结束通话 / 质疑 → LLM 自解释并重新评估</td></tr>
     </table>
 
     <h3><span class="tag skill">Skill</span> wechat_guidance — 公众号引导</h3>
     <table class="info-table">
       <tr><td style="width:120px;font-weight:600;">触发时机</td><td>intent_screening 确认有意向后</td></tr>
-      <tr><td style="font-weight:600;">核心能力</td><td>LLM 引导客户搜索公众号 → 调用 Tool 查询关注状态 → 根据状态动态调整引导策略（已关注则跳过，未关注则自然引导，客户不会操作则分步讲解）</td></tr>
-      <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">query_tracking</span></td></tr>
+      <tr><td style="font-weight:600;">核心能力</td><td>LLM 引导客户搜索公众号 → 通过对话确认客户是否找到并关注 → 根据客户反应动态调整引导策略（已关注则跳过，未关注则自然引导，客户不会操作则分步讲解）</td></tr>
       <tr><td style="font-weight:600;">出口</td><td>关注成功 → 触发 code_delivery</td></tr>
     </table>
 
@@ -240,8 +236,8 @@ flowchart TD
         <tr><th style="width:180px;">Tool 名称</th><th>对接客户接口</th><th>功能描述</th><th>调用 Skill</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>get_exclusive_code</strong></td><td>专属码获取接口</td><td>为当前客户生成/获取四位专属码，返回码值及有效期</td><td><span class="tag skill">code_delivery</span> <span class="tag skill">intent_screening</span></td></tr>
-        <tr><td><strong>query_tracking</strong></td><td>页面埋点查询接口</td><td>查询客户在公众号/投保页的最新行为（关注状态、页面点击、信息填写进度等）</td><td><span class="tag skill">wechat_guidance</span> <span class="tag skill">code_delivery</span> <span class="tag skill">insurance_guidance</span></td></tr>
+        <tr><td><strong>get_exclusive_code</strong></td><td>专属码获取接口</td><td>为当前客户生成/获取四位专属码，返回码值及有效期</td><td><span class="tag skill">code_delivery</span></td></tr>
+        <tr><td><strong>query_tracking</strong></td><td>页面埋点查询接口</td><td>查询客户在公众号/投保页的最新行为（页面点击、信息填写进度等）</td><td><span class="tag skill">insurance_guidance</span></td></tr>
         <tr><td><strong>query_underwriting</strong></td><td>核保结果查询接口（异步）</td><td>提交核保查询请求并轮询结果，返回通过/智能核保/拒保等状态</td><td><span class="tag skill">insurance_guidance</span></td></tr>
         <tr><td><strong>query_payment</strong></td><td>支付结果查询接口</td><td>查询当前客户的支付状态，返回成功/失败及失败原因</td><td><span class="tag skill">payment_followup</span></td></tr>
       </tbody>
