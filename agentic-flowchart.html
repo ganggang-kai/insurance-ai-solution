@@ -52,7 +52,7 @@
 
 <div class="header">
   <h1>🤖 AI外呼 → 公众号投保 · Agentic AI 方案</h1>
-  <p>LLM 对话编排 · 5 个 Skill · 2 个 Tool · 双产品链路（0.6元短险 + 复购产品）</p>
+  <p>LLM 对话编排 · 5 个 Skill · 4 个 Tool · 双产品链路（0.6元短险 + 复购产品）</p>
 </div>
 
 <div class="container">
@@ -81,6 +81,8 @@ flowchart TB
     subgraph TOOLS["🔧 Tools — 客户API封装"]
         T1["get_exclusive_code<br/>专属码获取接口"]
         T2["query_tracking<br/>页面埋点查询接口"]
+        T3["query_underwriting<br/>核保结果查询接口"]
+        T4["query_payment<br/>支付结果查询接口"]
     end
 
     subgraph CLIENT["📡 客户侧系统"]
@@ -94,7 +96,14 @@ flowchart TB
 
     S3 -.->|"调用"| T1
     S4 -.->|"调用"| T2
+    S4 -.->|"调用"| T3
     S5 -.->|"调用"| T2
+    S5 -.->|"调用"| T4
+
+    T1 -.->|"请求"| CLIENT
+    T2 -.->|"请求"| CLIENT
+    T3 -.->|"请求"| CLIENT
+    T4 -.->|"请求"| CLIENT
 
     style LLM fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#5b21b6
     style SKILLS fill:#fdf4ff,stroke:#a855f7,stroke-width:2px,color:#7c3aed
@@ -256,7 +265,9 @@ flowchart TD
       </thead>
       <tbody>
         <tr><td><strong>get_exclusive_code</strong></td><td>专属码获取接口</td><td>为当前客户生成/获取四位专属码，返回码值及有效期</td><td><span class="tag skill">code_delivery</span></td></tr>
-        <tr><td><strong>query_tracking</strong></td><td>页面埋点查询接口</td><td>查询客户在投保页的最新行为（页面进入、信息填写进度、银行卡签约状态等），覆盖两个产品全流程</td><td><span class="tag skill">insurance_guidance</span> <span class="tag skill">bankcard_sign</span></td></tr>
+        <tr><td><strong>query_tracking</strong></td><td>页面埋点查询接口</td><td>查询客户在投保页的最新行为（页面进入、信息填写进度、银行卡签约页面状态等），覆盖两个产品全流程</td><td><span class="tag skill">insurance_guidance</span> <span class="tag skill">bankcard_sign</span></td></tr>
+        <tr><td><strong>query_underwriting</strong></td><td>核保结果查询接口（异步）</td><td>提交基础资格校验请求并轮询结果，返回通过/不通过等状态（无健康告知，仅做基础资格判断）</td><td><span class="tag skill">insurance_guidance</span></td></tr>
+        <tr><td><strong>query_payment</strong></td><td>支付结果查询接口</td><td>查询银行卡签约授权及扣款结果，返回成功/失败及失败原因</td><td><span class="tag skill">bankcard_sign</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -269,7 +280,7 @@ flowchart TD
         <tr><th style="width:180px;">维度</th><th>流程画布方案</th><th>Agentic AI 方案</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>结构</strong></td><td>18 个固定节点 + 硬编码分支</td><td>5 个 Skill + 2 个 Tool，LLM 动态编排</td></tr>
+        <tr><td><strong>结构</strong></td><td>18 个固定节点 + 硬编码分支</td><td>5 个 Skill + 4 个 Tool，LLM 动态编排</td></tr>
         <tr><td><strong>话术</strong></td><td>预置在普通节点中，固定不变</td><td>LLM 根据上下文实时生成，千人千面</td></tr>
         <tr><td><strong>分支逻辑</strong></td><td>画布 jump 节点 + 超时阈值</td><td>LLM 语义理解 + Tool 实时查询，自主决策</td></tr>
         <tr><td><strong>适应性</strong></td><td>仅覆盖预设分支，意外情况需人工处理</td><td>LLM 可应对任意客户反应，无需预枚举</td></tr>
