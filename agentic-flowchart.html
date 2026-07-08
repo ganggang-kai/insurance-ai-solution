@@ -44,7 +44,7 @@
 
 <div class="header">
   <h1>🤖 AI外呼 → 公众号投保 · Agentic AI 方案</h1>
-  <p>LLM 对话编排 · 5 个 Skill · 4 个 Tool · 动态决策替代固定节点</p>
+  <p>LLM 对话编排 · 6 个 Skill · 2 个 Tool · 双产品链路（0.6元短险 + 复购产品）</p>
 </div>
 
 <div class="container">
@@ -66,22 +66,20 @@ flowchart TB
         S1["🔰 intent_screening<br/>建信与意向识别"]
         S2["📲 wechat_guidance<br/>公众号引导"]
         S3["🔑 code_delivery<br/>专属码管理"]
-        S4["📝 insurance_guidance<br/>投保链路引导"]
-        S5["💰 payment_followup<br/>支付跟进"]
+        S4["📝 insurance_guidance<br/>投保链路引导<br/>0.6元短险 + 复购产品"]
+        S5["💳 bankcard_sign<br/>银行卡签约引导"]
+        S6["🔄 upgrade_handling<br/>升级过渡处理"]
     end
 
     subgraph TOOLS["🔧 Tools — 客户API封装"]
         T1["get_exclusive_code<br/>专属码获取接口"]
         T2["query_tracking<br/>页面埋点查询接口"]
-        T3["query_underwriting<br/>核保结果查询接口"]
-        T4["query_payment<br/>支付结果查询接口"]
     end
 
     subgraph CLIENT["📡 客户侧系统"]
         C1["微信公众号"]
-        C2["投保H5页面"]
-        C3["核保系统"]
-        C4["支付网关"]
+        C2["投保H5页面<br/>含两个产品"]
+        C3["银行卡收银台"]
     end
 
     DEC -->|"调度"| S1
@@ -89,16 +87,15 @@ flowchart TB
     DEC -->|"调度"| S3
     DEC -->|"调度"| S4
     DEC -->|"调度"| S5
+    DEC -->|"调度"| S6
 
     S3 -.->|"调用"| T1
     S4 -.->|"调用"| T2
-    S4 -.->|"调用"| T3
-    S5 -.->|"调用"| T4
+    S5 -.->|"调用"| T2
 
-    T1 -.->|"请求"| C3
+    T1 -.->|"请求"| C2
     T2 -.->|"请求"| C2
-    T3 -.->|"请求"| C3
-    T4 -.->|"请求"| C4
+    T2 -.->|"请求"| C3
 
     style LLM fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#5b21b6
     style SKILLS fill:#fdf4ff,stroke:#a855f7,stroke-width:2px,color:#7c3aed
@@ -130,7 +127,7 @@ flowchart TD
 
     subgraph STAGE2["阶段二：公众号引导 · skill: wechat_guidance"]
         B1["LLM引导搜索公众号"]
-        B2["调用 query_tracking 查关注状态"]
+        B2["通过对话确认是否找到并关注"]
         B1 --> B2
         B2 -->|"已关注"| STAGE3
         B2 -->|"未关注"| B_GUIDE["LLM根据客户反应<br/>动态调整引导策略"]
@@ -144,29 +141,47 @@ flowchart TD
         C2 --> STAGE4
     end
 
-    subgraph STAGE4["阶段四：投保链路引导 · skill: insurance_guidance"]
-        D1["LLM引导点击入口"]
-        D2["调用 query_tracking<br/>查埋点行为"]
+    subgraph STAGE4["阶段四：0.6元短险产品引导 · skill: insurance_guidance → bankcard_sign"]
+        D1["LLM引导进入投被保人页面"]
+        D2["调用 query_tracking<br/>确认客户已进入"]
         D1 --> D2
-        D2 -->|"已点击"| D3["LLM引导输入专属码"]
+        D2 -->|"已进入"| D3["LLM引导填写被保人信息"]
         D2 -->|"无操作"| D_RETRY["LLM判断时机<br/>动态决定是否介入"]
         D_RETRY --> D2
-        D3 --> D4["姓名身份证填写"]
-        D4 --> D5["调用 query_underwriting<br/>核保结果查询"]
-        D5 -->|"通过"| STAGE5
-        D5 -->|"问题"| D_UW["LLM解释核保结果<br/>引导客户处理"]
+        D3 --> D4["LLM引导点击《完善多重保障》"]
+        D4 --> D5["跳转银行卡收银台"]
+        D5 --> D6["LLM分步引导<br/>选卡→验证码→授权"]
+        D6 --> D7["调用 query_tracking<br/>查签约状态"]
+        D7 -->|"签约成功+扣款"| D8
+        D7 -->|"失败/卡住"| D_SIGN_HELP["LLM分析原因<br/>引导重试"]
+        D_SIGN_HELP --> D7
     end
 
-    subgraph STAGE5["阶段五：支付跟进 · skill: payment_followup"]
-        E1["LLM引导支付"]
-        E2["调用 query_payment<br/>查支付结果"]
+    subgraph STAGE5["阶段五：升级过渡 · skill: upgrade_handling"]
+        D8["跳转升级页面<br/>LLM简单告知"]
+        D9["3s后自动升级"]
+        D8 --> D9
+    end
+
+    subgraph STAGE6["阶段六：复购产品引导 · skill: insurance_guidance → bankcard_sign"]
+        E1["自动跳转复购产品<br/>投被保人页面"]
+        E2["LLM引导点击《完善多重保障》"]
         E1 --> E2
-        E2 -->|"成功"| END_OK
-        E2 -->|"失败"| E_RETRY["LLM分析失败原因<br/>针对性引导重试"]
-        E_RETRY --> E2
+        E3{"复购产品是否<br/>支持免签约?"}
+        E2 --> E3
+        E3 -->|"免签约"| E_SKIP["自动完成<br/>LLM告知"]
+        E3 -->|"需签约"| E_SIGN["跳转银行卡收银台<br/>LLM分步引导"]
+        E_SIGN --> E_CHK["查签约状态"]
+        E_CHK -->|"成功"| E_DONE
+        E_SKIP --> E_DONE
     end
 
-    END_OK(["🎉 投保成功"])
+    subgraph STAGE7["阶段七：完成 · skill: upgrade_handling"]
+        E_DONE["跳转升级页面<br/>3s自动升级"]
+        END_OK
+    end
+
+    END_OK(["🎉 投保成功<br/>双产品均已生效"])
 
     style START fill:#7c3aed,color:#fff
     style END_OK fill:#16a34a,color:#fff
@@ -175,12 +190,14 @@ flowchart TD
     style B1 fill:#f3e8ff,stroke:#a855f7
     style C2 fill:#f3e8ff,stroke:#a855f7
     style D1 fill:#f3e8ff,stroke:#a855f7
-    style E1 fill:#f3e8ff,stroke:#a855f7
-    style B2 fill:#fce7f3,stroke:#ec4899
+    style D3 fill:#f3e8ff,stroke:#a855f7
+    style D4 fill:#f3e8ff,stroke:#a855f7
+    style D6 fill:#f3e8ff,stroke:#a855f7
+    style E2 fill:#f3e8ff,stroke:#a855f7
     style C1 fill:#fce7f3,stroke:#ec4899
     style D2 fill:#fce7f3,stroke:#ec4899
-    style D5 fill:#fce7f3,stroke:#ec4899
-    style E2 fill:#fce7f3,stroke:#ec4899
+    style D7 fill:#fce7f3,stroke:#ec4899
+    style E_CHK fill:#fce7f3,stroke:#ec4899
       </div>
     </div>
   </div>
@@ -211,20 +228,28 @@ flowchart TD
       <tr><td style="font-weight:600;">出口</td><td>码校验通过 → 触发 insurance_guidance</td></tr>
     </table>
 
-    <h3><span class="tag skill">Skill</span> insurance_guidance — 投保链路引导</h3>
+    <h3><span class="tag skill">Skill</span> insurance_guidance — 投保链路引导（双产品）</h3>
     <table class="info-table">
-      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>code_delivery 完成后，客户进入投保页</td></tr>
-      <tr><td style="font-weight:600;">核心能力</td><td>LLM 全程陪伴式引导：引导入口点击 → 轮询埋点确认进度 → 引导信息填写 → 查询核保结果 → 根据结果动态沟通。LLM 可根据客户行为自主判断介入时机和话术内容</td></tr>
-      <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">query_tracking</span>（查询页面行为）、<span class="tag tool">query_underwriting</span>（查询核保结果，异步等待）</td></tr>
-      <tr><td style="font-weight:600;">出口</td><td>核保通过 → 触发 payment_followup</td></tr>
+      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>code_delivery 完成后，客户进入0.6元产品投保页</td></tr>
+      <tr><td style="font-weight:600;">核心能力</td><td>覆盖两个产品的投保引导全流程：<br/>① 0.6元短险：引导进入投被保人页面 → 填写信息 → 点击《完善多重保障》<br/>② 复购产品：引导点击《完善多重保障》（无需重新填写信息）<br/>LLM根据 query_tracking 返回的埋点状态，动态判断客户所处环节并生成对应引导话术</td></tr>
+      <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">query_tracking</span>（查询页面进度、签约状态）</td></tr>
+      <tr><td style="font-weight:600;">出口</td><td>0.6元产品点击《完善多重保障》→ 触发 bankcard_sign / 复购产品点击《完善多重保障》→ 触发 bankcard_sign 或免签跳过</td></tr>
     </table>
 
-    <h3><span class="tag skill">Skill</span> payment_followup — 支付跟进</h3>
+    <h3><span class="tag skill">Skill</span> bankcard_sign — 银行卡签约引导</h3>
     <table class="info-table">
-      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>insurance_guidance 确认核保通过后</td></tr>
-      <tr><td style="font-weight:600;">核心能力</td><td>LLM 引导支付 → 调用 Tool 查询支付结果 → 根据失败原因（余额不足/银行卡受限/网络超时等）动态生成针对性引导话术 → 连续失败则暂停并记录</td></tr>
-      <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">query_payment</span></td></tr>
-      <tr><td style="font-weight:600;">出口</td><td>支付成功 → 告知生效时间，结束通话</td></tr>
+      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>客户点击《完善多重保障》后跳转至银行卡收银台</td></tr>
+      <tr><td style="font-weight:600;">核心能力</td><td>LLM分步引导银行卡签约全流程：选择银行卡 → 输入手机号验证码 → 银行卡签约授权 → 等待自动扣款。调用 query_tracking 实时查询签约状态，失败时分析原因并引导重试</td></tr>
+      <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">query_tracking</span>（查询签约页面状态及结果）</td></tr>
+      <tr><td style="font-weight:600;">出口</td><td>签约成功+扣款 → 触发 upgrade_handling</td></tr>
+    </table>
+
+    <h3><span class="tag skill">Skill</span> upgrade_handling — 升级过渡处理</h3>
+    <table class="info-table">
+      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>每次产品支付/签约完成后，页面跳转至升级页</td></tr>
+      <tr><td style="font-weight:600;">核心能力</td><td>LLM简单告知客户当前进展（如"已成功，正在为您升级保障"），等待3秒自动跳转至下一产品。两次调用：①0.6元完成后过渡到复购产品 ②复购完成后过渡到最终完成</td></tr>
+      <tr><td style="font-weight:600;">调用的 Tool</td><td>无（纯过渡，不调用外部接口）</td></tr>
+      <tr><td style="font-weight:600;">出口</td><td>跳转完成 → 触发 insurance_guidance（复购产品）或结束通话</td></tr>
     </table>
   </div>
 
@@ -237,9 +262,7 @@ flowchart TD
       </thead>
       <tbody>
         <tr><td><strong>get_exclusive_code</strong></td><td>专属码获取接口</td><td>为当前客户生成/获取四位专属码，返回码值及有效期</td><td><span class="tag skill">code_delivery</span></td></tr>
-        <tr><td><strong>query_tracking</strong></td><td>页面埋点查询接口</td><td>查询客户在公众号/投保页的最新行为（页面点击、信息填写进度等）</td><td><span class="tag skill">insurance_guidance</span></td></tr>
-        <tr><td><strong>query_underwriting</strong></td><td>核保结果查询接口（异步）</td><td>提交核保查询请求并轮询结果，返回通过/智能核保/拒保等状态</td><td><span class="tag skill">insurance_guidance</span></td></tr>
-        <tr><td><strong>query_payment</strong></td><td>支付结果查询接口</td><td>查询当前客户的支付状态，返回成功/失败及失败原因</td><td><span class="tag skill">payment_followup</span></td></tr>
+        <tr><td><strong>query_tracking</strong></td><td>页面埋点查询接口</td><td>查询客户在投保页的最新行为（页面进入、信息填写进度、银行卡签约状态等），覆盖两个产品全流程</td><td><span class="tag skill">insurance_guidance</span> <span class="tag skill">bankcard_sign</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -252,7 +275,7 @@ flowchart TD
         <tr><th style="width:180px;">维度</th><th>流程画布方案</th><th>Agentic AI 方案</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>结构</strong></td><td>18 个固定节点 + 硬编码分支</td><td>5 个 Skill + 4 个 Tool，LLM 动态编排</td></tr>
+        <tr><td><strong>结构</strong></td><td>18 个固定节点 + 硬编码分支</td><td>6 个 Skill + 2 个 Tool，LLM 动态编排</td></tr>
         <tr><td><strong>话术</strong></td><td>预置在普通节点中，固定不变</td><td>LLM 根据上下文实时生成，千人千面</td></tr>
         <tr><td><strong>分支逻辑</strong></td><td>画布 jump 节点 + 超时阈值</td><td>LLM 语义理解 + Tool 实时查询，自主决策</td></tr>
         <tr><td><strong>适应性</strong></td><td>仅覆盖预设分支，意外情况需人工处理</td><td>LLM 可应对任意客户反应，无需预枚举</td></tr>
