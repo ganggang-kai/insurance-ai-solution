@@ -182,6 +182,9 @@ flowchart TD
 
     END_OK(["🎉 投保成功<br/>双产品均已生效"])
 
+    %% 强制阶段从上到下排序
+    STAGE1 ~~~ STAGE2 ~~~ STAGE3 ~~~ STAGE4 ~~~ STAGE5 ~~~ STAGE6 ~~~ STAGE7
+
     style START fill:#7c3aed,color:#fff
     style END_OK fill:#16a34a,color:#fff
     style END1 fill:#94a3b8,color:#fff
