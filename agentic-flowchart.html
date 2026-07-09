@@ -298,6 +298,147 @@ flowchart TD
 
 </div>
 
+<!-- ====== LLM 节点与 Prompt 设计 ====== -->
+<div class="section-card">
+  <h2>🧠 LLM 节点编排与 Prompt 设计</h2>
+  <p>基于我司平台实际节点能力（<strong>LLM分类节点</strong> + <strong>LLM回复节点</strong>），以下为每个 Skill 的具体节点编排方案及 Prompt 指令。</p>
+
+  <!-- Skill 1: intent_screening -->
+  <h3><span class="tag skill">Skill 1</span> intent_screening — 建信与意向识别</h3>
+  <table class="info-table">
+    <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td><td><strong>LLM回复节点</strong></td>
+        <td>
+          <strong>指令：</strong><br>
+          <em>「你是保险服务顾问。客户刚接通电话，你需要：1）简短说明来电目的（提醒客户有一份专属医疗保障可领取）；2）询问客户是否有2分钟时间了解。保持自然亲切，不要推销，不要索要个人信息。如果客户表示忙，礼貌约定稍后联系。话术控制在100字以内。」</em><br>
+          LLM回复最大次数：2次 | 上下文轮数：3 | 无效语义不打断：开
+        </td>
+      </tr>
+      <tr>
+        <td>2</td><td><strong>LLM分类节点</strong></td>
+        <td>
+          <strong>分类项：</strong>有兴趣 / 犹豫想了解 / 明确不需要 / 质疑<br>
+          <strong>指令：</strong><br>
+          <em>「根据用户回复判断其对医疗保障的兴趣和信任状态：用户主动询问细节或表示想了解→有兴趣；用户敷衍但不挂断→犹豫；用户明确说不→明确不需要；用户问"你们是哪家公司/怎么有我电话/是不是骗子"→质疑。」</em><br>
+          上下文轮数：5
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Skill 2: wechat_guidance -->
+  <h3><span class="tag skill">Skill 2</span> wechat_guidance — 公众号引导</h3>
+  <table class="info-table">
+    <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td><td><strong>LLM回复节点</strong></td>
+        <td>
+          <strong>指令：</strong><br>
+          <em>「引导客户在微信中搜索公众号"XX保"并关注。说明关注后即可查看专属保障方案。如果客户表示找不到，分步指导：打开微信→顶部搜索框→输入"XX保"→选择蓝色认证账号→点关注。如果客户说已有/已关注，直接进入下一步。」</em><br>
+          LLM回复最大次数：3次 | 上下文轮数：5
+        </td>
+      </tr>
+      <tr>
+        <td>2</td><td><strong>判断节点</strong></td>
+        <td>通过对话确认是否已关注。已关注 → code_delivery；引导2次仍不成功 → 记录后继续尝试</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Skill 3: code_delivery -->
+  <h3><span class="tag skill">Skill 3</span> code_delivery — 专属码管理</h3>
+  <table class="info-table">
+    <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td><td><strong>普通节点</strong></td>
+        <td>调用 Tool: get_exclusive_code → 获取四位专属码</td>
+      </tr>
+      <tr>
+        <td>2</td><td><strong>LLM回复节点</strong></td>
+        <td>
+          <strong>指令：</strong><br>
+          <em>「告知客户专属码（四位数字：{code}）。说明：在公众号首页输入这个码，即可自动打开保障页面。如果客户没记住，再重复一遍并提示"可以拿笔记一下"。不要催促。」</em><br>
+          LLM回复最大次数：2次 | 上下文轮数：5
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Skill 4: insurance_guidance -->
+  <h3><span class="tag skill">Skill 4</span> insurance_guidance — 投保链路引导（双产品）</h3>
+  <table class="info-table">
+    <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td><td><strong>LLM回复节点</strong></td>
+        <td>
+          <strong>指令（0.6元产品—填写被保人信息）：</strong><br>
+          <em>「客户已进入0.6元保障页面。引导客户查看保障内容，填写被保人姓名和身份证号。如果客户不知道身份证号，提示"一般自己的身份证号都能背下来，或者看一下身份证"。如果客户表示怕信息泄露，解释"这个页面是保险公司官方页面，数据加密，安全有保障"。填完后引导点击底部《完善多重保障》按钮。」</em><br>
+          LLM回复最大次数：3次 | 上下文轮数：8 | 无效语义不打断：开
+        </td>
+      </tr>
+      <tr>
+        <td>2</td><td><strong>跳转节点</strong></td>
+        <td>每5秒调用 query_tracking 查询被保人信息填写进度。已填完→bankcard_sign；60秒无操作→LLM追问</td>
+      </tr>
+      <tr>
+        <td>3</td><td><strong>LLM回复节点</strong></td>
+        <td>
+          <strong>指令（复购产品）：</strong><br>
+          <em>「客户已自动跳转到复购保障页面。告知客户"已为您自动升级到下一个保障产品"，引导点击《完善多重保障》按钮即可。无需重复填写信息。」</em><br>
+          LLM回复最大次数：2次 | 上下文轮数：5
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Skill 5: bankcard_sign -->
+  <h3><span class="tag skill">Skill 5</span> bankcard_sign — 银行卡签约引导</h3>
+  <table class="info-table">
+    <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td><td><strong>LLM回复节点</strong></td>
+        <td>
+          <strong>指令：</strong><br>
+          <em>「客户进入银行卡签约页面。分步引导：1）选择一张银行卡 2）输入手机号获取验证码 3）输入验证码 4）点击确认授权。每步确认客户完成后再引导下一步。如果客户卡在某步，针对性帮助（如"验证码在您手机的短信里"）。签约成功后告知"已自动扣款，正在为您升级保障"。如果失败，分析原因并引导重试。」</em><br>
+          LLM回复最大次数：5次 | 上下文轮数：8 | 无效语义不打断：开
+        </td>
+      </tr>
+      <tr>
+        <td>2</td><td><strong>跳转节点</strong></td>
+        <td>每5秒调用 query_payment 查询签约及扣款结果。成功→升级过渡页；失败→回到LLM回复节点分析重试</td>
+      </tr>
+      <tr>
+        <td>3</td><td><strong>LLM分类节点</strong></td>
+        <td>
+          <strong>分类项（复购产品免签约判断）：</strong>免签约 / 需签约<br>
+          <strong>指令：</strong><br>
+          <em>「根据系统返回的复购产品签约模式判断：返回"skip_sign=true"→免签约；返回"skip_sign=false"→需签约。免签约直接告知完成，需签约走银行卡引导。」</em><br>
+          上下文轮数：3
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 节点汇总 -->
+  <h3>📊 节点使用汇总</h3>
+  <table class="info-table">
+    <thead><tr><th>节点类型</th><th>数量</th><th>用于</th></tr></thead>
+    <tbody>
+      <tr><td><strong>LLM回复节点</strong></td><td>5 个</td><td>开场建信、公众号引导、专属码口播、投保页引导、银行卡签约引导</td></tr>
+      <tr><td><strong>LLM分类节点</strong></td><td>2 个</td><td>意向识别（有兴趣/犹豫/拒绝/质疑）、复购签约模式判断（免签/需签）</td></tr>
+      <tr><td><strong>跳转节点</strong></td><td>2 个</td><td>被保人信息填写进度轮询（query_tracking）、银行卡签约结果轮询（query_payment）</td></tr>
+      <tr><td><strong>判断节点</strong></td><td>1 个</td><td>关注状态确认（已关注/未关注）</td></tr>
+      <tr><td><strong>普通节点</strong></td><td>1 个</td><td>调用 get_exclusive_code 获取专属码</td></tr>
+    </tbody>
+  </table>
+</div>
+
 <script>
 mermaid.initialize({
   startOnLoad: true,
