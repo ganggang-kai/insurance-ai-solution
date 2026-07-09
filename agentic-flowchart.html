@@ -41,9 +41,12 @@
   .fs-btn:hover { background: #f1f5f9; color: #1e293b; border-color: #94a3b8; }
   .fs-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9998; }
   .fs-overlay.active { display: block; }
-  .flowchart-card.fullscreen { position: fixed; inset: 16px; z-index: 9999; max-height: none !important; overflow: auto !important; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-  .flowchart-card.fullscreen .fs-btn { position: sticky; top: 0; z-index: 1; background: #fff; border-color: #ef4444; color: #ef4444; font-weight: 600; }
+  .flowchart-card.fullscreen { position: fixed; inset: 0; z-index: 9999; max-height: 100vh; overflow: auto; border-radius: 0; box-shadow: none; background: #fff; padding: 70px 40px 40px; }
+  .flowchart-card.fullscreen h2 { position: fixed; top: 0; left: 0; right: 0; z-index: 10000; background: #fff; padding: 14px 24px; margin: 0; border-bottom: 1px solid #e2e8f0; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .flowchart-card.fullscreen .fs-btn { position: static; float: none; background: #fff; border-color: #ef4444; color: #ef4444; font-weight: 600; padding: 5px 16px; }
   .flowchart-card.fullscreen .fs-btn:hover { background: #fef2f2; }
+  .flowchart-card.fullscreen .mermaid-wrapper { text-align: center; overflow: auto; width: 100%; min-height: calc(100vh - 140px); }
+  .flowchart-card.fullscreen .mermaid { display: inline-block; text-align: left; }
 
   @media (max-width: 768px) { .container { padding: 16px; } .header { padding: 24px 20px; } .header h1 { font-size: 22px; } }
 </style>
@@ -57,62 +60,6 @@
 
 <div class="container">
 
-  <!-- ====== 架构总览 ====== -->
-  <div class="flowchart-card">
-    <h2>🏗️ Agentic AI 架构总览<button class="fs-btn" onclick="toggleFS(this)" title="全屏查看">⛶ 全屏</button></h2>
-    <div class="mermaid-wrapper">
-      <div class="mermaid">
-flowchart TB
-    subgraph LLM["🧠 LLM 对话编排引擎"]
-        direction LR
-        CTX["上下文管理<br/>对话历史 · 客户状态 · Tool结果"]
-        DEC["动态决策<br/>意图理解 · 下一步动作 · 话术生成"]
-        CTX --> DEC
-    end
-
-    subgraph SKILLS["⚡ Skills — 业务能力抽象"]
-        S1["🔰 intent_screening<br/>建信与意向识别"]
-        S2["📲 wechat_guidance<br/>公众号引导"]
-        S3["🔑 code_delivery<br/>专属码管理"]
-        S4["📝 insurance_guidance<br/>投保链路引导<br/>0.6元短险 + 复购产品"]
-        S5["💳 bankcard_sign<br/>银行卡签约引导"]
-    end
-
-    subgraph TOOLS["🔧 Tools — 客户API封装"]
-        T1["get_exclusive_code<br/>专属码获取接口"]
-        T2["query_tracking<br/>页面埋点查询接口"]
-        T3["query_underwriting<br/>核保结果查询接口"]
-        T4["query_payment<br/>支付结果查询接口"]
-    end
-
-    subgraph CLIENT["📡 客户侧系统"]
-    end
-
-    DEC -->|"调度"| S1
-    DEC -->|"调度"| S2
-    DEC -->|"调度"| S3
-    DEC -->|"调度"| S4
-    DEC -->|"调度"| S5
-
-    S3 -.->|"调用"| T1
-    S4 -.->|"调用"| T2
-    S4 -.->|"调用"| T3
-    S5 -.->|"调用"| T2
-    S5 -.->|"调用"| T4
-
-    T1 -.->|"请求"| CLIENT
-    T2 -.->|"请求"| CLIENT
-    T3 -.->|"请求"| CLIENT
-    T4 -.->|"请求"| CLIENT
-
-    style LLM fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#5b21b6
-    style SKILLS fill:#fdf4ff,stroke:#a855f7,stroke-width:2px,color:#7c3aed
-    style TOOLS fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#9d174d
-    style CLIENT fill:#f1f5f9,stroke:#94a3b8,stroke-width:2px,color:#475569
-      </div>
-    </div>
-  </div>
-
   <!-- ====== 全链路对话流 ====== -->
   <div class="flowchart-card">
     <h2>🔄 Agentic 全链路对话流<button class="fs-btn" onclick="toggleFS(this)" title="全屏查看">⛶ 全屏</button></h2>
@@ -121,94 +68,121 @@ flowchart TB
 flowchart TD
     START([📞 外呼发起]) --> STAGE1
 
-    subgraph STAGE1["阶段一：建信与意向识别 · skill: intent_screening"]
-        A1["LLM开场说明来意<br/>根据客户反应自然对话"]
-        A2["客户回应"]
-        A1 --> A2
-        A2 -->|"有意向"| STAGE2
-        A2 -->|"犹豫"| A_SOFT["LLM动态生成软化话术<br/>结合上下文自然引导"]
-        A_SOFT --> A2
-        A2 -->|"拒绝"| END1["结束通话"]
-        A2 -->|"质疑"| A_TRUST["LLM解释+资质说明<br/>引导公众号验证"]
-        A_TRUST --> A2
+    subgraph STAGE1["阶段一：开场建信与意向识别"]
+        N01["【LLM回复】开场白+自我介绍<br/>告知来电目的与产品简介"]
+        N02{"【LLM分类】意向四分类<br/>有兴趣/犹豫/拒绝/质疑"}
+        N02A["【LLM回复】话术软化<br/>异议处理/价值重申"]
+        N01 --> N02
+        N02 -->|"有兴趣"| STAGE2
+        N02 -->|"犹豫"| N02A
+        N02A --> N02
+        N02 -->|"拒绝/质疑"| END1["结束通话"]
     end
 
-    subgraph STAGE2["阶段二：公众号引导 · skill: wechat_guidance"]
-        B1["LLM引导搜索公众号"]
-        B2["通过对话确认是否找到并关注"]
-        B1 --> B2
-        B2 -->|"已关注"| STAGE3
-        B2 -->|"未关注"| B_GUIDE["LLM根据客户反应<br/>动态调整引导策略"]
-        B_GUIDE --> B2
+    subgraph STAGE2["阶段二：公众号引导 · Skill: wechat_guidance · 无API仅对话"]
+        N03["【LLM回复】引导搜索关注公众号<br/>告知公众号名称与搜索方式"]
+        N04{"【判断】关注状态对话确认"}
+        N03 --> N04
+        N04 -->|"已关注"| STAGE3
+        N04 -->|"未关注-循环"| N03
     end
 
-    subgraph STAGE3["阶段三：专属码 · skill: code_delivery"]
-        C1["调用 get_exclusive_code<br/>获取专属码"]
-        C2["LLM口播+确认"]
-        C1 --> C2
-        C2 --> STAGE4
+    subgraph STAGE3["阶段三：专属码播报 · Skill: code_delivery"]
+        N05["【普通节点】get_exclusive_code<br/>调用客户API获取专属码"]
+        N06["【LLM回复】口播专属码<br/>指导用户在公众号输入"]
+        N05 --> N06
+        N06 --> STAGE4
     end
 
-    subgraph STAGE4["阶段四：0.6元短险产品引导 · skill: insurance_guidance → bankcard_sign"]
-        D1["LLM引导进入投被保人页面"]
-        D2["调用 query_tracking<br/>确认客户已进入"]
-        D1 --> D2
-        D2 -->|"已进入"| D3["LLM引导填写被保人信息"]
-        D2 -->|"无操作"| D_RETRY["LLM判断时机<br/>动态决定是否介入"]
-        D_RETRY --> D2
-        D3 --> D4["LLM引导点击《完善多重保障》"]
-        D4 --> D5["跳转银行卡收银台"]
-        D5 --> D6["LLM分步引导<br/>选卡→验证码→授权"]
-        D6 --> D7["调用 query_tracking<br/>查签约状态"]
-        D7 -->|"签约成功+扣款"| D8
-        D7 -->|"失败/卡住"| D_SIGN_HELP["LLM分析原因<br/>引导重试"]
-        D_SIGN_HELP --> D7
+    subgraph STAGE4["阶段四：短险投保引导 · Skill: insurance_guidance"]
+        N07["【LLM回复】指导填写被保人信息<br/>点击「完善多重保障」"]
+        N08{"【跳转】埋点轮询<br/>query_tracking"}
+        N07 --> N08
+        N08 -->|"已点击投保"| STAGE5
+        N08 -->|"等待-循环"| N07
+        N07 -.-> T1[/"埋点 OPEN_PAGE<br/>短险页面打开"/]
+        N07 -.-> T2[/"埋点 INSURE_NOW<br/>点击投保按钮"/]
     end
 
-    subgraph STAGE5["阶段五：升级过渡"]
-        D8["跳转升级页面<br/>LLM简单告知"]
-        D9["3s后自动升级<br/>无操作则自动跳转"]
-        D8 --> D9
+    subgraph STAGE5["阶段五：银行卡签约 · Skill: bankcard_sign"]
+        N09["【LLM回复】签约分步引导<br/>选卡→验证码→授权"]
+        N10{"【跳转】支付结果轮询<br/>query_tracking / query_payment"}
+        N10A["【LLM回复】支付挽留话术<br/>询问原因/再次引导"]
+        N09 --> N10
+        N10 -->|"PAY_SUCCESS"| STAGE6
+        N10 -->|"PAY_FAIL"| N10A
+        N10A --> N09
+        N10 -.-> T3[/"埋点 PAY_SUCCESS<br/>短险支付成功"/]
+        N10 -.-> T4[/"埋点 PAY_FAIL<br/>支付失败"/]
     end
 
-    subgraph STAGE6["阶段六：复购产品引导 · skill: insurance_guidance → bankcard_sign"]
-        E1["自动跳转复购产品<br/>投被保人页面"]
-        E2["LLM引导点击《完善多重保障》"]
-        E1 --> E2
-        E3{"复购产品是否<br/>支持免签约?"}
-        E2 --> E3
-        E3 -->|"免签约"| E_SKIP["自动完成<br/>LLM告知"]
-        E3 -->|"需签约"| E_SIGN["跳转银行卡收银台<br/>LLM分步引导"]
-        E_SIGN --> E_CHK["查签约状态"]
-        E_CHK -->|"成功"| E_DONE
-        E_SKIP --> E_DONE
+    subgraph STAGE6["阶段六：升级过渡"]
+        N11["【LLM回复】升级过渡话术<br/>正在升级保障-3s自动跳转"]
     end
 
-    subgraph STAGE7["阶段七：完成"]
-        E_DONE["跳转升级页面<br/>3s自动升级"]
-        END_OK
+    N11 --> STAGE7
+
+    subgraph STAGE7["阶段七：复购投保引导 · Skill: insurance_guidance"]
+        N12["【LLM回复】再次填写被保人信息<br/>点击「完善多重保障」"]
+        N13{"【跳转】埋点轮询<br/>query_tracking"}
+        N13A["【LLM回复】继续引导提示"]
+        N12 --> N13
+        N13 -->|"已进入复购"| STAGE8
+        N13 -->|"等待-循环"| N13A
+        N13A --> N12
+        N12 -.-> T5[/"埋点 OPEN_REPURCHASE_PAGE<br/>复购页面打开"/]
+    end
+
+    subgraph STAGE8["阶段八：复购签约 · Skill: bankcard_sign"]
+        N14["【LLM回复】免签提醒/再次签约指导"]
+        N15{"【跳转】支付结果轮询<br/>query_tracking"}
+        N15A["【LLM回复】支付挽留话术"]
+        N14 --> N15
+        N15 -->|"支付成功"| STAGE9
+        N15 -->|"关闭支付"| N15A
+        N15A --> N14
+        N15 -.-> T6[/"埋点 FOLLOW_UP_PAY_SUCCESS<br/>复购支付成功"/]
+    end
+
+    subgraph STAGE9["阶段九：完成"]
+        N16["【LLM回复】投保成功-感谢话术"]
+        N16 --> END_OK
     end
 
     END_OK(["🎉 投保成功<br/>双产品均已生效"])
 
     %% 强制阶段从上到下排序
-    STAGE1 ~~~ STAGE2 ~~~ STAGE3 ~~~ STAGE4 ~~~ STAGE5 ~~~ STAGE6 ~~~ STAGE7
+    STAGE1 ~~~ STAGE2 ~~~ STAGE3 ~~~ STAGE4 ~~~ STAGE5 ~~~ STAGE6 ~~~ STAGE7 ~~~ STAGE8 ~~~ STAGE9
 
     style START fill:#7c3aed,color:#fff
     style END_OK fill:#16a34a,color:#fff
     style END1 fill:#94a3b8,color:#fff
-    style A1 fill:#f3e8ff,stroke:#a855f7
-    style B1 fill:#f3e8ff,stroke:#a855f7
-    style C2 fill:#f3e8ff,stroke:#a855f7
-    style D1 fill:#f3e8ff,stroke:#a855f7
-    style D3 fill:#f3e8ff,stroke:#a855f7
-    style D4 fill:#f3e8ff,stroke:#a855f7
-    style D6 fill:#f3e8ff,stroke:#a855f7
-    style E2 fill:#f3e8ff,stroke:#a855f7
-    style C1 fill:#fce7f3,stroke:#ec4899
-    style D2 fill:#fce7f3,stroke:#ec4899
-    style D7 fill:#fce7f3,stroke:#ec4899
-    style E_CHK fill:#fce7f3,stroke:#ec4899
+    style N01 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N02 fill:#fff3e0,stroke:#e65100,color:#bf360c
+    style N02A fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N03 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N04 fill:#ffebee,stroke:#c62828,color:#b71c1c
+    style N05 fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    style N06 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N07 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N08 fill:#f3e5f5,stroke:#6a1b9a,color:#4a148c
+    style N09 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N10 fill:#f3e5f5,stroke:#6a1b9a,color:#4a148c
+    style N10A fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N11 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N12 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N13 fill:#f3e5f5,stroke:#6a1b9a,color:#4a148c
+    style N13A fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N14 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N15 fill:#f3e5f5,stroke:#6a1b9a,color:#4a148c
+    style N15A fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style N16 fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style T1 fill:#fff,stroke:#e65100,stroke-dasharray:5 5,color:#bf360c
+    style T2 fill:#fff,stroke:#e65100,stroke-dasharray:5 5,color:#bf360c
+    style T3 fill:#fff,stroke:#e65100,stroke-dasharray:5 5,color:#bf360c
+    style T4 fill:#fff,stroke:#e65100,stroke-dasharray:5 5,color:#bf360c
+    style T5 fill:#fff,stroke:#e65100,stroke-dasharray:5 5,color:#bf360c
+    style T6 fill:#fff,stroke:#e65100,stroke-dasharray:5 5,color:#bf360c
       </div>
     </div>
   </div>
@@ -267,16 +241,13 @@ flowchart TD
   <div class="section-card">
     <h2>⚡ Skills 详细设计</h2>
 
-    <h3><span class="tag skill">Skill</span> intent_screening — 建信与意向识别</h3>
-    <table class="info-table">
-      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>外呼接通后，整个通话期间第一个被调用的 Skill</td></tr>
-      <tr><td style="font-weight:600;">核心能力</td><td>开场说明来意 → 自然对话建立信任 → LLM 语义判断客户意向（有兴趣/犹豫/拒绝/质疑） → 根据分类结果动态生成下一步话术</td></tr>
-      <tr><td style="font-weight:600;">出口</td><td>有意向 → 触发 wechat_guidance / 拒绝 → 结束通话 / 质疑 → LLM 自解释并重新评估</td></tr>
-    </table>
+    <div class="highlight-box purple" style="margin:0 0 16px 0;">
+      <p style="margin:0;font-size:13px;"><b>📌 注：</b>建信与意向识别不再作为独立 Skill，仅由 <b>LLM回复节点（开场白+自我介绍）+ LLM分类节点（意向四分类）</b> 组合实现。</p>
+    </div>
 
     <h3><span class="tag skill">Skill</span> wechat_guidance — 公众号引导</h3>
     <table class="info-table">
-      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>intent_screening 确认有意向后</td></tr>
+      <tr><td style="width:120px;font-weight:600;">触发时机</td><td>开场意向识别通过后</td></tr>
       <tr><td style="font-weight:600;">核心能力</td><td>LLM 引导客户搜索公众号 → 通过对话确认客户是否找到并关注 → 根据客户反应动态调整引导策略（已关注则跳过，未关注则自然引导，客户不会操作则分步讲解）</td></tr>
       <tr><td style="font-weight:600;">出口</td><td>关注成功 → 触发 code_delivery</td></tr>
     </table>
@@ -285,7 +256,7 @@ flowchart TD
     <table class="info-table">
       <tr><td style="width:120px;font-weight:600;">触发时机</td><td>wechat_guidance 确认关注后</td></tr>
       <tr><td style="font-weight:600;">核心能力</td><td>调用 Tool 获取专属码 → LLM 口播并确认客户收到 → 客户输入后校验 → 引导进入投保页</td></tr>
-      <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">get_exclusive_code</span>（获取码）、<span class="tag tool">query_tracking</span>（校验码是否被使用）</td></tr>
+      <tr><td style="font-weight:600;">调用的 Tool</td><td><span class="tag tool">get_exclusive_code</span>（获取码）</td></tr>
       <tr><td style="font-weight:600;">出口</td><td>码校验通过 → 触发 insurance_guidance</td></tr>
     </table>
 
@@ -316,8 +287,22 @@ flowchart TD
       <tbody>
         <tr><td><strong>get_exclusive_code</strong></td><td>专属码获取接口</td><td>为当前客户生成/获取四位专属码，返回码值及有效期</td><td><span class="tag skill">code_delivery</span></td></tr>
         <tr><td><strong>query_tracking</strong></td><td>页面埋点查询接口</td><td>查询客户在投保页的最新行为（页面进入、信息填写进度、银行卡签约页面状态等），覆盖两个产品全流程</td><td><span class="tag skill">insurance_guidance</span> <span class="tag skill">bankcard_sign</span></td></tr>
-        <tr><td><strong>query_underwriting</strong></td><td>核保结果查询接口（异步）</td><td>提交基础资格校验请求并轮询结果，返回通过/不通过等状态（无健康告知，仅做基础资格判断）</td><td><span class="tag skill">insurance_guidance</span></td></tr>
-        <tr><td><strong>query_payment</strong></td><td>支付结果查询接口</td><td>查询银行卡签约授权及扣款结果，返回成功/失败及失败原因</td><td><span class="tag skill">bankcard_sign</span></td></tr>
+        <tr><td><strong>query_payment</strong></td><td>支付结果查询接口</td><td>查询银行卡签约授权及扣款结果，返回成功/失败及失败原因，用于 PAY_FAIL 埋点触发后的失败诊断</td><td><span class="tag skill">bankcard_sign</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:20px;">📊 最少埋点（14 → 6）— 足以支撑对话效果</h3>
+    <table class="info-table">
+      <thead>
+        <tr><th style="width:60px;">埋点</th><th style="width:200px;">枚举值</th><th>触发时机</th><th>对话用途</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>T1</td><td>OPEN_PAGE</td><td>用户打开短险页面</td><td>确认进入投保链路 → 开始投保引导</td></tr>
+        <tr><td>T2</td><td>INSURE_NOW</td><td>用户点击投保按钮</td><td>确认信息填写完成 → 触发签约引导（替代NAME/ID粒度埋点）</td></tr>
+        <tr><td>T3</td><td>PAY_SUCCESS</td><td>短险支付成功</td><td>确认签约+扣款完成 → 触发升级过渡</td></tr>
+        <tr><td>T4</td><td>PAY_FAIL</td><td>支付失败</td><td>负向分支 → 触发支付挽留话术（调用 query_payment 查询失败原因）</td></tr>
+        <tr><td>T5</td><td>OPEN_REPURCHASE_PAGE</td><td>用户进入复购页面</td><td>确认进入复购链路 → 开始复购引导</td></tr>
+        <tr><td>T6</td><td>FOLLOW_UP_PAY_SUCCESS</td><td>复购支付成功</td><td>全链路终点 → 触发完成祝贺</td></tr>
       </tbody>
     </table>
   </div>
@@ -330,7 +315,7 @@ flowchart TD
         <tr><th style="width:180px;">维度</th><th>流程画布方案</th><th>Agentic AI 方案</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>结构</strong></td><td>18 个固定节点 + 硬编码分支</td><td>5 个 Skill + 4 个 Tool，LLM 动态编排</td></tr>
+        <tr><td><strong>结构</strong></td><td>18 个固定节点 + 硬编码分支</td><td>4 个 Skill + 3 个 Tool，LLM 动态编排</td></tr>
         <tr><td><strong>话术</strong></td><td>预置在普通节点中，固定不变</td><td>LLM 根据上下文实时生成，千人千面</td></tr>
         <tr><td><strong>分支逻辑</strong></td><td>画布 jump 节点 + 超时阈值</td><td>LLM 语义理解 + Tool 实时查询，自主决策</td></tr>
         <tr><td><strong>适应性</strong></td><td>仅覆盖预设分支，意外情况需人工处理</td><td>LLM 可应对任意客户反应，无需预枚举</td></tr>
@@ -353,33 +338,12 @@ flowchart TD
   <h2>🧠 LLM 节点编排与 Prompt 设计</h2>
   <p>基于我司平台实际节点能力（<strong>LLM分类节点</strong> + <strong>LLM回复节点</strong>），以下为每个 Skill 的具体节点编排方案及 Prompt 指令。</p>
 
-  <!-- Skill 1: intent_screening -->
-  <h3><span class="tag skill">Skill 1</span> intent_screening — 建信与意向识别</h3>
-  <table class="info-table">
-    <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
-    <tbody>
-      <tr>
-        <td>1</td><td><strong>LLM回复节点</strong></td>
-        <td>
-          <strong>指令：</strong><br>
-          <em>「你是保险服务顾问。客户刚接通电话，你需要：1）简短说明来电目的（提醒客户有一份专属医疗保障可领取）；2）询问客户是否有2分钟时间了解。保持自然亲切，不要推销，不要索要个人信息。如果客户表示忙，礼貌约定稍后联系。话术控制在100字以内。」</em><br>
-          LLM回复最大次数：2次 | 上下文轮数：3 | 无效语义不打断：开
-        </td>
-      </tr>
-      <tr>
-        <td>2</td><td><strong>LLM分类节点</strong></td>
-        <td>
-          <strong>分类项：</strong>有兴趣 / 犹豫想了解 / 明确不需要 / 质疑<br>
-          <strong>指令：</strong><br>
-          <em>「根据用户回复判断其对医疗保障的兴趣和信任状态：用户主动询问细节或表示想了解→有兴趣；用户敷衍但不挂断→犹豫；用户明确说不→明确不需要；用户问"你们是哪家公司/怎么有我电话/是不是骗子"→质疑。」</em><br>
-          上下文轮数：5
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- 开场建信（非Skill，节点组合） -->
+  <h3>🔹 开场建信与意向识别 <span style="font-size:12px;color:#888;">（非 Skill，LLM 节点组合）</span></h3>
+  <p style="margin:8px 0 8px 0;font-size:13px;color:#666;">建信与意向识别不封装为独立 Skill，仅由 <b>LLM回复节点（开场白+自我介绍+产品简介，指令≤30000字，上下文1-100轮）</b> + <b>LLM分类节点（意向四分类：有兴趣/犹豫/拒绝/质疑）</b> 组合实现。详细 Prompt 同上 Skills 设计中的开场部分。</p>
 
-  <!-- Skill 2: wechat_guidance -->
-  <h3><span class="tag skill">Skill 2</span> wechat_guidance — 公众号引导</h3>
+  <!-- Skill 1: wechat_guidance -->
+  <h3><span class="tag skill">Skill 1</span> wechat_guidance — 公众号引导</h3>
   <table class="info-table">
     <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
     <tbody>
@@ -398,8 +362,8 @@ flowchart TD
     </tbody>
   </table>
 
-  <!-- Skill 3: code_delivery -->
-  <h3><span class="tag skill">Skill 3</span> code_delivery — 专属码管理</h3>
+  <!-- Skill 2: code_delivery -->
+  <h3><span class="tag skill">Skill 2</span> code_delivery — 专属码管理</h3>
   <table class="info-table">
     <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
     <tbody>
@@ -418,8 +382,8 @@ flowchart TD
     </tbody>
   </table>
 
-  <!-- Skill 4: insurance_guidance -->
-  <h3><span class="tag skill">Skill 4</span> insurance_guidance — 投保链路引导（双产品）</h3>
+  <!-- Skill 3: insurance_guidance -->
+  <h3><span class="tag skill">Skill 3</span> insurance_guidance — 投保链路引导（双产品）</h3>
   <table class="info-table">
     <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
     <tbody>
@@ -446,8 +410,8 @@ flowchart TD
     </tbody>
   </table>
 
-  <!-- Skill 5: bankcard_sign -->
-  <h3><span class="tag skill">Skill 5</span> bankcard_sign — 银行卡签约引导</h3>
+  <!-- Skill 4: bankcard_sign -->
+  <h3><span class="tag skill">Skill 4</span> bankcard_sign — 银行卡签约引导</h3>
   <table class="info-table">
     <thead><tr><th style="width:60px;">步骤</th><th style="width:100px;">节点类型</th><th>配置要点</th></tr></thead>
     <tbody>
@@ -461,7 +425,7 @@ flowchart TD
       </tr>
       <tr>
         <td>2</td><td><strong>跳转节点</strong></td>
-        <td>每5秒调用 query_payment 查询签约及扣款结果。成功→升级过渡页；失败→回到LLM回复节点分析重试</td>
+        <td>每5秒调用 query_tracking 查询签约及扣款结果。成功→升级过渡页；失败→回到LLM回复节点分析重试</td>
       </tr>
       <tr>
         <td>3</td><td><strong>LLM分类节点</strong></td>
@@ -482,7 +446,7 @@ flowchart TD
     <tbody>
       <tr><td><strong>LLM回复节点</strong></td><td>5 个</td><td>开场建信、公众号引导、专属码口播、投保页引导、银行卡签约引导</td></tr>
       <tr><td><strong>LLM分类节点</strong></td><td>2 个</td><td>意向识别（有兴趣/犹豫/拒绝/质疑）、复购签约模式判断（免签/需签）</td></tr>
-      <tr><td><strong>跳转节点</strong></td><td>2 个</td><td>被保人信息填写进度轮询（query_tracking）、银行卡签约结果轮询（query_payment）</td></tr>
+      <tr><td><strong>跳转节点</strong></td><td>2 个</td><td>被保人信息填写进度轮询（query_tracking）、银行卡签约结果轮询（query_tracking）</td></tr>
       <tr><td><strong>判断节点</strong></td><td>1 个</td><td>关注状态确认（已关注/未关注）</td></tr>
       <tr><td><strong>普通节点</strong></td><td>1 个</td><td>调用 get_exclusive_code 获取专属码</td></tr>
     </tbody>
