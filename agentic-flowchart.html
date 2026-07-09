@@ -213,6 +213,56 @@ flowchart TD
     </div>
   </div>
 
+  <!-- ====== 业务主链路 ====== -->
+  <div class="flowchart-card">
+    <h2>📋 业务主链路（双产品投保全流程）<button class="fs-btn" onclick="toggleFS(this)" title="全屏查看">⛶ 全屏</button></h2>
+    <div class="mermaid-wrapper">
+      <div class="mermaid">
+flowchart TD
+    START([📞 AI外呼筛选意向]) --> F1["引导用户关注公众号"]
+    F1 --> F2["引导用户输入专属码"]
+    F2 --> F3["用户进入0.6元<br/>投被保人页面"]
+    F3 --> F4["输入被保人信息"]
+    F4 --> F5["点击《完善多重保障》"]
+    F5 --> F6["跳转银行卡收银台"]
+
+    subgraph BANK1["💳 银行卡签约授权"]
+        F6 --> F7["选择银行卡"]
+        F7 --> F8["输入手机号验证码"]
+        F8 --> F9["银行卡签约授权"]
+        F9 --> F10["授权成功<br/>同时自动扣款成功"]
+    end
+
+    F10 --> F11["跳转升级页面"]
+    F11 --> F12["3s后自动升级"]
+
+    subgraph PRODUCT2["🔄 复购产品（0.8元）"]
+        F12 --> F13["自动跳到复购产品<br/>投被保人页面"]
+        F13 --> F14["点击《完善多重保障》"]
+        F14 --> F15{"是否支持免签约？"}
+        F15 -->|"免签约"| F16["自动完成"]
+        F15 -->|"需签约"| F17["跳转银行卡收银台"]
+        F17 --> F18["选择银行卡"]
+        F18 --> F19["输入手机号验证码"]
+        F19 --> F20["银行卡签约授权"]
+        F20 --> F21["自动扣款成功"]
+        F21 --> F22["跳转升级页面"]
+    end
+
+    F16 --> F22
+    F22 --> F23["3s后自动升级"]
+    F23 --> END_OK(["🎉 投保成功"])
+
+    style START fill:#7c3aed,color:#fff
+    style END_OK fill:#16a34a,color:#fff
+    style F10 fill:#dcfce7,stroke:#16a34a
+    style F21 fill:#dcfce7,stroke:#16a34a
+    style BANK1 fill:#fff7ed,stroke:#ea580c,stroke-width:2px,color:#9a3412
+    style PRODUCT2 fill:#fdf4ff,stroke:#a855f7,stroke-width:2px,color:#7c3aed
+      </div>
+    </div>
+  </div>
+
   <!-- ====== Skills 详细设计 ====== -->
   <div class="section-card">
     <h2>⚡ Skills 详细设计</h2>
