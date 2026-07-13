@@ -479,13 +479,13 @@
     <tbody>
       <tr>
         <td>1</td>
-        <td><strong>AI外呼话术设计</strong></td>
-        <td>开场建信阶段固定话术（普通节点）设计 + 各子流程LLM回复节点Prompt指令设计：涵盖开场建信、公众号引导、专属码口播、投保链路引导、银行卡签约引导等5个子流程</td>
+        <td><strong>话术与Prompt设计</strong></td>
+        <td>开场白固定话术（普通节点）设计 + 7个LLM回复节点Prompt指令设计：涵盖关注公众号、进入入口、输码、填信息、签约、二次投保、二次扣款等子流程</td>
       </tr>
       <tr>
         <td>2</td>
         <td><strong>流程画布搭建</strong></td>
-        <td>在画布平台上完成子流程串联编排：普通节点（开场白）→ LLM分类节点（意向识别）→ LLM回复节点（公众号引导子流程）→ LLM回复节点（专属码子流程）→ LLM回复节点（投保引导子流程）→ LLM回复节点（银行卡签约子流程）。配置各子流程的退出条件与跳转逻辑</td>
+        <td>在画布平台上完成9个子流程串联编排：普通节点（开场白）→ LLM分类节点（意向识别）→ LLM回复节点（关注公众号）→ LLM回复节点（进入入口）→ 普通节点（调专属码Tool）→ LLM回复节点（输码）→ LLM回复节点（填信息）→ LLM回复节点（签约）→ LLM回复节点（二次投保）→ LLM回复节点（二次扣款）→ 结束。配置各子流程的退出条件与跳转逻辑</td>
       </tr>
       <tr>
         <td>3</td>
@@ -559,58 +559,61 @@
 
   <div class="highlight-box orange">
     <h4>📍 说明</h4>
-    <p style="margin:0;">本项目采用<strong>「流程画布 + Agentic AI 有机结合」</strong>的技术方案：开场建信与意向筛选阶段使用流程画布保证合规可控，后续公众号引导、专属码交付、投保链路指导等阶段使用 LLM回复节点 + Tool 调用实现动态交互。本章节阐述方案设计思路及实际落地中的工程难点。本项目覆盖双产品链路（0.6元短险 + 复购产品），整体落地难度大、研发成本高。</p>
+    <p style="margin:0;">本项目采用<strong>「流程画布 + Agentic AI 有机结合」</strong>的技术方案：开场白使用画布普通节点保证合规，后续阶段以子流程方式串联，每个子流程内部署 LLM回复节点实现动态交互。API 接口分 Demo 和 POC 两个阶段逐步对接。本章节阐述方案设计思路及实际落地中的工程难点。本项目覆盖双产品链路（0.6元短险 + 复购产品），整体落地难度大、研发成本高。</p>
   </div>
 
   <h3 style="color:#166534;">▎方案设计：流程画布 + Agentic AI 有机结合</h3>
 
-  <p><strong>设计思路：</strong>以流程画布为整体编排框架，将7大阶段拆分为多个子流程。开场建信阶段使用画布原生节点保证话术合规，后续阶段每个子流程内部署一个 LLM回复节点，由 LLM 自主完成当前阶段的对话目标。目标达成后触发「退出LLM」→ 画布自动跳转至下一子流程，直至通话结束。</p>
+  <p><strong>设计思路：</strong>以流程画布为整体编排框架，将全链路拆分为 9 个子流程。开场白使用画布原生节点保证话术合规，后续每个子流程内部署一个 LLM回复节点，由 LLM 自主完成当前阶段的对话目标。目标达成后触发「退出LLM」→ 画布自动跳转至下一子流程，直至通话结束。</p>
 
   <table class="info-table">
     <thead>
-      <tr><th style="width:60px;">阶段</th><th style="width:120px;">实现方式</th><th>说明</th></tr>
+      <tr><th style="width:35px;">#</th><th>子流程</th><th style="width:130px;">实现方式</th><th>核心动作</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td><strong>接通建信</strong></td>
-        <td>流程画布</td>
-        <td>使用<strong>普通节点</strong>（固定开场白话术）+ <strong>LLM分类节点</strong>（意向四分类：有兴趣/犹豫/拒绝/质疑）。话术预审，合规可控。</td>
+      <tr><td>1</td><td><strong>开场白</strong></td><td>流程画布—普通节点</td><td>固定开场话术 + LLM分类节点意向识别（有兴趣/犹豫/拒绝/质疑）</td></tr>
+      <tr><td>2</td><td><strong>关注公众号</strong></td><td>LLM回复节点</td><td>动态引导客户搜索并关注公众号，通过对话确认关注状态</td></tr>
+      <tr><td>3</td><td><strong>进入专属码输入入口</strong></td><td>LLM回复节点</td><td>引导客户在公众号首页找到专属码输入位置</td></tr>
+      <tr><td>4</td><td><strong>输入专属码</strong></td><td>普通节点 + LLM回复节点</td><td>调用 get_exclusive_code 获取码 → LLM口播 → 引导输入并确认</td></tr>
+      <tr><td>5</td><td><strong>填写个人信息并点击按钮</strong></td><td>LLM回复节点</td><td>0.6元产品：引导填写被保人信息 → 点击《完善多重保障》</td></tr>
+      <tr><td>6</td><td><strong>收银台输入验证码<br/>并签约快捷支付</strong></td><td>LLM回复节点</td><td>分步引导：选卡→验证码→授权→等待自动扣款</td></tr>
+      <tr><td>7</td><td><strong>第二次点击投保按钮</strong></td><td>LLM回复节点</td><td>复购产品：自动跳转 → 引导点击《完善多重保障》</td></tr>
+      <tr><td>8</td><td><strong>第二次扣款并完成升级</strong></td><td>LLM回复节点</td><td>银行卡签约（或免签）→ 扣款 → 3s升级过渡</td></tr>
+      <tr><td>9</td><td><strong>投保完成结束挂机</strong></td><td>画布内置</td><td>告知双产品保障生效时间，结束通话</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>子流程串联机制：</strong>每个子流程的核心是 LLM回复节点，LLM 的「退出意图」设置为「当前阶段目标完成」。当 LLM 判断客户已完成当前阶段时，自动触发退出 → 画布根据退出结果跳转至下一个子流程。这种设计既保留了 LLM 的动态交互能力，又通过子流程隔离避免了全程依赖 LLM 导致的上下文窗口溢出和成本不可控问题。</p>
+
+  <h3 style="color:#ea580c;">▎API 接口分阶段对接策略</h3>
+
+  <p>为降低初期联调风险、快速验证基础链路，API 接口分两个阶段逐步对接：</p>
+
+  <table class="info-table">
+    <thead>
+      <tr><th>阶段</th><th style="width:200px;">对接接口</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr style="background:#fefce8;">
+        <td><strong>Demo 阶段</strong></td>
+        <td>仅 <strong>get_exclusive_code</strong></td>
+        <td>验证基础链路：外呼→关注→输码→投保→签约。LLM回复节点<strong>通过对话确认客户进度</strong>（如"您关注了吗？""码输好了吗？"），不依赖埋点数据。</td>
       </tr>
-      <tr>
-        <td><strong>公众号引导</strong></td>
-        <td>LLM回复节点</td>
-        <td>子流程中部署 LLM回复节点，动态引导客户搜索并关注公众号。客户完成关注后，LLM判断目标达成 → 退出LLM → 画布跳转至专属码子流程。</td>
-      </tr>
-      <tr>
-        <td><strong>专属码交付</strong></td>
-        <td>普通节点 + LLM回复节点</td>
-        <td>先调用 get_exclusive_code 获取专属码，再通过 LLM回复节点口播并确认。客户输入码后 → 退出LLM → 跳转至投保引导子流程。</td>
-      </tr>
-      <tr>
-        <td><strong>投保链路引导<br/>（0.6元 + 复购）</strong></td>
-        <td>LLM回复节点 + Tool</td>
-        <td>子流程中 LLM回复节点全程引导：填写被保人信息 → 点击《完善多重保障》。中途通过 query_tracking 实时查询客户页面进度，动态调整引导话术。0.6元完成后自动过渡升级页，3s后跳转复购产品子流程。</td>
-      </tr>
-      <tr>
-        <td><strong>银行卡签约</strong></td>
-        <td>LLM回复节点 + Tool</td>
-        <td>子流程中 LLM分步引导（选卡→验证码→授权），通过 query_payment 轮询签约及扣款结果。成功 → 退出LLM → 跳转升级页；失败 → LLM分析原因引导重试。</td>
-      </tr>
-      <tr>
-        <td><strong>升级过渡</strong></td>
-        <td>画布内置</td>
-        <td>3秒自动过渡，LLM简单告知当前进展。不属于独立子流程。</td>
+      <tr style="background:#f0fdf4;">
+        <td><strong>POC 投产阶段</strong></td>
+        <td>+ <strong>query_tracking</strong> + <strong>query_payment</strong></td>
+        <td>接入埋点查询实现页面进度监控，接入支付查询实现签约结果轮询。LLM回复节点可根据实时数据动态调整引导策略，大幅提升转化效率。</td>
       </tr>
     </tbody>
   </table>
 
-  <p><strong>子流程串联机制：</strong>每个子流程的核心是 LLM回复节点，LLM 的「退出意图」设置为「当前阶段目标完成」。当 LLM 判断客户已完成当前阶段（如已关注公众号、已输入专属码、已签约成功）时，自动触发退出 → 画布根据退出结果跳转至下一个子流程。这种设计既保留了 LLM 的动态交互能力，又避免了全程依赖 LLM 导致的上下文窗口溢出和成本不可控问题。</p>
+  <p><strong>Demo 阶段的已知局限：</strong>由于仅有专属码接口，LLM无法实时感知客户在页面上的操作进度（如是否已点击按钮、是否进入收银台），只能通过对话询问客户来确认。这将导致引导话术的精准度有限，部分场景需要客户主动告知当前状态。</p>
 
   <h3>6.1 整体落地复杂度</h3>
 
-  <p>本项目覆盖双产品链路、约5个子流程，涉及4种节点类型（普通/跳转/LLM分类/LLM回复）的组合编排。全链路需调试的子流程跳转逻辑、LLM退出判断阈值、以及 Tool 调用时序。同时需对接客户侧4个API接口（专属码获取、页面埋点查询、核保结果查询、支付结果查询），接口响应延迟和格式差异是联调阶段最核心的工程风险。</p>
+  <p>本项目覆盖双产品链路、9 个子流程，涉及 4 种节点类型（普通/LLM分类/LLM回复/跳转）的组合编排。Demo 阶段仅需对接 1 个 API 接口，POC 阶段扩展至 3 个接口。全链路需调试的子流程跳转逻辑、LLM退出判断阈值、以及 Tool 调用时序。</p>
 
-  <p>其中<strong>投保链路引导子流程</strong>为全链路复杂度最高的环节：客户进入公众号后的每一步操作都需要AI实时感知并动态响应，LLM回复节点需在引导话术、进度查询、异常处理之间灵活切换。任何一个跳转条件或退出阈值设置不当，都会导致客户被错误分流。</p>
+  <p>其中<strong>收银台签约子流程（#6）</strong>为全链路复杂度最高的环节：LLM需分步引导银行卡签约全流程，在 Demo 阶段仅靠对话确认进度，对 Prompt 设计质量要求极高。任何一个跳转条件或退出阈值设置不当，都会导致客户被错误分流。</p>
 
   <div class="highlight-box orange">
     <h4>👥 预估人力与周期</h4>
@@ -618,9 +621,9 @@
       <thead><tr><th>角色</th><th>人数</th><th>主要职责</th></tr></thead>
       <tbody>
         <tr><td>产品经理</td><td>1 人</td><td>流程梳理及方案设计、客户沟通、联调协调、整体项目推进</td></tr>
-        <tr><td>研发人员</td><td>1–2 人</td><td>客户API对接、数据回传、后端开发</td></tr>
-        <tr><td>交付运营人员</td><td>1 人</td><td>画布节点搭建、LLM Prompt撰写与调优、子流程联调、正负分支测试</td></tr>
-        <tr style="background:#fff7ed;"><td><strong>合计</strong></td><td><strong>3–4 人</strong></td><td><strong>预计整体落地周期 5–6 周</strong></td></tr>
+        <tr><td>研发人员</td><td>1–2 人</td><td>客户API对接（Demo 1个 / POC 3个）、后端开发</td></tr>
+        <tr><td>交付运营人员</td><td>1 人</td><td>画布子流程搭建、LLM Prompt撰写与调优、退出LLM阈值调试、正负分支测试</td></tr>
+        <tr style="background:#fff7ed;"><td><strong>合计</strong></td><td><strong>3–4 人</strong></td><td><strong>预计整体落地周期 5–6 周（Demo 阶段 3–4 周可上线基础链路）</strong></td></tr>
       </tbody>
     </table>
   </div>
@@ -631,59 +634,45 @@
       <tr><th style="width:30px;">#</th><th>对接系统</th><th>难点说明</th></tr>
     </thead>
     <tbody>
-      <tr>
-        <td>1</td>
-        <td><strong>客户微信公众号</strong></td>
-        <td>菜单配置、模板消息、关注自动回复均需客户侧操作且我方无法直接调试，任何配置变更都需沟通确认。</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td><strong>客户投保H5页面</strong></td>
-        <td>埋点SDK的嵌入、专属码参数接收、手机号反显等功能均依赖客户侧前端开发，任何页面改动都可能影响埋点数据格式，导致LLM回复节点的进度判断逻辑失效。</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td><strong>客户API接口</strong></td>
-        <td>专属码获取、页面埋点查询、核保结果查询、支付结果查询等至少4个接口需与客户侧逐一联调。接口响应延迟、数据格式不一致、鉴权方式差异等问题是联调阶段最常见的耗时点。</td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td><strong>我司AI外呼系统</strong></td>
-        <td>语音合成质量、ASR识别准确率、外呼并发调度、号码健康度管理、外呼时段策略等，均需根据客户白名单特征进行专项调优。</td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td><strong>LLM回复节点调优</strong></td>
-        <td>每个子流程的LLM回复节点Prompt需独立设计，退出LLM的时机判断需反复调试（过早退出则引导不充分，过晚退出则对话冗余）。预计每个子流程至少3轮Prompt迭代。</td>
-      </tr>
+      <tr><td>1</td><td><strong>客户微信公众号</strong></td><td>菜单配置、模板消息、关注自动回复均需客户侧操作且我方无法直接调试，任何配置变更都需沟通确认。</td></tr>
+      <tr><td>2</td><td><strong>客户投保H5页面</strong></td><td>专属码参数接收、手机号反显、投被保人页面、银行卡收银台等功能均依赖客户侧前端开发。Demo 阶段不依赖埋点，POC 阶段需客户预置埋点SDK。</td></tr>
+      <tr><td>3</td><td><strong>客户API接口</strong></td><td>Demo 阶段仅对接专属码获取 1 个接口；POC 阶段新增页面埋点查询和支付结果查询 2 个接口。接口响应延迟和数据格式差异是联调阶段最常见的耗时点。</td></tr>
+      <tr><td>4</td><td><strong>我司AI外呼系统</strong></td><td>语音合成质量、ASR识别准确率、外呼并发调度、号码健康度管理、外呼时段策略等，均需根据客户白名单特征进行专项调优。</td></tr>
+      <tr><td>5</td><td><strong>LLM回复节点调优</strong></td><td>9 个子流程中 7 个部署了 LLM回复节点，每个需独立设计 Prompt 和退出条件。Demo 阶段 LLM 仅靠对话判断进度，对 Prompt 的精准度和容错性要求更高。预计每个子流程至少 3 轮 Prompt 迭代。</td></tr>
     </tbody>
   </table>
 
   <h3>6.3 综合工程评估</h3>
   <table class="info-table">
-    <thead>
-      <tr><th>维度</th><th>评估</th></tr>
-    </thead>
+    <thead><tr><th>维度</th><th>评估</th></tr></thead>
     <tbody>
-      <tr><td><strong>子流程数量</strong></td><td>约5个子流程（建信/公众号引导/专属码/投保引导/银行卡签约），升级过渡为画布内置</td></tr>
-      <tr><td><strong>LLM回复节点</strong></td><td>每个子流程1个，共约5个，每个需独立设计Prompt和退出条件</td></tr>
-      <tr><td><strong>Tool调用节点</strong></td><td>专属码获取、埋点查询、核保查询、支付查询，共4个Tool，嵌入子流程中按需调用</td></tr>
-      <tr><td><strong>子流程跳转路径</strong></td><td>正负分支合计超过20条路径，需逐条验证退出条件准确性和跳转逻辑</td></tr>
-      <tr><td><strong>建设期研发投入</strong></td><td>画布编排、接口联调、Prompt工程、Tool封装、子流程联调、全链路测试，预计投入1–2名研发+1名产品经理，持续5–6周</td></tr>
-      <tr style="background:#fff7ed;">
-        <td><strong>运营期持续投入</strong></td>
-        <td>上线后需持续投入人力进行Prompt迭代优化、LLM回复效果监控、话术策略调整、外呼时段/频次策略调优。预计长期投入至少1人进行日常运营维护，按月迭代Prompt版本</td></tr>
+      <tr><td><strong>子流程数量</strong></td><td>9 个子流程（开场白/关注公众号/进入入口/输码/填信息/签约/二次投保/二次扣款/挂机）</td></tr>
+      <tr><td><strong>LLM回复节点</strong></td><td>子流程 #2–#8 各部署 1 个，共 7 个，每个需独立设计 Prompt 和退出条件</td></tr>
+      <tr><td><strong>API接口（Demo）</strong></td><td>仅 1 个——专属码获取接口，LLM 通过对话确认客户进度</td></tr>
+      <tr><td><strong>API接口（POC）</strong></td><td>扩展至 3 个——新增页面埋点查询、支付结果查询，LLM 可实时查询客户状态</td></tr>
+      <tr><td><strong>子流程跳转路径</strong></td><td>正负分支合计超过 25 条路径，需逐条验证退出条件准确性和跳转逻辑</td></tr>
+      <tr><td><strong>建设期研发投入</strong></td><td>画布编排、接口联调、Prompt工程、子流程联调、全链路测试，预计投入 1–2 名研发+1 名产品经理，持续 5–6 周</td></tr>
+      <tr style="background:#fff7ed;"><td><strong>运营期持续投入</strong></td><td>上线后需持续投入人力进行 Prompt 迭代优化、LLM回复效果监控、话术策略调整。Demo→POC 过渡期需增加埋点和支付接口联调工作。预计长期投入至少 1 人进行日常运营维护</td></tr>
     </tbody>
   </table>
 
   <div class="highlight-box orange" style="margin-top:20px;">
     <h4>⚠️ 关键风险提示</h4>
-    <p style="margin:0;">本方案高度依赖客户侧API接口的稳定性和埋点数据的准确性。客户侧接口响应需达到毫秒级，延迟过高将直接影响AI对话流畅度和LLM回复节点的实时判断效果。以上风险需在项目启动前与客户明确对齐，避免上线后因客户侧问题导致我方效果不达标。</p>
+    <p style="margin:0;">Demo 阶段 LLM 回复节点完全依赖对话确认客户进度，无法通过 Tool 获取页面实时状态，对 Prompt 设计质量要求极高。POC 阶段接入埋点和支付接口后，客户侧接口响应需达到毫秒级，延迟过高将直接影响 LLM回复节点的实时判断效果。以上风险需在项目启动前与客户明确对齐。</p>
   </div>
 
   <div class="highlight-box green" style="margin-top:20px;">
-    <h4>✅ 选型结论</h4>
-    <p style="margin:0;">综合以上分析，本项目最终采用<strong>「流程画布 + Agentic AI 有机结合」</strong>方案：开场建信阶段使用流程画布保证话术合规可控；后续阶段使用 LLM回复节点 + Tool 调用的子流程模式，兼顾动态交互能力与成本控制。该方案在AI外呼引导场景下具有更高的可控性、更快启动、以及更低的前期成本。</p>
+    <h4>✅ 方案优势总结</h4>
+    <table class="info-table" style="margin:8px 0;">
+      <thead><tr><th style="width:120px;">优势</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><strong>阶段性交付</strong></td><td>Demo 阶段仅需 1 个 API 接口即可跑通基础链路，3–4 周快速验证；POC 阶段逐步叠加埋点和支付接口，分步迭代、风险可控。</td></tr>
+        <tr><td><strong>合规可控</strong></td><td>开场白使用画布普通节点，话术预审可追溯。后续 LLM回复节点通过子流程隔离，每个节点上下文有限，降低合规风险。</td></tr>
+        <tr><td><strong>灵活交互</strong></td><td>每个子流程中 LLM 可动态应对客户各种反应（不关注、不会操作、卡在签约等），无需像纯画布方案预枚举所有分支。</td></tr>
+        <tr><td><strong>成本可控</strong></td><td>话术预生成 + LLM分类仅产生少量 Token 消耗，相比全 Agentic AI 方案大幅降低 TTS 和 Token 成本。</td></tr>
+        <tr><td><strong>快速启动</strong></td><td>无复杂 Tool 封装需求，流程画布编排 + Prompt 设计即可上线，项目启动速度远快于全 Agentic AI 方案。</td></tr>
+      </tbody>
+    </table>
   </div>
   </div>
 </section>
