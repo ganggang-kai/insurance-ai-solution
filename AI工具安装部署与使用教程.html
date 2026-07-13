@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>从零上手五大 AI 工具 · 安装部署与使用教程</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #1a1d28;
+    --bg3: #242838;
+    --text: #e8edf5;
+    --text2: #9aa4bf;
+    --accent: #6c8cff;
+    --accent2: #4fc3a0;
+    --orange: #ff9f4a;
+    --red: #ff5c7c;
+    --border: #2a2f42;
+    --code-bg: #1a1d28;
+    --max-width: 960px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── Sidebar TOC ── */
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: 260px; height: 100vh;
+    background: var(--bg2); border-right: 1px solid var(--border);
+    padding: 24px 16px; overflow-y: auto; z-index: 100;
+  }
+  .sidebar h2 {
+    font-size: 14px; color: var(--accent); margin-bottom: 16px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .sidebar a {
+    display: block; padding: 6px 10px; border-radius: 6px;
+    color: var(--text2); text-decoration: none; font-size: 13px;
+    transition: 0.15s;
+  }
+  .sidebar a:hover, .sidebar a.active { background: var(--bg3); color: var(--text); }
+  .sidebar .toc-l2 { padding-left: 22px; font-size: 12.5px; }
+
+  /* ── Main ── */
+  .main { margin-left: 260px; min-height: 100vh; }
+  .container { max-width: var(--max-width); margin: 0 auto; padding: 48px 40px 80px; }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center; padding: 64px 0 48px; border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+  .hero p { color: var(--text2); font-size: 16px; max-width: 600px; margin: 0 auto; }
+
+  /* ── Typography ── */
+  h2 {
+    font-size: 24px; font-weight: 700; margin: 48px 0 16px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--accent);
+  }
+  h3 { font-size: 18px; font-weight: 600; margin: 28px 0 12px; color: var(--accent); }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; color: var(--accent2); }
+  p { margin: 12px 0; }
+  ul, ol { margin: 8px 0 16px; padding-left: 24px; }
+  li { margin: 4px 0; }
+
+  /* ── Code ── */
+  code {
+    background: var(--code-bg); padding: 2px 8px; border-radius: 4px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 13px; color: var(--accent2);
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 20px; overflow-x: auto; margin: 12px 0;
+  }
+  pre code { background: none; padding: 0; font-size: 13px; color: var(--text); }
+  .cmd::before { content: "$ "; color: var(--accent2); }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+    min-width: 640px;
+  }
+  th, td {
+    padding: 10px 14px; text-align: left; border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th { background: var(--bg3); color: var(--accent); font-weight: 600; white-space: nowrap; }
+  td { background: var(--bg2); }
+  tr:hover td { background: var(--bg3); }
+  .dimension { font-weight: 600; color: var(--orange); white-space: nowrap; }
+
+  /* ── Cards / boxes ── */
+  .tip, .warning, .info {
+    border-radius: 8px; padding: 14px 18px; margin: 16px 0;
+    border-left: 4px solid;
+  }
+  .tip { background: rgba(79, 195, 160, 0.1); border-color: var(--accent2); }
+  .warning { background: rgba(255, 159, 74, 0.1); border-color: var(--orange); }
+  .info { background: rgba(108, 140, 255, 0.1); border-color: var(--accent); }
+
+  .tag {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 12px; font-weight: 600;
+  }
+  .tag-green { background: rgba(79, 195, 160, 0.2); color: var(--accent2); }
+  .tag-orange { background: rgba(255, 159, 74, 0.2); color: var(--orange); }
+  .tag-red { background: rgba(255, 92, 124, 0.2); color: var(--red); }
+  .tag-blue { background: rgba(108, 140, 255, 0.2); color: var(--accent); }
+
+  /* ── Decision tree ── */
+  .tree { font-family: "SF Mono", monospace; font-size: 13px; line-height: 2; padding: 16px; background: var(--code-bg); border-radius: 8px; border: 1px solid var(--border); }
+
+  /* ── Prompt block ── */
+  .prompt-block {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 20px; margin: 12px 0; font-size: 14px; line-height: 1.8;
+    color: var(--text); font-style: italic;
+  }
+  .prompt-block strong { color: var(--accent); font-style: normal; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; padding: 32px 0; color: var(--text2); font-size: 13px; border-top: 1px solid var(--border); margin-top: 48px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 820px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .container { padding: 24px 16px; }
+    .hero h1 { font-size: 24px; }
+  }
+
+  .scroll-hint { font-size: 12px; color: var(--text2); margin-bottom: 4px; display: none; }
+  @media (max-width: 720px) { .scroll-hint { display: block; } }
+</style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<nav class="sidebar">
+  <h2>📖 目录</h2>
+  <a href="#ch1">一 · 开篇</a>
+  <a href="#ch2">二 · 核心对比总表</a>
+  <a href="#ch2-decision" class="toc-l2">决策指南</a>
+  <a href="#ch2-scene" class="toc-l2">场景速览</a>
+  <a href="#ch3">三 · 安装前准备</a>
+  <a href="#ch4">四 · VS Code + AI 插件</a>
+  <a href="#ch5">五 · Claude Code</a>
+  <a href="#ch6">六 · Codex CLI</a>
+  <a href="#ch7">七 · Hermes Agent</a>
+  <a href="#ch8">八 · WorkBuddy</a>
+  <a href="#ch9">九 · 常见问题 FAQ</a>
+  <a href="#ch10">十 · 魔法上网教程</a>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+  <h1>🛠️ 从零上手五大 AI 工具</h1>
+  <p>VS Code · Claude Code · Codex CLI · Hermes Agent · WorkBuddy<br>
+  安装部署 &amp; 使用教程 · 国内环境适配 · 面向运营/交付岗位</p>
+  <p style="margin-top:12px;font-size:13px;color:var(--text2);">
+    <span class="tag tag-green">技术小白友好</span>
+    <span class="tag tag-blue">国内网络可用</span>
+    <span class="tag tag-orange">Windows / macOS 双平台</span>
+  </p>
+</div>
+
+<!-- ===================== 第一章 ===================== -->
+<h2 id="ch1">一 · 开篇：五大 AI 工具是什么？</h2>
+
+<p>这五款工具覆盖了从 <strong>纯代码</strong> 到 <strong>零代码</strong> 的完整光谱，无论你是一点技术都不懂的新人，还是想提效的资深运营，总有一款适合你。</p>
+
+<h3>一句话认识每个工具</h3>
+<table>
+<tr><th>工具</th><th>一句话说人话</th><th>谁做的</th></tr>
+<tr><td><strong>VS Code</strong></td><td>一个免费、强大的代码编辑器，装上 AI 插件后就能帮你写代码、改脚本。</td><td>微软</td></tr>
+<tr><td><strong>Claude Code</strong></td><td>Anthropic 出的 AI 编码代理。你告诉它需求，它直接读写你的文件、执行命令，像多了一个会编程的同事。</td><td>Anthropic（美国）</td></tr>
+<tr><td><strong>Codex CLI</strong></td><td>OpenAI 出的开源编码代理。跟 Claude Code 类似，基于 GPT 模型，在终端或桌面 App 里和你协作写代码。</td><td>OpenAI（美国）</td></tr>
+<tr><td><strong>Hermes Agent</strong></td><td>一个"自己会学习"的 AI 智能体。你教它一次，它就能记住并自动执行，还能定时干活、跨平台推送结果。</td><td>Nous Research（美国）</td></tr>
+<tr><td><strong>WorkBuddy</strong></td><td>腾讯出的一站式 AI 工作台。不用装任何依赖、不用写代码，拖拽几个"AI 专家"就能完成任务，直接出报告/PPT。</td><td>腾讯（中国）</td></tr>
+</table>
+
+<div class="info">
+  <strong>💡 运营/交付岗位怎么看这些工具？</strong><br>
+  如果你完全不碰代码 → <strong>WorkBuddy</strong> 最省心<br>
+  如果你愿意学一点点 → 从 <strong>VS Code + 国内 AI 插件</strong> 开始<br>
+  如果你想要"一次配置、自动干活" → <strong>Hermes Agent</strong><br>
+  如果你本身就是技术运营 → <strong>Claude Code / Codex CLI</strong>
+</div>
+
+<!-- ===================== 第二章 ===================== -->
+<h2 id="ch2">二 · 核心对比总表（含安装依赖）</h2>
+
+<p>这张表帮你一目了然看清五个工具的所有差异，方便你做选择。</p>
+
+<div class="scroll-hint">← 左右滑动查看完整表格 →</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>对比维度</th><th>VS Code</th><th>Claude Code</th><th>Codex CLI</th><th>Hermes Agent</th><th>WorkBuddy</th></tr>
+</thead>
+<tbody>
+<tr><td class="dimension">开发方</td><td>微软</td><td>Anthropic（美国）</td><td>OpenAI（美国）</td><td>Nous Research（美国）</td><td>腾讯（中国）</td></tr>
+<tr><td class="dimension">工具定位</td><td>AI 编码底座平台</td><td>AI 编码代理</td><td>AI 编码代理</td><td>自主 AI 智能体</td><td>全能 AI 工作台</td></tr>
+<tr><td class="dimension">桌面端形态</td><td>✅ 原生桌面 IDE</td><td>✅ 桌面 App / VS Code 插件 / JetBrains</td><td>✅ 桌面 App / VS Code / Cursor / Windsurf 插件</td><td>✅ 桌面 App</td><td>✅ 原生桌面客户端</td></tr>
+<tr><td class="dimension">终端 CLI</td><td>✅ 内置终端</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+<tr>
+  <td class="dimension">安装依赖<br><span style="font-weight:400;color:var(--text2)">（官方必需）</span></td>
+  <td>• 无（直接下载）</td>
+  <td>• 桌面版：无（直接下载）<br>• CLI 版：Node.js 18+</td>
+  <td>• npm 版：Node.js 18+<br>• 二进制版：无<br>• IDE 插件：对应 IDE</td>
+  <td>• 桌面版：无（直接下载）<br>• CLI 版：curl 或 PowerShell</td>
+  <td>• 无（直接下载）</td>
+</tr>
+<tr>
+  <td class="dimension">使用依赖<br><span style="font-weight:400;color:var(--text2)">（实际干活还要装）</span></td>
+  <td>• Node.js 18+<br>• Git + Git Bash<br>• 可选：Python</td>
+  <td>• Git<br>• Git Bash（Windows 终端）<br>• Claude 订阅 或 API Key<br>• 国内：<strong>需要魔法</strong>或第三方网关</td>
+  <td>• Git<br>• Git Bash（Windows 终端）<br>• ChatGPT 账号 或 API Key<br>⚠️ 公司设备：npm 版走微软商店路径，推荐用 GitHub Release 二进制</td>
+  <td>• API Key（DeepSeek 等）<br>• <strong>安装时需稳定网络（建议开魔法）</strong><br>• 可选：Python（Skill 扩展）<br>• 可选：Node.js（MCP 插件）</td>
+  <td>• 无（安装即用）</td>
+</tr>
+<tr><td class="dimension">国内可用性</td><td>✅ 完全可用</td><td>⚠️ <strong>高封号风险 + 需要魔法</strong><br>可配第三方模型</td><td>✅ 可用（ChatGPT 账号/API）</td><td>✅ 完全国内可用<br>支持 DeepSeek<br>（安装过程需魔法）</td><td>✅ 原生支持，零障碍</td></tr>
+<tr><td class="dimension">内置 AI</td><td>❌ 需安装插件（通义灵码/CodeGeeX/Copilot）</td><td>✅ 内置 Claude 引擎</td><td>✅ 内置 GPT 引擎</td><td>✅ 内置多模型支持</td><td>✅ 内置腾讯混元</td></tr>
+<tr><td class="dimension">费用模式</td><td>免费 + 插件另计</td><td>Claude 订阅（$20-100/月）或 API 按量</td><td>ChatGPT 订阅（$20/月）或 API 按量</td><td>仅付 API 费用（模型自选）</td><td>积分制（限时赠送）</td></tr>
+<tr><td class="dimension">核心能力</td><td>• 代码编辑与调试<br>• 插件生态<br>• 内置终端 + Git 集成</td><td>• 读写代码库<br>• 执行命令<br>• 文件操作</td><td>• 代码生成<br>• 终端交互<br>• IDE 深度集成</td><td>• 自主决策与执行<br>• Skills 自进化<br>• Cron 定时任务<br>• 多平台推送</td><td>• AI 专家团协作<br>• 可视化工作流<br>• MCP 扩展<br>• IM 集成</td></tr>
+<tr><td class="dimension">适合谁</td><td>所有人都适合</td><td>技术型运营/开发者</td><td>技术型运营/开发者</td><td>想省心的运营/交付</td><td>零代码运营/交付</td></tr>
+<tr><td class="dimension">是否需要写代码</td><td>不必须（AI 插件辅助）</td><td>需要（自然语言→代码）</td><td>需要（自然语言→代码）</td><td>不需要（自然语言指令）</td><td>完全不需要</td></tr>
+<tr><td class="dimension">自动化程度</td><td>手动操作</td><td>手动指令→执行</td><td>手动指令→执行</td><td>设好规则→自动运行</td><td>可视化配置→一键执行</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- 决策指南 -->
+<h3 id="ch2-decision">我应该选哪个？决策流程图</h3>
+<div class="tree">
+你愿意学一点新东西吗？<br>
+├─ 完全不想学，开箱即用 → <strong>WorkBuddy</strong><br>
+├─ 可以学一点点<br>
+│  ├─ 你想用国内免费方案吗？<br>
+│  │  ├─ 是 → <strong>VS Code + 通义灵码</strong><br>
+│  │  └─ 否，我有魔法<br>
+│  │     └─ 你担心封号吗？<br>
+│  │        ├─ 担心 → <strong>Codex CLI</strong>（OpenAI 国内可用）<br>
+│  │        └─ 不担心 → <strong>Claude Code</strong>（能力最强）<br>
+│  └─ 你想要一次配置、自动运行<br>
+│     └─ <strong>Hermes Agent</strong>（设好定时任务就不用管了）<br>
+└─ 我全都要 → 先装 VS Code 打底，再按需叠加其他工具
+</div>
+
+<!-- 场景速览 -->
+<h3 id="ch2-scene">实战场景速览：每周竞品动态追踪与运营周报</h3>
+<p>场景设定：你是一名运营专员，每周一需要出一份「竞品动态周报」<br>→ 搜集竞品新闻 → 分析趋势 → 生成报告</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>工具</th><th>你要做什么</th><th>工具帮你做什么</th><th>适合心态</th></tr>
+<tr><td><strong>VS Code + AI 插件</strong></td><td>① 用 AI 对话描述需求<br>② AI 生成代码，直接在 VS Code 里运行</td><td>一键运行 AI 生成的脚本，输出 Markdown 报告</td><td>"我想自己控制过程"</td></tr>
+<tr><td><strong>Claude Code</strong></td><td>① 描述需求让 AI 写代码<br>② 审查 → 允许执行</td><td>自动写代码 + 自动运行，输出报告</td><td>"我相信 AI 直接干活"</td></tr>
+<tr><td><strong>Codex CLI</strong></td><td>① 在桌面 App 描述需求<br>② 预览代码 → 运行</td><td>同上，桌面端体验更友好</td><td>"我习惯桌面操作"</td></tr>
+<tr><td><strong>Hermes Agent</strong></td><td>① 一句话描述需求<br>② 配置 Cron 定时规则<br>③ 之后就不用管了</td><td>每周自动：搜索→分析→写报告→推送微信</td><td>"我不想每周重复操作"</td></tr>
+<tr><td><strong>WorkBuddy</strong></td><td>① 创建"竞品周报"任务<br>② 拖拽配置专家团<br>③ 点击执行</td><td>多 AI 专家协作：调研 → 分析 → 出报告/PPT</td><td>"我不想碰任何代码"</td></tr>
+</table>
+</div>
+
+<!-- ===================== 第三章 ===================== -->
+<h2 id="ch3">三 · 安装前的准备工作</h2>
+
+<p>不管你要用哪个工具，先装好这 <strong>三样基础依赖</strong> 准没错。后面每个工具的安装章节也会引用这里。</p>
+
+<h3>① 安装 Node.js（v18 或更高版本）</h3>
+<p><strong>为什么装？</strong> VS Code 的 AI 插件、Claude Code CLI、Codex CLI 都需要 Node.js 才能运行。</p>
+<ol>
+  <li>打开 <a href="https://nodejs.org" target="_blank" style="color:var(--accent)">nodejs.org</a></li>
+  <li>下载左侧 <strong>LTS（长期支持版）</strong>，不要下载右侧的 Current 版</li>
+  <li>双击安装包，一路点"下一步"（<strong>Windows 用户注意勾选"Add to PATH"</strong>）</li>
+  <li>安装完成后，打开终端验证：</li>
+</ol>
+<pre><code>node -v
+npm -v</code></pre>
+<p>如果显示版本号（如 v18.20.0），说明安装成功。</p>
+
+<h3>② 安装 Git + Git Bash（Windows 用户必看）</h3>
+<p><strong>为什么装？</strong> Git 是代码操作的基础工具；Git Bash 是 Windows 下一个好用的终端环境。</p>
+<ol>
+  <li>打开 <a href="https://git-scm.com/downloads" target="_blank" style="color:var(--accent)">git-scm.com</a></li>
+  <li>下载 Windows 版本，双击安装（一路默认设置即可）</li>
+  <li>安装完成后，在桌面右键 → 点击 "Git Bash Here"</li>
+</ol>
+<pre><code>git --version</code></pre>
+
+<div class="tip">
+  <strong>💡 macOS 用户</strong>：macOS 自带的终端已经很好用。Git 可以通过 <code>xcode-select --install</code> 安装。
+</div>
+
+<h3>③ （可选）安装 Python</h3>
+<p><strong>为什么装？</strong> AI 生成的运营脚本（数据分析、报表生成）很多用 Python 写。</p>
+<ol>
+  <li>打开 <a href="https://www.python.org/downloads/" target="_blank" style="color:var(--accent)">python.org</a></li>
+  <li>下载最新版，<strong>安装时务必勾选 "Add Python to PATH"</strong></li>
+</ol>
+<pre><code>python --version</code></pre>
+
+<h3>④ 准备 API Key</h3>
+<p>如果你要使用 Claude Code、Codex CLI 或 Hermes Agent，需要准备一个 API Key。</p>
+
+<div class="table-wrap">
+<table>
+<tr><th>模型提供商</th><th>获取方式</th><th>费用</th><th>国内可用</th><th>是否需要魔法？</th></tr>
+<tr>
+  <td><strong>DeepSeek</strong>（推荐）</td>
+  <td><a href="https://platform.deepseek.com" target="_blank" style="color:var(--accent)">platform.deepseek.com</a> → 注册 → 创建 API Key</td>
+  <td>极低，约 ¥1/百万 token</td>
+  <td>✅ 直接可用</td>
+  <td>❌ 不需要</td>
+</tr>
+<tr>
+  <td><strong>智谱 AI（GLM）</strong></td>
+  <td><a href="https://open.bigmodel.cn" target="_blank" style="color:var(--accent)">open.bigmodel.cn</a> → 注册 → 创建 API Key</td>
+  <td>低，有免费额度</td>
+  <td>✅ 直接可用</td>
+  <td>❌ 不需要</td>
+</tr>
+<tr>
+  <td><strong>通义千问（Qwen）</strong></td>
+  <td><a href="https://dashscope.aliyun.com" target="_blank" style="color:var(--accent)">dashscope.aliyun.com</a> → 注册 → 创建 API Key</td>
+  <td>低，有免费额度</td>
+  <td>✅ 直接可用</td>
+  <td>❌ 不需要</td>
+</tr>
+<tr>
+  <td><strong>OpenAI</strong></td>
+  <td><a href="https://platform.openai.com" target="_blank" style="color:var(--accent)">platform.openai.com</a> → 注册 → 创建 API Key</td>
+  <td>中等，约 $5-10/月</td>
+  <td>✅ 可直接访问</td>
+  <td>⚠️ 注册时可能需要</td>
+</tr>
+<tr>
+  <td><strong>Anthropic</strong></td>
+  <td><a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a> → 注册 → 创建 API Key</td>
+  <td>较高，约 $10-20/月</td>
+  <td>⚠️ 有封号风险</td>
+  <td>✅ <strong>需要魔法</strong></td>
+</tr>
+</table>
+</div>
+
+<div class="tip">
+  <strong>💡 初学者建议</strong>：先注册 <strong>DeepSeek</strong> 或 <strong>智谱 AI</strong>，都是国内直连、无需魔法、充值几块钱就够用很久。即使后面要用其他工具，也可以作为备用模型。
+</div>
+
+<!-- ===================== 第四章 ===================== -->
+<h2 id="ch4">四 · VS Code 安装与 AI 插件配置</h2>
+
+<p>VS Code 是微软出品的一款 <strong>免费</strong>、<strong>开源</strong> 的代码编辑器，是目前全球最流行的开发工具。装上 AI 插件后，它就变成一个 AI 编码助手。</p>
+
+<h3>4.1 下载安装 VS Code</h3>
+<ol>
+  <li>打开 <a href="https://code.visualstudio.com" target="_blank" style="color:var(--accent)">code.visualstudio.com</a></li>
+  <li>点击下载按钮，双击安装包，一路点"下一步"</li>
+  <li>安装完成后启动 VS Code</li>
+</ol>
+
+<h3>4.2 切换为中文界面</h3>
+<ol>
+  <li>按快捷键 <code>Ctrl+Shift+X</code>（Mac：<code>Cmd+Shift+X</code>）打开扩展市场</li>
+  <li>搜索 <strong>Chinese</strong> → 找到 <strong>Chinese (Simplified) Language Pack</strong> → Install</li>
+  <li>右下角提示重启，点击 Restart</li>
+</ol>
+
+<h3>4.3 安装 AI 插件（国产推荐方案）</h3>
+<div class="table-wrap">
+<table>
+<tr><th>插件名称</th><th>开发方</th><th>价格</th><th>能力</th><th>需要魔法？</th></tr>
+<tr><td><strong>通义灵码</strong></td><td>阿里云</td><td>免费</td><td>代码补全 + AI 对话 + 代码生成，中文支持好</td><td>❌ 不需要</td></tr>
+<tr><td><strong>CodeGeeX</strong></td><td>智谱 AI</td><td>免费</td><td>代码生成 + 翻译 + 注释</td><td>❌ 不需要</td></tr>
+<tr><td><strong>GitHub Copilot</strong></td><td>微软/GitHub</td><td>$10/月</td><td>目前最强的 AI 代码补全</td><td>⚠️ 可能需要</td></tr>
+</table>
+</div>
+
+<p><strong>安装方法</strong>（以通义灵码为例）：<code>Ctrl+Shift+X</code> → 搜索 "Tongyi Lingma" → Install → 侧边栏出现图标即可对话</p>
+
+<h3>4.4 VS Code 中使用 Claude Code 插件</h3>
+<p>Claude Code 有独立的 VS Code 插件，在扩展市场搜索 <strong>"Claude Code by Anthropic"</strong> 安装即可。</p>
+
+<div class="info">
+  <strong>💡 不需要额外工具</strong><br>
+  Claude Code 的 VS Code 插件 <strong>内置了 CLI</strong>，安装后直接在 VS Code 中使用，<strong>不需要</strong>单独安装 CC Stitch 或任何其他辅助工具。你只需要一个 Claude 订阅账号（Pro / Max / Team / Enterprise）或 Console API Key 即可登录使用。<br><br>
+  <strong>前提条件</strong>：VS Code 版本需要 1.98.0 以上。
+</div>
+
+<h3>4.5 验证：写第一段 AI 辅助的脚本</h3>
+<ol>
+  <li>点击通义灵码图标，在对话框中输入：<br>
+    <em>"写一个 Python 脚本，读取一个 CSV 文件，统计每列的数据分布，输出为 Markdown 表格"</em></li>
+  <li>AI 会生成代码，点击 <strong>"插入到编辑器"</strong> 按钮</li>
+  <li>保存为 <code>analyse.py</code></li>
+  <li>按 <code>Ctrl+`</code> 打开 VS Code 内置终端，运行：</li>
+</ol>
+<pre><code>python analyse.py</code></pre>
+<div class="tip">
+  <strong>💡</strong> 全程不需要手动复制粘贴代码——AI 生成的代码可以直接插入编辑器，在 VS Code 内置终端运行。
+</div>
+
+<!-- ===================== 第五章 ===================== -->
+<h2 id="ch5">五 · Claude Code 安装与使用</h2>
+
+<p>Claude Code 是 Anthropic（Claude 的母公司）推出的 AI 编码代理。你告诉它需求，它直接读写你的文件、运行命令、管理代码库。</p>
+
+<div class="warning">
+  <strong>⚠️ 国内用户重要提示</strong><br>
+  Anthropic 对来自中国大陆 IP 和支付方式的账号有 <strong>封号风险</strong>。使用前请评估：<br>
+  • 需要 <strong>魔法</strong> 才能正常使用<br>
+  • 即便有魔法，也可能因为 IP 变动、支付方式等被封号<br>
+  • 建议优先考虑其他工具，或通过第三方 API 网关降低风险
+</div>
+
+<h3>5.1 安装方式一：桌面客户端（推荐新手）</h3>
+<ol>
+  <li>打开 <a href="https://claude.ai/download" target="_blank" style="color:var(--accent)">claude.ai/download</a>（需魔法）</li>
+  <li>下载对应系统的版本</li>
+  <li>双击安装，登录你的 Claude 账号</li>
+  <li>点击 Code 标签进入编码模式</li>
+</ol>
+
+<h3>5.2 安装方式二：终端 CLI</h3>
+<pre><code><span class="cmd">npm install -g @anthropic-ai/claude-code</span></code></pre>
+
+<h3>5.3 降低封号风险的配置方案</h3>
+<p>Claude Code 支持通过 <code>ANTHROPIC_BASE_URL</code> 环境变量将请求路由到第三方 API 网关：</p>
+<pre><code># Windows（PowerShell）
+$env:ANTHROPIC_BASE_URL="https://your-gateway.com"
+
+# macOS / Linux
+export ANTHROPIC_BASE_URL=https://your-gateway.com</code></pre>
+
+<h3>5.4 验证：第一条运营指令</h3>
+<p>启动 Claude Code 后，输入：</p>
+<pre><code>"帮我写一个 Python 脚本，从 CSV 文件中统计用户反馈的分类占比，并生成柱状图"</code></pre>
+
+<!-- ===================== 第六章 ===================== -->
+<h2 id="ch6">六 · Codex CLI 安装与使用</h2>
+
+<p>Codex CLI 是 OpenAI 开源的编码代理（GitHub 94k+ stars）。</p>
+
+<h3>6.1 安装方式一：桌面 App（推荐新手）</h3>
+<p><strong>方法 A：npm 安装后启动</strong></p>
+<pre><code><span class="cmd">npm install -g @openai/codex</span>
+<span class="cmd">codex app</span></code></pre>
+
+<p><strong>方法 B：GitHub Release 下载二进制（推荐公司设备）</strong></p>
+<ol>
+  <li>打开 <a href="https://github.com/openai/codex/releases/latest" target="_blank" style="color:var(--accent)">github.com/openai/codex/releases/latest</a></li>
+  <li>下载对应系统的压缩包</li>
+  <li>解压后直接运行 <code>codex</code></li>
+</ol>
+
+<div class="warning">
+  <strong>⚠️ 公司设备避坑</strong><br>
+  在公司电脑上通过 npm 安装后，首次运行 <code>codex app</code> 会自动打开<strong>微软商店</strong>下载组件（走系统更新路径），而公司 IT 策略通常会锁定注册表修改权限，导致安装失败。<br><br>
+  <strong>解决方案</strong>：改用 <strong>GitHub Release 二进制文件</strong> 或安装 <strong>VS Code / Cursor 插件版</strong>。
+</div>
+
+<h3>6.2 安装方式二：IDE 插件</h3>
+<p>在 VS Code 扩展市场搜索 <strong>Codex by OpenAI</strong>，或访问 <a href="https://developers.openai.com/codex/ide" target="_blank" style="color:var(--accent)">developers.openai.com/codex/ide</a></p>
+
+<h3>6.3 登录认证</h3>
+<ul>
+  <li><strong>ChatGPT 账号</strong>（推荐）：选择 "Sign in with ChatGPT"</li>
+  <li><strong>API Key</strong>：选择 "Sign in with API Key"</li>
+</ul>
+
+<h3>6.4 验证：第一条运营指令</h3>
+<pre><code>"分析 CSV 中的用户反馈数据，分类统计并生成一份运营周报"</code></pre>
+
+<!-- ===================== 第七章 ===================== -->
+<h2 id="ch7">七 · Hermes Agent 安装与使用</h2>
+
+<p>Hermes Agent 是 Nous Research 推出的 <strong>自主 AI 智能体</strong>。和前面几个工具不同，它最大的特点是：<strong>它会自我学习、能定时自动执行任务、还能把结果推送到你的微信/飞书/Telegram</strong>。</p>
+
+<h3>7.1 桌面版安装</h3>
+<ol>
+  <li>打开 <a href="https://hermes-agent.nousresearch.com" target="_blank" style="color:var(--accent)">hermes-agent.nousresearch.com</a></li>
+  <li>点击 Download，下载对应系统的安装包</li>
+  <li>双击安装即可</li>
+</ol>
+
+<div class="warning">
+  <strong>⚠️ 安装时的网络要求</strong><br>
+  Hermes Agent 桌面版 <strong>下载简单</strong>（下载安装包本身不大），但 <strong>安装过程中</strong> 需要联网下载依赖组件，对网络稳定性要求较高。<br><br>
+  <strong>国内网络不稳定？</strong> 建议安装过程中 <strong>开启魔法</strong>，确保安装顺利完成。安装成功后的日常使用不需要魔法（如果你用 DeepSeek 等国内模型）。
+</div>
+
+<h3>7.2 CLI 安装（高级选项）</h3>
+<pre><code># Windows（PowerShell）
+iex (irm https://hermes-agent.nousresearch.com/install.ps1)
+
+# macOS / Linux
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code></pre>
+
+<h3>7.3 配置模型——接入 DeepSeek</h3>
+<ol>
+  <li>启动 Hermes，进入设置页面</li>
+  <li>找到模型配置，设置：<br>
+    Provider: <code>deepseek</code><br>
+    Model: <code>deepseek-chat</code><br>
+    API Key: 填入你在 DeepSeek 平台获取的 Key</li>
+  <li>保存后即可开始对话</li>
+</ol>
+
+<h3>7.4 核心概念扫盲（用大白话解释）</h3>
+<table>
+<tr><th>术语</th><th>大白话解释</th></tr>
+<tr><td><strong>Skills（技能）</strong></td><td>像给 Hermes 一本"操作手册"。你教它怎么做一件事，它会记住并下次自动应用。比如教它"竞品周报的格式"，以后每次出周报都用这个格式。</td></tr>
+<tr><td><strong>Memory（记忆）</strong></td><td>Hermes 的"笔记本"。它会记住你的偏好、项目信息、历史对话，不需要你反复说。</td></tr>
+<tr><td><strong>Cron（定时任务）</strong></td><td>像设闹钟。告诉 Hermes "每周一早上9点执行 XX 任务"，到时候它会自动干活。</td></tr>
+<tr><td><strong>MoA（多模型协作）</strong></td><td>像"开团队会议"。同时让多个 AI 模型讨论同一个问题，综合出最好的答案。</td></tr>
+<tr><td><strong>SOUL.md（灵魂文件）</strong></td><td>Hermes 的"人格定义文件"。你可以通过 SOUL.md 定义 Hermes 的身份、性格、沟通风格和行为准则。就像给 AI 写一份"角色说明书"——它按这份说明书来和你互动。不同的 SOUL.md 就像不同的 AI 角色。</td></tr>
+</table>
+
+<h3>7.5 创建你的专属 AI 角色：SOUL.md 实战</h3>
+<p>这是 Hermes Agent 最有趣的功能之一——你可以通过对话引导 Hermes 自己生成一份 SOUL.md 文件，定义出你想要的 AI 角色。</p>
+
+<h4>操作步骤</h4>
+<p>打开 Hermes Agent 对话框，直接输入以下提示词（可以根据你的需求修改方括号中的内容）：</p>
+
+<div class="prompt-block">
+<strong>💬 你可以直接复制这段提示词：</strong><br><br>
+我想创建一个新的 AI 角色（Profile），请引导我完成。<br><br>
+这个角色的名字是：<strong>[贾维斯]</strong><br>
+它的主要职责是：<strong>[作为我的工作助手，在我需要完成某一个项目的工作规划和落地方案时，可以跟我一起脑暴，可以很好的引发和引导我思考，并配合我产出交付。]</strong><br><br>
+请先帮我起草一份 SOUL.md 文件的内容。<br>
+这份文件需要定义这个角色的：<br>
+• <strong>身份与性格</strong>：它是谁？有什么样的性格特点？<br>
+• <strong>沟通风格</strong>：它是直接还是委婉？是技术严谨还是富有创意？<br>
+• <strong>行为准则</strong>：它应该避免什么？有什么核心原则？<br><br>
+起草好后，请向我提问，并根据我的回答来调整和完善这个角色定义。
+</div>
+
+<h4>效果说明</h4>
+<ol>
+  <li>Hermes 会根据你的描述，先生成一份 SOUL.md 草稿</li>
+  <li>然后它会反过来向你提问（比如"你希望它更活泼还是更严肃？"、"遇到分歧时它应该坚持己见还是听从你？"）</li>
+  <li>你回答后，它会自动修改并完善 SOUL.md</li>
+  <li>最终你确认满意后，它会帮你保存这份 SOUL.md 到对应的 Profile 目录</li>
+</ol>
+
+<div class="tip">
+  <strong>💡 你可以创建多个角色</strong><br>
+  比如：一个严谨的"代码审查官"、一个活泼的"脑暴搭子"、一个沉稳的"项目经理"。通过切换 Profile 来使用不同角色。
+</div>
+
+<h3>7.6 实战：让 Hermes 每周自动出竞品周报</h3>
+<ol>
+  <li>向 Hermes 描述你的需求：<br>
+    <em>"请你每周一早上9点，帮我搜索竞品动态，分析趋势，按照我教你的格式生成周报，发到我微信"</em></li>
+  <li>Hermes 会创建 Cron 定时任务</li>
+  <li>确认后，从此每周自动执行</li>
+</ol>
+
+<!-- ===================== 第八章 ===================== -->
+<h2 id="ch8">八 · WorkBuddy 安装与使用</h2>
+
+<p>WorkBuddy（腾讯龙虾）是腾讯推出的 <strong>全能 AI 工作台</strong>——<strong>不需要魔法、不需要装任何依赖、不需要写代码</strong>，下载安装后直接就能用。</p>
+
+<h3>8.1 下载安装</h3>
+<ol>
+  <li>打开 <a href="https://workbuddy.tencent.com" target="_blank" style="color:var(--accent)">workbuddy.tencent.com</a></li>
+  <li>点击 <strong>下载 WorkBuddy</strong>，选择对应系统版本</li>
+  <li>双击安装，用微信扫码或手机号登录即可</li>
+</ol>
+
+<h3>8.2 界面导览</h3>
+<ul>
+  <li><strong>AI 专家团</strong>：100+ 个 AI 专家角色（运营专家、数据分析师、文案策划、设计师……）</li>
+  <li><strong>任务面板</strong>：创建任务，描述需求，拖拽配置专家团</li>
+  <li><strong>MCP 市场</strong>：安装各种扩展能力</li>
+  <li><strong>工作流</strong>：把多个步骤串起来，形成自动化流程</li>
+</ul>
+
+<h3>8.3 实战：创建"竞品周报"任务</h3>
+<ol>
+  <li>点击"新建任务"</li>
+  <li>选择 AI 专家团：调研专家 → 数据分析师 → 文案策划</li>
+  <li>点击"开始执行"</li>
+  <li>完成后导出为 Word/PPT/PDF</li>
+</ol>
+
+<h3>8.4 连接 IM 平台</h3>
+<p>WorkBuddy 支持接入微信、企业微信、QQ、飞书、钉钉。</p>
+
+<!-- ===================== 第九章 ===================== -->
+<h2 id="ch9">九 · 常见问题 FAQ</h2>
+
+<h3>9.1 费用对比</h3>
+<div class="table-wrap">
+<table>
+<tr><th>方案</th><th>月费用估算</th><th>是否需要魔法</th></tr>
+<tr><td>VS Code + 通义灵码</td><td><strong>¥0</strong></td><td>❌ 不需要</td></tr>
+<tr><td>VS Code + CodeGeeX</td><td><strong>¥0</strong></td><td>❌ 不需要</td></tr>
+<tr><td>Claude Code</td><td>≈ ¥150-700/月</td><td>✅ <strong>需要</strong></td></tr>
+<tr><td>Codex CLI</td><td>≈ ¥140/月（$20）</td><td>⚠️ 注册时可能需要</td></tr>
+<tr><td>Hermes Agent + DeepSeek</td><td>≈ ¥5-50/月</td><td>⚠️ 安装时需要，使用不需要</td></tr>
+<tr><td>WorkBuddy</td><td>免费额度 + 按需购买</td><td>❌ 不需要</td></tr>
+</table>
+</div>
+
+<h3>9.2 封号风险与应对</h3>
+<div class="warning">
+  <strong>关于 Claude Code 的封号风险</strong><br>
+  可能触发封号的行为：<br>
+  • 使用中国大陆 IP 注册或登录<br>
+  • 使用中国大陆发行的信用卡或支付方式<br>
+  • 频繁切换 IP 地址<br><br>
+  <strong>应对建议</strong>：<br>
+  ① 使用第三方 API 网关（如 OpenRouter）做中转<br>
+  ② 通过 VS Code 插件 + 公司海外环境使用<br>
+  ③ 优先考虑其他工具（Codex / Hermes / WorkBuddy）完成类似任务
+</div>
+
+<h3>9.3 推荐组合方案</h3>
+<div class="table-wrap">
+<table>
+<tr><th>你的情况</th><th>推荐组合</th><th>理由</th></tr>
+<tr><td>纯运营，零代码基础</td><td><strong>WorkBuddy</strong></td><td>零门槛，国内直连</td></tr>
+<tr><td>想学一点自动化</td><td><strong>VS Code + 通义灵码</strong> → 进阶用 <strong>Hermes Agent</strong></td><td>先感受 AI 编程，再升级到自动化</td></tr>
+<tr><td>技术型运营</td><td><strong>VS Code + Claude Code/Codex</strong></td><td>编码能力最大化</td></tr>
+<tr><td>公司 IT 管控严格</td><td><strong>WorkBuddy + VS Code + 通义灵码</strong></td><td>无需管理员权限</td></tr>
+<tr><td>预算有限，全都要</td><td><strong>VS Code（免费）+ Hermes（仅付 API）+ WorkBuddy（免费额度）</strong></td><td>零成本起步</td></tr>
+</table>
+</div>
+
+<h3>9.4 安装报错集锦</h3>
+<table>
+<tr><th>问题</th><th>原因</th><th>解决</th></tr>
+<tr><td><code>npm : 无法识别</code></td><td>Node.js 没装好或没加 PATH</td><td>重新安装 Node.js，勾选"Add to PATH"</td></tr>
+<tr><td><code>ExecutionPolicy 错误</code></td><td>PowerShell 执行策略限制</td><td>管理员运行：<code>Set-ExecutionPolicy RemoteSigned</code></td></tr>
+<tr><td><code>codex app 弹出微软商店</code></td><td>公司设备注册表被锁</td><td>改用 GitHub Release 二进制或 IDE 插件</td></tr>
+<tr><td><code>claude: command not found</code></td><td>npm 全局路径不在 PATH</td><td>重启终端；或检查 npm 全局 bin 路径</td></tr>
+<tr><td>Hermes 安装卡在下载依赖</td><td>国内网络不稳定</td><td>开启魔法后重新安装</td></tr>
+</table>
+
+<!-- ===================== 第十章 ===================== -->
+<h2 id="ch10">十 · 魔法上网教程</h2>
+
+<p>部分工具（Claude Code、Hermes Agent 安装过程）需要稳定的国际网络访问。以下是配置"魔法"的简明教程。</p>
+
+<div class="info">
+  <strong>💡 什么是魔法？</strong><br>
+  "魔法"是一种网络加速方案，让你能够访问部分在国内无法直连的网站和服务（如 Google、GitHub、Anthropic 等）。本教程以 <strong>AgentNEO</strong> 服务为例。
+</div>
+
+<h3>10.1 注册 AgentNEO 服务</h3>
+<ol>
+  <li>打开 <a href="https://neoproxy.me" target="_blank" style="color:var(--accent)">neoproxy.me</a></li>
+  <li>注册账号并购买套餐（通常有轻量版可选）</li>
+  <li>进入套餐详情页面，记下你的「订阅链接」</li>
+</ol>
+
+<h3>10.2 Windows 平台配置（Clash Verge）</h3>
+<h4>第一步：下载安装客户端</h4>
+<ol>
+  <li>前往 Clash Verge Rev 的 <a href="https://github.com/clash-verge-rev/clash-verge-rev/releases" target="_blank" style="color:var(--accent)">GitHub Releases 页面</a></li>
+  <li>下载最新版 <code>Clash.Verge_x.x.x_x64-setup.exe</code></li>
+  <li>双击安装，安装后打开 Clash Verge</li>
+</ol>
+
+<div class="tip">
+  <strong>💡</strong> 如果 GitHub 打不开，可以在 AgentNEO 官方教程中找到备用下载链接：<a href="https://neoproxy.me/doc/" target="_blank" style="color:var(--accent)">neoproxy.me/doc</a>
+</div>
+
+<h4>第二步：导入订阅</h4>
+<ol>
+  <li>登录 AgentNEO，进入套餐详情 → 点击「配置下载（订阅）」</li>
+  <li>选择「增强规则订阅」→ 找到「Clash 配置链接」→ 点击「复制地址」</li>
+  <li>打开 Clash Verge → 点击左侧「订阅」</li>
+  <li>将复制的地址粘贴到输入框 → 点击「导入」</li>
+</ol>
+
+<div class="warning">
+  <strong>⚠️ 注意顺序！</strong><br>
+  在订阅配置成功之前，<strong>不要先打开「代理」开关</strong>！否则会导致订阅获取失败。
+</div>
+
+<h4>第三步：激活并使用</h4>
+<ol>
+  <li>在订阅列表中，对新导入的配置 <strong>右键 → 选择「使用」</strong></li>
+  <li>回到主页面，<strong>打开「系统代理」开关</strong></li>
+  <li>此时你已经可以访问国际网络了 ✅</li>
+</ol>
+
+<h4>运行模式说明</h4>
+<table>
+<tr><th>模式</th><th>说明</th><th>推荐场景</th></tr>
+<tr><td><strong>规则模式</strong>（推荐）</td><td>自动分流：国内流量直连，国外流量走代理</td><td>日常使用，不影响国内网速</td></tr>
+<tr><td>全局模式</td><td>所有流量都走代理</td><td>遇到特殊情况时临时切换</td></tr>
+<tr><td>直连模式</td><td>关闭代理，所有流量直连</td><td>不需要魔法时使用</td></tr>
+</table>
+
+<h3>10.3 macOS 平台配置</h3>
+<p>macOS 推荐使用 <strong>ClashX Meta</strong> 或 <strong>Clash Verge</strong>（步骤与 Windows 类似），详细图文教程参见：<a href="https://neoproxy.me/doc/" target="_blank" style="color:var(--accent)">AgentNEO 官方教程 - macOS 平台</a></p>
+
+<h3>10.4 手机端配置</h3>
+<ul>
+  <li><strong>iOS</strong>：推荐 Shadowrocket（需外区 Apple ID）</li>
+  <li><strong>Android</strong>：推荐 Clash Meta for Android（免费）</li>
+</ul>
+<p>具体步骤参见 <a href="https://neoproxy.me/doc/" target="_blank" style="color:var(--accent)">AgentNEO 官方教程</a></p>
+
+<h3>10.5 配置完成后的验证</h3>
+<p>打开浏览器访问 <a href="https://www.google.com" target="_blank" style="color:var(--accent)">google.com</a>，如果能正常打开，说明魔法已生效 ✅</p>
+
+<div class="tip">
+  <strong>💡 使用完记得关闭</strong><br>
+  日常不需要魔法时，可以在 Clash Verge 中关闭「系统代理」开关，恢复直连模式，不影响正常上网速度。
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>本教程由 AI 辅助完成 · 信息截至 2026 年 7 月</p>
+  <p style="margin-top:4px;">工具版本和价格可能变化，请以官方最新信息为准</p>
+</div>
+
+</div><!-- /container -->
+</div><!-- /main -->
+
+</body>
+</html>
