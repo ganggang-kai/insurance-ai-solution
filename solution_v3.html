@@ -138,6 +138,15 @@
   }
   .highlight-box h4 { font-size: 16px; margin-bottom: 6px; }
 
+  .highlight-box.purple { background: linear-gradient(135deg, #faf5ff, #f3e8ff); border-left-color: #7c3aed; }
+  .flow-list li.agentic { border-left: 4px solid #7c3aed; }
+  .flow-list li.canvas { border-left: 4px solid #16a34a; }
+  .flow-list li .step-content h4 { font-size: 16px; margin-bottom: 4px; }
+  .flow-list li .step-content p { font-size: 13px; color: var(--text-secondary); margin: 0; }
+  .flow-list li .step-content .tag-impl { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 8px; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+  .tag-canvas { background: #dcfce7; color: #166534; }
+  .tag-agentic { background: #f3e8ff; color: #7c3aed; }
+
   /* ── Timeline ── */
   .timeline { position: relative; padding-left: 32px; margin: 24px 0; }
   .timeline::before {
@@ -191,27 +200,29 @@
 <section class="section">
   <h2>一、项目概述</h2>
   <p>
-    本项目旨在构建一套<strong>「AI外呼筛意向 → 公众号自助投保」</strong>的智能化客户转化体系。
-    利用AI语音机器人完成批量外呼，精准识别意向客户后，通过专属码机制将客户无缝引导至微信公众号，
-    在公众号内完成信息填写、健康告知、在线支付，最终实现保单生效。
-    全程数据埋点可追踪，AI根据客户行为实时调整引导策略，最大化提升转化率。
+    本项目旨在构建一套<strong>「画布编排筛意向 + Agentic AI自主引导投保」</strong>的混合智能转化体系。
+    开场白与意向筛选阶段采用流程画布实现（合规可控），意向客户确认后进入Agentic模式——由LLM回复节点自主与客户对话，
+    通过Tool调用完成专属码获取等关键动作，逐阶段引导客户在微信公众号内完成投保全流程。
+  </p>
+  <p>
+    产品定位：<strong>0.6元短期意外险</strong>（首单）+ 复购升级产品，无健康告知，仅支持银行卡签约快捷支付。
   </p>
 
   <div class="card-grid">
     <div class="card">
       <div class="icon">📞</div>
       <h4>AI智能外呼</h4>
-      <p>冷启动批量外呼，LLM语义识别意向，毫秒级判断客户意图并分流处理。</p>
+      <p>画布编排开场话术，LLM分类节点精准筛选意向客户，合规可控、零Token开场。</p>
+    </div>
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h4>Agentic自主引导</h4>
+      <p>意向确认后切换LLM回复节点，AI自主与客户多轮对话，灵活应对各种情况，逐阶段推进投保流程。</p>
     </div>
     <div class="card">
       <div class="icon">🔗</div>
       <h4>专属码无缝衔接</h4>
-      <p>每位客户分配四位专属码，公众号输入后自动反显手机号，零手动输入，降低流失。</p>
-    </div>
-    <div class="card">
-      <div class="icon">📊</div>
-      <h4>全链路埋点追踪</h4>
-      <p>从公众号关注到支付成功，每个节点行为数据实时回传，AI动态调整跟进策略。</p>
+      <p>LLM通过Tool调用获取四位专属码，口播给客户后自动关联手机号，零手动输入。</p>
     </div>
   </div>
 </section>
@@ -225,111 +236,24 @@
 
   <h3>2.1 整体架构图</h3>
 
-  <style>
-    .arch-diagram { margin: 20px 0; font-size: 13px; line-height: 1.6; }
-
-    /* 顶层：客户旅程横排 */
-    .arch-journey {
-      display: flex; align-items: center; gap: 0;
-      background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 12px;
-      padding: 16px 20px; margin-bottom: 16px;
-    }
-    .arch-journey .label {
-      font-size: 14px; font-weight: 700; color: #1e40af;
-      white-space: nowrap; margin-right: 16px; flex-shrink: 0;
-    }
-    .arch-journey .steps { display: flex; align-items: center; gap: 0; flex: 1; overflow-x: auto; }
-    .arch-journey .step {
-      display: flex; align-items: center; gap: 6px;
-      background: #fff; border-radius: 8px; padding: 8px 14px;
-      font-weight: 500; font-size: 12px; white-space: nowrap;
-      border: 1px solid #bfdbfe;
-    }
-    .arch-journey .step .dot {
-      width: 20px; height: 20px; border-radius: 50%;
-      background: #3b82f6; color: #fff; display: flex;
-      align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 700; flex-shrink: 0;
-    }
-    .arch-journey .step.done { background: #dcfce7; border-color: #86efac; }
-    .arch-journey .step.done .dot { background: #16a34a; }
-    .arch-journey .arrow { color: #93c5fd; font-size: 16px; padding: 0 6px; flex-shrink: 0; }
-
-    /* 底层：双栏 */
-    .arch-bottom { display: flex; gap: 16px; }
-    .arch-col { border-radius: 12px; padding: 24px 20px; }
-    .arch-col.platform { flex: 1; background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%); border: 2px solid #86efac; }
-    .arch-col.coop { flex: 0 0 240px; background: #fff7ed; border: 2px solid #fed7aa; }
-
-    .arch-col h4 {
-      font-size: 15px; font-weight: 700; margin: 0 0 16px 0; text-align: center;
-      padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.08);
-    }
-    .arch-col.platform h4 { color: #166534; }
-    .arch-col.coop h4 { color: #9a3412; }
-
-    .arch-step {
-      display: flex; align-items: flex-start; gap: 8px;
-      padding: 8px 12px; margin-bottom: 8px; border-radius: 8px;
-      background: rgba(255,255,255,0.7); font-weight: 500;
-    }
-    .arch-step .dot {
-      width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
-    }
-    .arch-step.coop-s .dot { background: #ea580c; }
-
-    .arch-module {
-      background: #fff; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px;
-      border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    }
-    .arch-module h5 { font-size: 14px; font-weight: 700; margin: 0 0 4px 0; color: #166534; }
-    .arch-module .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-    .arch-module .tag {
-      font-size: 11px; padding: 2px 10px; border-radius: 10px;
-      background: #dcfce7; color: #166534; font-weight: 500;
-    }
-    .arch-module .tag.blue { background: #dbeafe; color: #1e40af; }
-    .arch-module .tag.purple { background: #f3e8ff; color: #7c3aed; }
-    .arch-module .tag.orange { background: #fff7ed; color: #c2410c; }
-
-    .arch-divider {
-      text-align: center; margin: 14px 0; position: relative;
-    }
-    .arch-divider::before {
-      content: ''; position: absolute; left: 10%; right: 10%; top: 50%;
-      height: 1px; background: #d1d5db;
-    }
-    .arch-divider span {
-      position: relative; background: #ecfdf5; padding: 0 12px;
-      font-size: 12px; color: #6b7280; font-weight: 500;
-    }
-
-    @media (max-width: 900px) {
-      .arch-bottom { flex-direction: column; }
-      .arch-col.coop { flex: auto; }
-      .arch-journey { flex-direction: column; align-items: flex-start; gap: 10px; }
-      .arch-journey .steps { flex-wrap: wrap; }
-    }
-  </style>
-
   <div class="arch-diagram">
     <!-- 顶层：客户旅程横排流程 -->
     <div class="arch-journey">
       <span class="label">👤 客户旅程</span>
       <div class="steps">
-        <div class="step"><span class="dot">1</span> 接听AI来电</div>
+        <div class="step"><span class="dot">1</span> 接听来电</div>
         <span class="arrow">→</span>
-        <div class="step"><span class="dot">2</span> 微信搜索公众号</div>
+        <div class="step"><span class="dot">2</span> 关注公众号</div>
         <span class="arrow">→</span>
-        <div class="step"><span class="dot">3</span> 关注公众号</div>
+        <div class="step"><span class="dot">3</span> 进入入口</div>
         <span class="arrow">→</span>
         <div class="step"><span class="dot">4</span> 输入专属码</div>
         <span class="arrow">→</span>
-        <div class="step"><span class="dot">5</span> 填写投保信息</div>
+        <div class="step"><span class="dot">5</span> 填写信息</div>
         <span class="arrow">→</span>
-        <div class="step"><span class="dot">6</span> 在线支付</div>
+        <div class="step"><span class="dot">6</span> 签约支付</div>
+        <span class="arrow">→</span>
+        <div class="step"><span class="dot">7</span> 二次投保</div>
         <span class="arrow">→</span>
         <div class="step done"><span class="dot">✓</span> 投保成功</div>
       </div>
@@ -343,7 +267,7 @@
 
         <div class="arch-module">
           <h5>🎙️ AI外呼引擎</h5>
-          <p style="margin:0;font-size:12px;color:#6b7280;">批量外呼 · 语音合成 · 多轮会话 · 多标签触发外呼策略</p>
+          <p style="margin:0;font-size:12px;color:#6b7280;">批量外呼 · 语音合成 · 多轮会话 · 外呼策略</p>
           <div class="tags">
             <span class="tag blue">LLM意图分类</span>
             <span class="tag blue">信任度判断</span>
@@ -351,23 +275,33 @@
         </div>
 
         <div class="arch-module">
-          <h5>🧩 子流程编排引擎</h5>
-          <p style="margin:0;font-size:12px;color:#6b7280;">子流程串联 · LLM回复节点 · 退出LLM机制 · 画布统一调度</p>
+          <h5>🧩 画布流程引擎（主流程编排）</h5>
+          <p style="margin:0;font-size:12px;color:#6b7280;">开场白 + 意向筛选 · 子流程调度 · 阶段切换控制</p>
           <div class="tags">
+            <span class="tag">普通节点</span>
+            <span class="tag blue">LLM分类节点</span>
+            <span class="tag purple">LLM回复节点</span>
             <span class="tag">子流程跳转</span>
-            <span class="tag purple">退出LLM</span>
-            <span class="tag blue">LLM回复节点</span>
-            <span class="tag">Tool调用</span>
           </div>
         </div>
 
         <div class="arch-module">
-          <h5>📊 埋点数据调用与策略匹配</h5>
-          <p style="margin:0;font-size:12px;color:#6b7280;"><em style="color:#ea580c;">客户提供埋点API</em> · 我方轮询调用 · 分级话术匹配 · 超时自动推进</p>
+          <h5>🤖 Agentic对话引擎（LLM回复节点）</h5>
+          <p style="margin:0;font-size:12px;color:#6b7280;">自主多轮对话 · 回复意图/退出意图 · 阶段目标驱动</p>
           <div class="tags">
-            <span class="tag orange">对接客户API</span>
-            <span class="tag">实时轮询</span>
-            <span class="tag">策略匹配</span>
+            <span class="tag purple">Prompt策略</span>
+            <span class="tag purple">退出条件判定</span>
+            <span class="tag orange">Tool调用</span>
+          </div>
+        </div>
+
+        <div class="arch-module">
+          <h5>🔧 Tool能力层</h5>
+          <p style="margin:0;font-size:12px;color:#6b7280;">LLM可调用的外部工具接口</p>
+          <div class="tags">
+            <span class="tag orange">专属码获取（Demo）</span>
+            <span class="tag" style="opacity:0.5;">埋点查询（POC）</span>
+            <span class="tag" style="opacity:0.5;">支付结果查询（POC）</span>
           </div>
         </div>
 
@@ -385,9 +319,9 @@
       <div class="arch-col coop">
         <h4>🤝 客户需配合</h4>
         <div class="arch-step coop-s"><span class="dot">1</span> <span>白名单数据<br><span style="font-size:11px;color:#9ca3af;">合规授权客户手机号</span></span></div>
-        <div class="arch-step coop-s"><span class="dot">2</span> <span>公众号配置<br><span style="font-size:11px;color:#9ca3af;">菜单·模板消息·自动回复</span></span></div>
-        <div class="arch-step coop-s"><span class="dot">3</span> <span>投保H5页面<br><span style="font-size:11px;color:#9ca3af;">含埋点SDK</span></span></div>
-        <div class="arch-step coop-s"><span class="dot">4</span> <span>API接口对接<br><span style="font-size:11px;color:#9ca3af;">专属码·埋点·核保·支付查询</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">2</span> <span>公众号配置<br><span style="font-size:11px;color:#9ca3af;">菜单·自动回复</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">3</span> <span>投保H5页面<br><span style="font-size:11px;color:#9ca3af;">专属码接收·支付</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">4</span> <span>API接口（分期）<br><span style="font-size:11px;color:#9ca3af;">Demo:专属码 / POC:+埋点+支付</span></span></div>
         <div class="arch-step coop-s"><span class="dot">5</span> <span>产品方案对接<br><span style="font-size:11px;color:#9ca3af;">保障范围·保费·投保规则</span></span></div>
       </div>
     </div>
@@ -396,23 +330,104 @@
   <h3>2.2 核心技术能力</h3>
   <table class="info-table">
     <thead>
-      <tr><th style="width:140px;">模块</th><th>技术方案</th><th>说明</th></tr>
+      <tr><th style="width:160px;">模块</th><th>技术方案</th><th>说明</th></tr>
     </thead>
     <tbody>
-      <tr><td><strong>AI外呼引擎</strong></td><td>流程画布 + LLM回复节点</td><td>开场建信阶段使用画布普通节点（固定合规话术），意向识别使用LLM分类节点。后续阶段使用LLM回复节点+Tool调用实现动态交互，阶段目标达成后自动退出并跳转子流程</td></tr>
-      <tr><td><strong>子流程编排</strong></td><td>LLM回复节点 + 退出LLM机制</td><td>每个业务阶段作为一个子流程，内部署LLM回复节点。LLM自主完成当前阶段目标后触发退出→画布自动跳转下一子流程。既保留LLM动态交互能力，又通过子流程隔离避免上下文窗口溢出</td></tr>
-      <tr><td><strong>专属码机制</strong></td><td>四位数字码</td><td>外呼中口播四位专属码，客户在公众号输入后自动关联手机号并打开投保页，实现电话→公众号无缝衔接</td></tr>
-      <tr><td><strong>公众号埋点</strong></td><td>客户提供埋点API + 我方调用</td><td>客户在投保H5页面预置埋点SDK，提供查询接口。我方画布流程引擎通过跳转节点定时轮询，根据返回的行为数据匹配分级话术策略</td></tr>
+      <tr><td><strong>画布流程引擎</strong></td><td>主流程编排 + 子流程调度</td><td>开场白由画布普通节点实现（合规可控），意向筛选由LLM分类节点完成。后续各阶段以子流程形式编排，每个子流程内嵌LLM回复节点</td></tr>
+      <tr><td><strong>LLM回复节点</strong></td><td>自主对话 + 退出意图跳转</td><td>每个子流程中，LLM回复节点自主与客户多轮对话完成阶段目标。当目标达成时触发「退出意图」，画布自动跳转至下一子流程</td></tr>
+      <tr><td><strong>Tool能力层</strong></td><td>LLM可调用工具接口</td><td>Demo阶段仅对接专属码获取Tool；POC投产阶段追加埋点查询Tool和支付结果查询Tool，增强AI感知能力</td></tr>
+      <tr><td><strong>专属码机制</strong></td><td>四位数字码 + Tool获取</td><td>LLM在对话中通过Tool调用获取客户专属码并口播，客户在公众号输入后自动关联手机号</td></tr>
       <tr><td><strong>运营报表</strong></td><td>运营数据报表 + 简易看板</td><td>提供日报/周报形式的外呼运营数据，支持简易可视化看板</td></tr>
     </tbody>
   </table>
+
+  <h3>2.3 子流程内部运行机制</h3>
+  <div class="highlight-box purple">
+    <h4>🔄 LLM回复节点工作模式</h4>
+    <p style="margin:0;">每个子流程内部由一个LLM回复节点驱动，运行逻辑如下：</p>
+    <ul style="margin:8px 0 0 20px; font-size:14px; color:var(--text-secondary);">
+      <li><strong>回复意图</strong> → LLM继续与客户对话，引导完成当前阶段目标（如引导关注公众号、引导输入专属码等）</li>
+      <li><strong>退出意图</strong> → LLM判断当前阶段目标已达成，触发退出，画布跳转至下一子流程</li>
+      <li><strong>Tool调用</strong> → 对话过程中LLM按需调用Tool（如获取专属码），将结果融入对话</li>
+    </ul>
+  </div>
+  </div>
+</section>
+
+<!-- ════════════════ 核心流程 ════════════════ -->
+<section class="section">
+  <div class="container">
+  <h2>三、核心业务流程</h2>
+  <p>全链路共9个阶段，前2阶段由流程画布驱动，后7阶段由Agentic LLM自主引导：</p>
+
+  <div style="display:flex; gap:16px; margin:16px 0; font-size:13px;">
+    <span><span style="display:inline-block;width:12px;height:12px;background:#16a34a;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>流程画布</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:#7c3aed;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>Agentic LLM回复节点</span>
+  </div>
+
+  <ol class="flow-list">
+    <li class="canvas">
+      <div class="step-content">
+        <h4>📞 开场白 + 意向筛选 <span class="tag-impl tag-canvas">流程画布</span></h4>
+        <p>AI外呼开场说明来意，建立信任。LLM分类节点识别客户意向，非意向客户礼貌结束，意向客户进入Agentic阶段。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>📲 引导关注公众号 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>LLM自主引导客户搜索并关注公众号。根据客户反馈灵活调整话术（如客户说找不到→换关键词引导，客户说已关注→确认后推进）。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>🎯 引导进入专属码输入入口 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>引导客户在公众号找到指定入口。LLM根据客户描述判断是否已到达正确页面，灵活纠偏。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>🔑 输入专属码 <span class="tag-impl tag-agentic">LLM回复节点 + Tool</span></h4>
+        <p>LLM调用「专属码获取」Tool拿到客户专属码并口播。引导客户输入后确认手机号反显成功。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>📝 填写个人信息并点击按钮 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>引导客户填写姓名、身份证号并点击确认按钮。LLM根据客户反馈判断是否完成。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>💳 收银台输入验证码并签约快捷支付 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>引导客户在收银台页面输入银行卡验证码，完成快捷支付签约并扣款0.6元。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>🔄 第二次点击投保按钮 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>首单完成后引导客户点击升级产品的投保按钮，进入复购流程。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>💰 第二次扣款并完成升级 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>引导客户确认复购产品信息并完成第二次扣款，签约快捷支付自动扣款无需再输验证码。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>🏁 投保完成 → 结束挂机 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>确认投保成功，告知保障生效时间和权益，礼貌结束通话。</p>
+      </div>
+    </li>
+  </ol>
   </div>
 </section>
 
 <!-- ════════════════ 落地难点 ════════════════ -->
 <section class="section section-alt">
   <div class="container">
-  <h2>三、方案选型与方案落地难点</h2>
+  <h2>四、方案选型与方案落地难点</h2>
 
   <div class="highlight-box orange">
     <h4>📍 说明</h4>
@@ -537,7 +552,7 @@
 <!-- ════════════════ 实施周期 ════════════════ -->
 <section class="section">
   <div class="container">
-  <h2>四、实施周期</h2>
+  <h2>五、实施周期</h2>
 
   <div class="timeline">
     <div class="timeline-item">
