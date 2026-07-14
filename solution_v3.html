@@ -470,7 +470,7 @@
 
   <h3>3.1 整体落地复杂度</h3>
 
-  <p>本项目覆盖双产品链路、9 个子流程，涉及 4 种节点类型（普通/LLM分类/LLM回复/跳转）的组合编排。Demo 阶段仅需对接 1 个 API 接口，POC 阶段扩展至 3 个接口。全链路需调试的子流程跳转逻辑、LLM退出判断阈值、以及 Tool 调用时序。</p>
+  <p>本项目覆盖双产品链路、8 个子流程，涉及 4 种节点类型（普通/LLM分类/LLM回复/跳转）的组合编排。Demo 阶段仅需对接 1 个 API 接口，POC 阶段扩展至 3 个接口。全链路需调试的子流程跳转逻辑、LLM退出判断阈值、以及 Tool 调用时序。</p>
 
   <p>其中<strong>收银台签约子流程（#6）</strong>为全链路复杂度最高的环节：LLM需分步引导银行卡签约全流程，在 Demo 阶段仅靠对话确认进度，对 Prompt 设计质量要求极高。任何一个跳转条件或退出阈值设置不当，都会导致客户被错误分流。</p>
 
@@ -484,23 +484,12 @@
       <tr><td>2</td><td><strong>客户投保H5页面</strong></td><td>专属码参数接收、手机号反显、投被保人页面、银行卡收银台等功能均依赖客户侧前端开发。Demo 阶段不依赖埋点，POC 阶段需客户预置埋点SDK。</td></tr>
       <tr><td>3</td><td><strong>客户API接口</strong></td><td>Demo 阶段仅对接专属码获取 1 个接口；POC 阶段新增页面埋点查询和支付结果查询 2 个接口。接口响应延迟和数据格式差异是联调阶段最常见的耗时点。</td></tr>
       <tr><td>4</td><td><strong>我司AI外呼系统</strong></td><td>语音合成质量、ASR识别准确率、外呼并发调度、号码健康度管理、外呼时段策略等，均需根据客户白名单特征进行专项调优。</td></tr>
-      <tr><td>5</td><td><strong>LLM回复节点调优</strong></td><td>9 个子流程中 7 个部署了 LLM回复节点，每个需独立设计 Prompt 和退出条件。Demo 阶段 LLM 仅靠对话判断进度，对 Prompt 的精准度和容错性要求更高。预计每个子流程至少 3 轮 Prompt 迭代。</td></tr>
+      <tr><td>5</td><td><strong>LLM回复节点调优</strong></td><td>8 个子流程中 6 个部署了 LLM回复节点，每个需独立设计 Prompt 和退出条件。Demo 阶段 LLM 仅靠对话判断进度，对 Prompt 的精准度和容错性要求更高。预计每个子流程至少 3 轮 Prompt 迭代。</td></tr>
     </tbody>
   </table>
 
   <h3>3.3 综合工程评估</h3>
-  <table class="info-table">
-    <thead><tr><th>维度</th><th>评估</th></tr></thead>
-    <tbody>
-      <tr><td><strong>子流程数量</strong></td><td>9 个子流程（开场白/关注公众号/进入入口/输码/填信息/签约/二次投保/二次扣款/挂机）</td></tr>
-      <tr><td><strong>LLM回复节点</strong></td><td>子流程 #2–#8 各部署 1 个，共 7 个，每个需独立设计 Prompt 和退出条件</td></tr>
-      <tr><td><strong>API接口（Demo）</strong></td><td>仅 1 个——专属码获取接口，LLM 通过对话确认客户进度</td></tr>
-      <tr><td><strong>API接口（POC）</strong></td><td>扩展至 3 个——新增页面埋点查询、支付结果查询，LLM 可实时查询客户状态</td></tr>
-      <tr><td><strong>子流程跳转路径</strong></td><td>正负分支合计超过 25 条路径，需逐条验证退出条件准确性和跳转逻辑</td></tr>
-      <tr><td><strong>建设期研发投入</strong></td><td>画布编排、接口联调、Prompt工程、子流程联调、全链路测试，预计投入 1–2 名研发+1 名产品经理，持续 5–6 周</td></tr>
-      <tr style="background:#fff7ed;"><td><strong>运营期持续投入</strong></td><td>上线后需持续投入人力进行 Prompt 迭代优化、LLM回复效果监控、话术策略调整。Demo→POC 过渡期需增加埋点和支付接口联调工作。预计长期投入至少 1 人进行日常运营维护</td></tr>
-    </tbody>
-  </table>
+  <p>综合以上分析，本项目 Demo 阶段仅需对接专属码获取 1 个接口即可跑通基础链路，POC 阶段叠加埋点和支付接口增强AI感知能力。建设期预计投入 1–2 名研发 + 1 名产品经理，持续 4 周左右。上线后需持续投入至少 1 人进行 Prompt 迭代优化和日常运营维护。</p>
 
   <div class="highlight-box orange" style="margin-top:20px;">
     <h4>⚠️ 关键风险提示</h4>
@@ -551,7 +540,7 @@
   </div>
 
   <div class="highlight-box green" style="margin-top:20px;">
-    <h4>⏱ 从启动到灰度上线预计 4 周</h4>
+    <h4>⏱ 从启动到灰度上线预计 4 周左右</h4>
     <p style="margin:0;">以上周期为基于历史同类项目的预期估算，不作为正式上线承诺依据，实际进度以项目执行情况为准。</p>
   </div>
 
