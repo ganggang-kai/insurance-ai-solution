@@ -387,7 +387,6 @@
   <h2>三、Agentic方案详解</h2>
   <p>本项目采用「流程画布 + Agentic AI 有机结合」的技术方案，将全链路拆分为 8个子流程：开场白使用画布普通节点保证合规，后续阶段以子流程方式串联，每个子流程内部署 LLM回复节点实现动态交互，由 LLM 自主完成当前阶段的对话目标。目标达成后触发「退出LLM」→ 画布自动跳转至下一子流程，直至通话结束。</p>
 
-  <p>全链路共8个阶段，前1阶段由流程画布驱动，后7阶段由Agentic LLM自主引导：</p>
 
   <div style="display:flex; gap:16px; margin:16px 0; font-size:13px;">
     <span><span style="display:inline-block;width:12px;height:12px;background:#16a34a;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>流程画布</span>
