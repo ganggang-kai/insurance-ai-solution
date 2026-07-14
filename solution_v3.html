@@ -385,7 +385,7 @@
 <section class="section">
   <div class="container">
   <h2>三、Agentic方案详解</h2>
-  <p>本项目采用「流程画布 + Agentic AI 有机结合」的技术方案，将全链路拆分为 9 个子流程：开场白使用画布普通节点保证合规，后续阶段以子流程方式串联，每个子流程内部署 LLM回复节点实现动态交互，由 LLM 自主完成当前阶段的对话目标。目标达成后触发「退出LLM」→ 画布自动跳转至下一子流程，直至通话结束。</p>
+  <p>本项目采用「流程画布 + Agentic AI 有机结合」的技术方案，将全链路拆分为 8个子流程：开场白使用画布普通节点保证合规，后续阶段以子流程方式串联，每个子流程内部署 LLM回复节点实现动态交互，由 LLM 自主完成当前阶段的对话目标。目标达成后触发「退出LLM」→ 画布自动跳转至下一子流程，直至通话结束。</p>
 
   <p>全链路共8个阶段，前1阶段由流程画布驱动，后7阶段由Agentic LLM自主引导：</p>
 
@@ -444,7 +444,6 @@
       </div>
     </li>
   </ol>
-  </div>
 
   <h3 style="color:#ea580c;">▎API 接口分阶段对接策略</h3>
 
@@ -470,26 +469,13 @@
 
   <p><strong>Demo 阶段的已知局限：</strong>由于仅有专属码接口，LLM无法实时感知客户在页面上的操作进度（如是否已点击按钮、是否进入收银台），只能通过对话询问客户来确认。这将导致引导话术的精准度有限，部分场景需要客户主动告知当前状态。</p>
 
-  <h3>6.1 整体落地复杂度</h3>
+  <h3>3.1 整体落地复杂度</h3>
 
   <p>本项目覆盖双产品链路、9 个子流程，涉及 4 种节点类型（普通/LLM分类/LLM回复/跳转）的组合编排。Demo 阶段仅需对接 1 个 API 接口，POC 阶段扩展至 3 个接口。全链路需调试的子流程跳转逻辑、LLM退出判断阈值、以及 Tool 调用时序。</p>
 
   <p>其中<strong>收银台签约子流程（#6）</strong>为全链路复杂度最高的环节：LLM需分步引导银行卡签约全流程，在 Demo 阶段仅靠对话确认进度，对 Prompt 设计质量要求极高。任何一个跳转条件或退出阈值设置不当，都会导致客户被错误分流。</p>
 
-  <div class="highlight-box orange">
-    <h4>👥 预估人力与周期</h4>
-    <table class="info-table" style="margin:8px 0;">
-      <thead><tr><th>角色</th><th>人数</th><th>主要职责</th></tr></thead>
-      <tbody>
-        <tr><td>产品经理</td><td>1 人</td><td>流程梳理及方案设计、客户沟通、联调协调、整体项目推进</td></tr>
-        <tr><td>研发人员</td><td>1–2 人</td><td>客户API对接（Demo 1个 / POC 3个）、后端开发</td></tr>
-        <tr><td>交付运营人员</td><td>1 人</td><td>画布子流程搭建、LLM Prompt撰写与调优、退出LLM阈值调试、正负分支测试</td></tr>
-        <tr style="background:#fff7ed;"><td><strong>合计</strong></td><td><strong>3–4 人</strong></td><td><strong>预计整体落地周期 5–6 周（Demo 阶段 3–4 周可上线基础链路）</strong></td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>6.2 多方系统对接成本</h3>
+  <h3>3.2 多方系统对接成本</h3>
   <table class="info-table">
     <thead>
       <tr><th style="width:30px;">#</th><th>对接系统</th><th>难点说明</th></tr>
@@ -503,7 +489,7 @@
     </tbody>
   </table>
 
-  <h3>6.3 综合工程评估</h3>
+  <h3>3.3 综合工程评估</h3>
   <table class="info-table">
     <thead><tr><th>维度</th><th>评估</th></tr></thead>
     <tbody>
@@ -535,7 +521,6 @@
       </tbody>
     </table>
   </div>
-  </div>
 </section>
 
 <!-- ════════════════ 实施周期 ════════════════ -->
@@ -550,29 +535,24 @@
       <p>确认产品方案、白名单数据交付、公众号配置、API接口规范对齐</p>
     </div>
     <div class="timeline-item">
-      <div class="period">第 2 周</div>
-      <h4>语音Agent搭建 & 话术设计</h4>
-      <p>AI外呼Agent搭建与调试、7阶段全链路话术编写和调优、LLM分类节点配置</p>
+      <div class="period">第 2–3 周</div>
+      <h4>语音Agent搭建 & 话术设计<br/><span style="font-size:12px;color:#9ca3af;">（与技术开发并行）</span></h4>
+      <p>AI外呼Agent搭建与调试、8阶段全链路话术编写和调优、LLM分类节点配置</p>
     </div>
     <div class="timeline-item">
-      <div class="period">第 3–4 周</div>
-      <h4>技术开发与联调</h4>
+      <div class="period">第 2–3 周</div>
+      <h4>技术开发与联调<br/><span style="font-size:12px;color:#9ca3af;">（与话术设计并行）</span></h4>
       <p>画布流程搭建、API接口对接、埋点策略配置、投保页面联调</p>
     </div>
     <div class="timeline-item">
-      <div class="period">第 5 周</div>
+      <div class="period">第 4 周</div>
       <h4>端到端测试与灰度上线</h4>
       <p>全链路正负向分支测试、小批量外呼灰度（建议5000+/日）、话术调优、问题修复</p>
-    </div>
-    <div class="timeline-item">
-      <div class="period">第 6 周</div>
-      <h4>正式放量</h4>
-      <p>全量外呼上线、运营数据监控、持续迭代优化</p>
     </div>
   </div>
 
   <div class="highlight-box green" style="margin-top:20px;">
-    <h4>⏱ 从启动到正式上线预计 5–6 周</h4>
+    <h4>⏱ 从启动到灰度上线预计 4 周</h4>
     <p style="margin:0;">以上周期为基于历史同类项目的预期估算，不作为正式上线承诺依据，实际进度以项目执行情况为准。</p>
   </div>
 
