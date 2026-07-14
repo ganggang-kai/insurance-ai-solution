@@ -171,6 +171,35 @@
   }
   .footer strong { color: #fff; }
 
+  /* ── Architecture Diagram ── */
+  .arch-diagram { margin: 20px 0; font-size: 13px; line-height: 1.6; }
+  .arch-journey { display: flex; align-items: center; gap: 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; }
+  .arch-journey .label { font-size: 14px; font-weight: 700; color: #1e40af; flex-shrink: 0; }
+  .arch-journey .steps { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .arch-journey .step { display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: #dbeafe; color: #1e40af; font-weight: 600; font-size: 12px; white-space: nowrap; }
+  .arch-journey .step.done { background: #dcfce7; color: #166534; }
+  .arch-journey .step .dot { width: 20px; height: 20px; border-radius: 50%; background: #3b82f6; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+  .arch-journey .step.done .dot { background: #16a34a; }
+  .arch-journey .arrow { color: #93c5fd; font-size: 16px; padding: 0 6px; flex-shrink: 0; }
+  .arch-bottom { display: flex; gap: 16px; }
+  .arch-col { border-radius: 12px; padding: 24px 20px; }
+  .arch-col.platform { flex: 1; background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%); border: 2px solid #86efac; }
+  .arch-col.coop { flex: 0 0 240px; background: #fff7ed; border: 2px solid #fed7aa; }
+  .arch-col h4 { font-size: 15px; font-weight: 700; margin: 0 0 16px 0; text-align: center; padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+  .arch-col.platform h4 { color: #166534; }
+  .arch-col.coop h4 { color: #9a3412; }
+  .arch-step { display: flex; align-items: flex-start; gap: 8px; padding: 8px 12px; margin-bottom: 8px; border-radius: 8px; background: rgba(255,255,255,0.7); font-weight: 500; }
+  .arch-step .dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .arch-step.coop-s .dot { background: #ea580c; }
+  .arch-module { background: #fff; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+  .arch-module h5 { font-size: 14px; font-weight: 700; margin: 0 0 4px 0; color: #166534; }
+  .arch-module .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .arch-module .tag { font-size: 11px; padding: 2px 10px; border-radius: 10px; background: #dcfce7; color: #166534; font-weight: 500; }
+  .arch-module .tag.blue { background: #dbeafe; color: #1e40af; }
+  .arch-module .tag.purple { background: #f3e8ff; color: #7c3aed; }
+  .arch-module .tag.orange { background: #fff7ed; color: #c2410c; }
+  @media (max-width: 900px) { .arch-bottom { flex-direction: column; } .arch-col.coop { flex: auto; } .arch-journey { flex-direction: column; align-items: flex-start; gap: 10px; } .arch-journey .steps { flex-wrap: wrap; } }
+
   /* ── Responsive ── */
   @media (max-width: 768px) {
     .hero { padding: 56px 20px 48px; }
@@ -193,8 +222,6 @@
   </p>
   <p class="meta">版本 V1.0 ｜ 2026年7月 ｜ 仅供合作方参阅</p>
 </section>
-
-<div class="container">
 
 <!-- ════════════════ 项目概述 ════════════════ -->
 <section class="section">
@@ -226,8 +253,6 @@
     </div>
   </div>
 </section>
-
-</div>
 
 <!-- ════════════════ 技术架构 ════════════════ -->
 <section class="section section-alt">
