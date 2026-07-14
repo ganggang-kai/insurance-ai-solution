@@ -326,9 +326,9 @@
           <h5>🔧 Tool能力层</h5>
           <p style="margin:0;font-size:12px;color:#6b7280;">LLM可调用的外部工具接口</p>
           <div class="tags">
-            <span class="tag orange">专属码获取（Demo）</span>
-            <span class="tag" style="opacity:0.5;">埋点查询（POC）</span>
-            <span class="tag" style="opacity:0.5;">支付结果查询（POC）</span>
+            <span class="tag orange">专属码获取（POC）</span>
+            <span class="tag" style="opacity:0.5;">埋点查询（投产）</span>
+            <span class="tag" style="opacity:0.5;">支付结果查询（投产）</span>
           </div>
         </div>
 
@@ -348,7 +348,7 @@
         <div class="arch-step coop-s"><span class="dot">1</span> <span>白名单数据<br><span style="font-size:11px;color:#9ca3af;">合规授权客户手机号</span></span></div>
         <div class="arch-step coop-s"><span class="dot">2</span> <span>公众号配置<br><span style="font-size:11px;color:#9ca3af;">菜单·自动回复</span></span></div>
         <div class="arch-step coop-s"><span class="dot">3</span> <span>投保H5页面<br><span style="font-size:11px;color:#9ca3af;">专属码接收·支付</span></span></div>
-        <div class="arch-step coop-s"><span class="dot">4</span> <span>API接口（分期）<br><span style="font-size:11px;color:#9ca3af;">Demo:专属码 / POC:+埋点+支付</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">4</span> <span>API接口（分期）<br><span style="font-size:11px;color:#9ca3af;">POC:专属码 / 投产:+埋点+支付</span></span></div>
         <div class="arch-step coop-s"><span class="dot">5</span> <span>产品方案对接<br><span style="font-size:11px;color:#9ca3af;">保障范围·保费·投保规则</span></span></div>
       </div>
     </div>
@@ -362,7 +362,7 @@
     <tbody>
       <tr><td><strong>画布流程引擎</strong></td><td>主流程编排 + 子流程调度</td><td>开场白由画布普通节点实现（合规可控），意向筛选由LLM分类节点完成。后续各阶段以子流程形式编排，每个子流程内嵌LLM回复节点</td></tr>
       <tr><td><strong>LLM回复节点</strong></td><td>自主对话 + 退出意图跳转</td><td>每个子流程中，LLM回复节点自主与客户多轮对话完成阶段目标。当目标达成时触发「退出意图」，画布自动跳转至下一子流程</td></tr>
-      <tr><td><strong>Tool能力层</strong></td><td>LLM可调用工具接口</td><td>Demo阶段仅对接专属码获取Tool；POC投产阶段追加埋点查询Tool和支付结果查询Tool，增强AI感知能力</td></tr>
+      <tr><td><strong>Tool能力层</strong></td><td>LLM可调用工具接口</td><td>POC阶段仅对接专属码获取Tool；投产阶段追加埋点查询Tool和支付结果查询Tool，增强AI感知能力</td></tr>
       <tr><td><strong>专属码机制</strong></td><td>四位数字码 + Tool获取</td><td>LLM在对话中通过Tool调用获取客户专属码并口播，客户在公众号输入后自动关联手机号</td></tr>
       <tr><td><strong>运营报表</strong></td><td>运营数据报表</td><td>提供日报/周报形式的外呼运营数据</td></tr>
     </tbody>
@@ -454,25 +454,25 @@
     </thead>
     <tbody>
       <tr style="background:#fefce8;">
-        <td><strong>Demo 阶段</strong></td>
+        <td><strong>POC 阶段</strong></td>
         <td>仅 <strong>get_exclusive_code</strong></td>
-        <td>验证基础链路：外呼→关注→输码→投保→签约。LLM回复节点<strong>通过对话确认客户进度</strong>（如"您关注了吗？""码输好了吗？"），不依赖埋点数据。</td>
+        <td>验证基础链路：外呼→关注→输码→投保→签约。LLM回复节点通过对话确认客户进度（如"您关注了吗？""码输好了吗？"），不依赖埋点数据。</td>
       </tr>
       <tr style="background:#f0fdf4;">
-        <td><strong>POC 投产阶段</strong></td>
+        <td><strong>投产阶段</strong></td>
         <td>+ <strong>query_tracking</strong> + <strong>query_payment</strong></td>
         <td>接入埋点查询实现页面进度监控，接入支付查询实现签约结果轮询。LLM回复节点可根据实时数据动态调整引导策略，大幅提升转化效率。</td>
       </tr>
     </tbody>
   </table>
 
-  <p><strong>Demo 阶段的已知局限：</strong>由于仅有专属码接口，LLM无法实时感知客户在页面上的操作进度（如是否已点击按钮、是否进入收银台），只能通过对话询问客户来确认。这将导致引导话术的精准度有限，部分场景需要客户主动告知当前状态。</p>
+  <p><strong>POC 阶段的已知局限：</strong>由于仅有专属码接口，LLM无法实时感知客户在页面上的操作进度（如是否已点击按钮、是否进入收银台），只能通过对话询问客户来确认。这将导致引导话术的精准度有限，部分场景需要客户主动告知当前状态。</p>
 
   <h3>3.1 整体落地复杂度</h3>
 
-  <p>本项目覆盖双产品链路、8 个子流程，涉及 4 种节点类型（普通/LLM分类/LLM回复/跳转）的组合编排。Demo 阶段仅需对接 1 个 API 接口，POC 阶段扩展至 3 个接口。全链路需调试的子流程跳转逻辑、LLM退出判断阈值、以及 Tool 调用时序。</p>
+  <p>本项目覆盖双产品链路、8 个子流程，涉及 4 种节点类型（普通/LLM分类/LLM回复/跳转）的组合编排。POC 阶段仅需对接 1 个 API 接口，投产阶段扩展至 3 个接口。全链路需调试的子流程跳转逻辑、LLM退出判断阈值、以及 Tool 调用时序。</p>
 
-  <p>其中<strong>收银台签约子流程（#6）</strong>为全链路复杂度最高的环节：LLM需分步引导银行卡签约全流程，在 Demo 阶段仅靠对话确认进度，对 Prompt 设计质量要求极高。任何一个跳转条件或退出阈值设置不当，都会导致客户被错误分流。</p>
+  <p>其中<strong>收银台签约子流程（#6）</strong>为全链路复杂度最高的环节：LLM需分步引导银行卡签约全流程，在 POC 阶段仅靠对话确认进度，对 Prompt 设计质量要求极高。任何一个跳转条件或退出阈值设置不当，都会导致客户被错误分流。</p>
 
   <h3>3.2 多方系统对接成本</h3>
   <table class="info-table">
@@ -481,19 +481,19 @@
     </thead>
     <tbody>
       <tr><td>1</td><td><strong>客户微信公众号</strong></td><td>菜单配置、模板消息、关注自动回复均需客户侧操作且我方无法直接调试，任何配置变更都需沟通确认。</td></tr>
-      <tr><td>2</td><td><strong>客户投保H5页面</strong></td><td>专属码参数接收、手机号反显、投被保人页面、银行卡收银台等功能均依赖客户侧前端开发。Demo 阶段不依赖埋点，POC 阶段需客户预置埋点SDK。</td></tr>
-      <tr><td>3</td><td><strong>客户API接口</strong></td><td>Demo 阶段仅对接专属码获取 1 个接口；POC 阶段新增页面埋点查询和支付结果查询 2 个接口。接口响应延迟和数据格式差异是联调阶段最常见的耗时点。</td></tr>
+      <tr><td>2</td><td><strong>客户投保H5页面</strong></td><td>专属码参数接收、手机号反显、投被保人页面、银行卡收银台等功能均依赖客户侧前端开发。POC 阶段不依赖埋点，投产阶段需客户预置埋点SDK。</td></tr>
+      <tr><td>3</td><td><strong>客户API接口</strong></td><td>POC 阶段仅对接专属码获取 1 个接口；投产阶段新增页面埋点查询和支付结果查询 2 个接口。接口响应延迟和数据格式差异是联调阶段最常见的耗时点。</td></tr>
       <tr><td>4</td><td><strong>我司AI外呼系统</strong></td><td>语音合成质量、ASR识别准确率、外呼并发调度、号码健康度管理、外呼时段策略等，均需根据客户白名单特征进行专项调优。</td></tr>
-      <tr><td>5</td><td><strong>LLM回复节点调优</strong></td><td>8 个子流程中 6 个部署了 LLM回复节点，每个需独立设计 Prompt 和退出条件。Demo 阶段 LLM 仅靠对话判断进度，对 Prompt 的精准度和容错性要求更高。预计每个子流程至少 3 轮 Prompt 迭代。</td></tr>
+      <tr><td>5</td><td><strong>LLM回复节点调优</strong></td><td>8 个子流程中 6 个部署了 LLM回复节点，每个需独立设计 Prompt 和退出条件。POC 阶段 LLM 仅靠对话判断进度，对 Prompt 的精准度和容错性要求更高。预计每个子流程至少 3 轮 Prompt 迭代。</td></tr>
     </tbody>
   </table>
 
   <h3>3.3 综合工程评估</h3>
-  <p>综合以上分析，本项目 Demo 阶段仅需对接专属码获取 1 个接口即可跑通基础链路，POC 阶段叠加埋点和支付接口增强AI感知能力。建设期预计投入 1–2 名研发 + 1 名产品经理，持续 4 周左右。上线后需持续投入至少 1 人进行 Prompt 迭代优化和日常运营维护。</p>
+  <p>综合以上分析，本项目 POC 阶段仅需对接专属码获取 1 个接口即可跑通基础链路，投产阶段叠加埋点和支付接口增强AI感知能力。建设期预计投入 1–2 名研发 + 1 名产品经理，持续 4 周左右。上线后需持续投入至少 1 人进行 Prompt 迭代优化和日常运营维护。</p>
 
   <div class="highlight-box orange" style="margin-top:20px;">
     <h4>⚠️ 关键风险提示</h4>
-    <p style="margin:0;">Demo 阶段 LLM 回复节点完全依赖对话确认客户进度，无法通过 Tool 获取页面实时状态，对 Prompt 设计质量要求极高。POC 阶段接入埋点和支付接口后，客户侧接口响应需达到毫秒级，延迟过高将直接影响 LLM回复节点的实时判断效果。以上风险需在项目启动前与客户明确对齐。</p>
+    <p style="margin:0;">POC 阶段 LLM 回复节点完全依赖对话确认客户进度，无法通过 Tool 获取页面实时状态，对 Prompt 设计质量要求极高。投产阶段接入埋点和支付接口后，客户侧接口响应需达到毫秒级，延迟过高将直接影响 LLM回复节点的实时判断效果。以上风险需在项目启动前与客户明确对齐。</p>
   </div>
 
   <div class="highlight-box green" style="margin-top:20px;">
@@ -501,7 +501,7 @@
     <table class="info-table" style="margin:8px 0;">
       <thead><tr><th style="width:120px;">优势</th><th>说明</th></tr></thead>
       <tbody>
-        <tr><td><strong>阶段性交付</strong></td><td>Demo 阶段仅需 1 个 API 接口即可跑通基础链路，3–4 周快速验证；POC 阶段逐步叠加埋点和支付接口，分步迭代、风险可控。</td></tr>
+        <tr><td><strong>阶段性交付</strong></td><td>POC 阶段仅需 1 个 API 接口即可跑通基础链路，3–4 周快速验证；投产阶段逐步叠加埋点和支付接口，分步迭代、风险可控。</td></tr>
         <tr><td><strong>合规可控</strong></td><td>开场白使用画布普通节点，话术预审可追溯。后续 LLM回复节点通过子流程隔离，每个节点上下文有限，降低合规风险。</td></tr>
         <tr><td><strong>灵活交互</strong></td><td>每个子流程中 LLM 可动态应对客户各种反应（不关注、不会操作、卡在签约等），无需像纯画布方案预枚举所有分支。</td></tr>
         <tr><td><strong>快速启动</strong></td><td>无复杂 Tool 封装需求，流程画布编排 + Prompt 设计即可上线，项目启动速度远快于全 Agentic AI 方案。</td></tr>
