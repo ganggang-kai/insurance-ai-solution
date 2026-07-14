@@ -384,8 +384,10 @@
 <!-- ════════════════ 核心流程 ════════════════ -->
 <section class="section">
   <div class="container">
-  <h2>三、核心业务流程</h2>
-  <p>全链路共9个阶段，前2阶段由流程画布驱动，后7阶段由Agentic LLM自主引导：</p>
+  <h2>三、Agentic方案详解</h2>
+  <p>本项目采用「流程画布 + Agentic AI 有机结合」的技术方案，将全链路拆分为 9 个子流程：开场白使用画布普通节点保证合规，后续阶段以子流程方式串联，每个子流程内部署 LLM回复节点实现动态交互，由 LLM 自主完成当前阶段的对话目标。目标达成后触发「退出LLM」→ 画布自动跳转至下一子流程，直至通话结束。</p>
+
+  <p>全链路共8个阶段，前1阶段由流程画布驱动，后7阶段由Agentic LLM自主引导：</p>
 
   <div style="display:flex; gap:16px; margin:16px 0; font-size:13px;">
     <span><span style="display:inline-block;width:12px;height:12px;background:#16a34a;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>流程画布</span>
@@ -443,40 +445,6 @@
     </li>
   </ol>
   </div>
-</section>
-
-<!-- ════════════════ 落地难点 ════════════════ -->
-<section class="section section-alt">
-  <div class="container">
-  <h2>四、方案选型与方案落地难点</h2>
-
-  <div class="highlight-box orange">
-    <h4>📍 说明</h4>
-    <p style="margin:0;">本项目采用<strong>「流程画布 + Agentic AI 有机结合」</strong>的技术方案：开场白使用画布普通节点保证合规，后续阶段以子流程方式串联，每个子流程内部署 LLM回复节点实现动态交互。API 接口分 Demo 和 POC 两个阶段逐步对接。本章节阐述方案设计思路及实际落地中的工程难点。本项目覆盖双产品链路（0.6元短险 + 复购产品），整体落地难度大、研发成本高。</p>
-  </div>
-
-  <h3 style="color:#166534;">▎方案设计：流程画布 + Agentic AI 有机结合</h3>
-
-  <p><strong>设计思路：</strong>以流程画布为整体编排框架，将全链路拆分为 9 个子流程。开场白使用画布原生节点保证话术合规，后续每个子流程内部署一个 LLM回复节点，由 LLM 自主完成当前阶段的对话目标。目标达成后触发「退出LLM」→ 画布自动跳转至下一子流程，直至通话结束。</p>
-
-  <table class="info-table">
-    <thead>
-      <tr><th style="width:35px;">#</th><th>子流程</th><th style="width:130px;">实现方式</th><th>核心动作</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>1</td><td><strong>开场白</strong></td><td>流程画布—普通节点</td><td>固定开场话术 + LLM分类节点意向识别（有兴趣/犹豫/拒绝/质疑）</td></tr>
-      <tr><td>2</td><td><strong>关注公众号</strong></td><td>LLM回复节点</td><td>动态引导客户搜索并关注公众号，通过对话确认关注状态</td></tr>
-      <tr><td>3</td><td><strong>进入专属码输入入口</strong></td><td>LLM回复节点</td><td>引导客户在公众号首页找到专属码输入位置</td></tr>
-      <tr><td>4</td><td><strong>输入专属码</strong></td><td>普通节点 + LLM回复节点</td><td>调用 get_exclusive_code 获取码 → LLM口播 → 引导输入并确认</td></tr>
-      <tr><td>5</td><td><strong>填写个人信息并点击按钮</strong></td><td>LLM回复节点</td><td>0.6元产品：引导填写被保人信息 → 点击《完善多重保障》</td></tr>
-      <tr><td>6</td><td><strong>收银台输入验证码<br/>并签约快捷支付</strong></td><td>LLM回复节点</td><td>分步引导：选卡→验证码→授权→等待自动扣款</td></tr>
-      <tr><td>7</td><td><strong>第二次点击投保按钮</strong></td><td>LLM回复节点</td><td>复购产品：自动跳转 → 引导点击《完善多重保障》</td></tr>
-      <tr><td>8</td><td><strong>第二次扣款并完成升级</strong></td><td>LLM回复节点</td><td>银行卡签约（或免签）→ 扣款 → 3s升级过渡</td></tr>
-      <tr><td>9</td><td><strong>投保完成结束挂机</strong></td><td>画布内置</td><td>告知双产品保障生效时间，结束通话</td></tr>
-    </tbody>
-  </table>
-
-  <p><strong>子流程串联机制：</strong>每个子流程的核心是 LLM回复节点，LLM 的「退出意图」设置为「当前阶段目标完成」。当 LLM 判断客户已完成当前阶段时，自动触发退出 → 画布根据退出结果跳转至下一个子流程。这种设计既保留了 LLM 的动态交互能力，又通过子流程隔离避免了全程依赖 LLM 导致的上下文窗口溢出和成本不可控问题。</p>
 
   <h3 style="color:#ea580c;">▎API 接口分阶段对接策略</h3>
 
@@ -573,7 +541,7 @@
 <!-- ════════════════ 实施周期 ════════════════ -->
 <section class="section">
   <div class="container">
-  <h2>五、实施周期</h2>
+  <h2>四、实施周期</h2>
 
   <div class="timeline">
     <div class="timeline-item">
