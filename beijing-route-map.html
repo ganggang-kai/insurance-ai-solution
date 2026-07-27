@@ -4,136 +4,133 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>北京5天路线图 | 2026年8月</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-    background: #f5f3ef;
-    padding: 20px 12px;
+  body { font-family: "Microsoft YaHei","PingFang SC",sans-serif; background: #1a1a2e; }
+  #map { width: 100vw; height: 100vh; }
+
+  .legend-panel {
+    position: fixed; bottom: 20px; left: 12px; right: 12px;
+    background: rgba(255,255,255,.95); border-radius: 12px;
+    padding: 10px 12px; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    z-index: 1000; max-width: 600px; margin: 0 auto;
   }
-  h1 {
-    text-align: center;
-    font-size: 1.3rem;
-    color: #2c2c2c;
-    margin-bottom: 6px;
+  .legend-item {
+    display: flex; align-items: center; gap: 4px;
+    font-size: .72rem; font-weight: 600; white-space: nowrap;
   }
-  .subtitle {
-    text-align: center;
-    font-size: .82rem;
-    color: #888;
-    margin-bottom: 20px;
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
   }
-  .flowchart-card {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    overflow: auto;
-    max-height: 78vh;
-    padding: 16px;
-    text-align: center;
+
+  .day-label {
+    position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,.75); color: #fff; padding: 6px 16px;
+    border-radius: 20px; font-size: .85rem; font-weight: 700;
+    z-index: 1000; pointer-events: none;
   }
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 18px;
-  }
-  .legend span {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: .78rem; color: #555;
-  }
-  .legend .dot {
-    width: 12px; height: 12px; border-radius: 3px; display: inline-block;
-  }
+
   @media (max-width: 600px) {
-    body { padding: 12px 6px; }
-    h1 { font-size: 1.1rem; }
-    .flowchart-card { padding: 8px; max-height: 72vh; }
-    .legend { gap: 6px; }
-    .legend span { font-size: .7rem; }
+    .legend-panel { bottom: 10px; padding: 8px 10px; gap: 5px; }
+    .legend-item { font-size: .65rem; }
+    .day-label { font-size: .75rem; top: 10px; }
   }
 </style>
 </head>
 <body>
 
-<h1>🗺️ 北京5天4夜 · 地点路线图</h1>
-<div class="subtitle">2026年8月10日—14日 | 两大一小 | 自驾</div>
+<div class="day-label">🗺️ 北京5天4夜 · 地点路线图</div>
+<div id="map"></div>
 
-<div class="flowchart-card">
-  <div class="mermaid">
-flowchart TD
-    D1A["🏨 前门酒店 · 入住"]
-    D1B["🏔️ 景山公园"]
-    D1C["🏮 南锣鼓巷"]
-
-    D2A["🇨🇳 天安门升旗 · 05:20"]
-    D2B["🏯 故宫博物院 · 08:30-15:00"]
-    D2C["🚗 开车出五环 · 去海淀上地"]
-    D2D["🏨 上地/清河酒店"]
-
-    D3A["🏯 颐和园 · 昆明湖划船"]
-    D3B["🏫 清华大学"]
-    D3C["🏫 北京大学"]
-
-    D4A["🚂 铁道博物馆 · 东郊馆"]
-    D4B["🎬 中国电影博物馆"]
-    D4C["🏟️ 鸟巢水立方 · 19:30亮灯"]
-    D4D["🏨 顺义国展酒店"]
-
-    D5A["🏆 国展新馆 · 比赛日"]
-    D5B["🚗 返程"]
-
-    D1A --> D1B --> D1C
-    D1C --> D2A
-    D2A --> D2B --> D2C --> D2D
-    D2D --> D3A
-    D3A --> D3B --> D3C
-    D3C --> D4A
-    D4A --> D4B --> D4C --> D4D
-    D4D --> D5A --> D5B
-
-    classDef d1 fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#1b5e20
-    classDef d2 fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#b71c1c
-    classDef d3 fill:#bbdefb,stroke:#1565c0,stroke-width:2px,color:#0d47a1
-    classDef d4 fill:#ffe0b2,stroke:#e65100,stroke-width:2px,color:#bf360c
-    classDef d5 fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px,color:#4a148c
-
-    class D1A,D1B,D1C d1
-    class D2A,D2B,D2C,D2D d2
-    class D3A,D3B,D3C d3
-    class D4A,D4B,D4C,D4D d4
-    class D5A,D5B d5
-  </div>
+<div class="legend-panel">
+  <span class="legend-item"><span class="legend-dot" style="background:#4caf50"></span>Day1·抵达</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#e53935"></span>Day2·核心</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#1e88e5"></span>Day3·地铁</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#fb8c00"></span>Day4·转移</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#8e24aa"></span>Day5·比赛</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#333;width:6px;height:2px;border-radius:2px"></span>路线</span>
 </div>
 
-<div class="legend">
-  <span><span class="dot" style="background:#c8e6c9;border:2px solid #388e3c"></span> Day 1 · 抵达</span>
-  <span><span class="dot" style="background:#ffcdd2;border:2px solid #c62828"></span> Day 2 · 核心</span>
-  <span><span class="dot" style="background:#bbdefb;border:2px solid #1565c0"></span> Day 3 · 地铁日</span>
-  <span><span class="dot" style="background:#ffe0b2;border:2px solid #e65100"></span> Day 4 · 转移日</span>
-  <span><span class="dot" style="background:#e1bee7;border:2px solid #6a1b9a"></span> Day 5 · 比赛</span>
-</div>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'default',
-    flowchart: {
-      useMaxWidth: false,
-      htmlLabels: false,
-      curve: 'basis',
-      padding: 18,
-      nodeSpacing: 45,
-      rankSpacing: 65,
-    },
-    themeVariables: {
-      fontFamily: '"Microsoft YaHei", "PingFang SC", sans-serif',
-    },
-    securityLevel: 'loose',
-  });
-</script>
+  var map = L.map('map').setView([39.95, 116.38], 11);
 
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+
+  var colors = {
+    d1: '#4caf50', d2: '#e53935', d3: '#1e88e5', d4: '#fb8c00', d5: '#8e24aa'
+  };
+
+  function marker(icon, label, lat, lng, color) {
+    return L.circleMarker([lat, lng], {
+      radius: 10, color: '#fff', weight: 2.5, fillColor: color, fillOpacity: 0.95
+    }).bindTooltip(icon + ' ' + label, { permanent: true, direction: 'top', offset: [0, -6],
+      className: 'leaflet-tooltip-custom' });
+  }
+
+  // ===== DAY 1: Aug 10 (Mon) - Green =====
+  var d1_hotel   = marker('🏨','前门酒店',     39.8965, 116.3975, colors.d1);
+  var d1_jingshan= marker('🏔️','景山公园',     39.9225, 116.3964, colors.d1);
+  var d1_nanluo  = marker('🏮','南锣鼓巷',     39.9377, 116.4034, colors.d1);
+
+  var route1 = L.polyline([
+    [39.8965,116.3975],[39.9225,116.3964],[39.9377,116.4034]
+  ], { color: colors.d1, weight: 3, opacity: 0.8, dashArray: '6 4' });
+
+  // ===== DAY 2: Aug 11 (Tue) - Red =====
+  var d2_flag   = marker('🇨🇳','天安门升旗',   39.9042, 116.3975, colors.d2);
+  var d2_gugong = marker('🏯','故宫博物院',    39.9163, 116.3972, colors.d2);
+  var d2_drive  = marker('🚗','出五环去上地',  39.9600, 116.3700, colors.d2);
+  var d2_hotel  = marker('🏨','上地酒店',      40.0350, 116.3100, colors.d2);
+
+  var route2 = L.polyline([
+    [39.9042,116.3975],[39.9163,116.3972],[39.9600,116.3700],[40.0350,116.3100]
+  ], { color: colors.d2, weight: 3, opacity: 0.8, dashArray: '6 4' });
+
+  // ===== DAY 3: Aug 12 (Wed) - Blue (metro) =====
+  var d3_yhy   = marker('🏯','颐和园',        39.9999, 116.2755, colors.d3);
+  var d3_qh    = marker('🏫','清华大学',      40.0000, 116.3260, colors.d3);
+  var d3_bd    = marker('🏫','北京大学',      39.9920, 116.3100, colors.d3);
+
+  var route3 = L.polyline([
+    [40.0350,116.3100],[39.9999,116.2755],[40.0000,116.3260],[39.9920,116.3100]
+  ], { color: colors.d3, weight: 3, opacity: 0.8, dashArray: '2 0' });
+
+  // ===== DAY 4: Aug 13 (Thu) - Orange =====
+  var d4_train  = marker('🚂','铁道博物馆',   39.9830, 116.4980, colors.d4);
+  var d4_film   = marker('🎬','电影博物馆',   39.9950, 116.5050, colors.d4);
+  var d4_bird   = marker('🏟️','鸟巢水立方',   39.9919, 116.3906, colors.d4);
+  var d4_hotel  = marker('🏨','国展酒店',     40.0800, 116.5650, colors.d4);
+
+  var route4 = L.polyline([
+    [39.9920,116.3100],[39.9830,116.4980],[39.9950,116.5050],[39.9919,116.3906],[40.0800,116.5650]
+  ], { color: colors.d4, weight: 3, opacity: 0.8, dashArray: '6 4' });
+
+  // ===== DAY 5: Aug 14 (Fri) - Purple =====
+  var d5_guozhan = marker('🏆','国展新馆',    40.0800, 116.5800, colors.d5);
+  var d5_back    = marker('🚗','返程',         40.0500, 116.6300, colors.d5);
+
+  var route5 = L.polyline([
+    [40.0800,116.5650],[40.0800,116.5800],[40.0500,116.6300]
+  ], { color: colors.d5, weight: 3, opacity: 0.8, dashArray: '2 0' });
+
+  // ===== Layer groups =====
+  L.layerGroup([d1_hotel,d1_jingshan,d1_nanluo,route1]).addTo(map);
+  L.layerGroup([d2_flag,d2_gugong,d2_drive,d2_hotel,route2]).addTo(map);
+  L.layerGroup([d3_yhy,d3_qh,d3_bd,route3]).addTo(map);
+  L.layerGroup([d4_train,d4_film,d4_bird,d4_hotel,route4]).addTo(map);
+  L.layerGroup([d5_guozhan,d5_back,route5]).addTo(map);
+
+  // ===== Fit bounds to show all markers =====
+  var all = [d1_hotel,d1_jingshan,d1_nanluo, d2_flag,d2_gugong,d2_drive,d2_hotel,
+             d3_yhy,d3_qh,d3_bd, d4_train,d4_film,d4_bird,d4_hotel, d5_guozhan,d5_back];
+  var group = L.featureGroup(all);
+  map.fitBounds(group.getBounds().pad(0.1));
+</script>
 </body>
 </html>
