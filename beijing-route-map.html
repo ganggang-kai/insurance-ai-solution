@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北京5天路线图 | 2026年8月</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #f5f3ef;
+    padding: 20px 12px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.3rem;
+    color: #2c2c2c;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: .82rem;
+    color: #888;
+    margin-bottom: 20px;
+  }
+  .flowchart-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    overflow: auto;
+    max-height: 78vh;
+    padding: 16px;
+    text-align: center;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 18px;
+  }
+  .legend span {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: .78rem; color: #555;
+  }
+  .legend .dot {
+    width: 12px; height: 12px; border-radius: 3px; display: inline-block;
+  }
+  @media (max-width: 600px) {
+    body { padding: 12px 6px; }
+    h1 { font-size: 1.1rem; }
+    .flowchart-card { padding: 8px; max-height: 72vh; }
+    .legend { gap: 6px; }
+    .legend span { font-size: .7rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🗺️ 北京5天4夜 · 地点路线图</h1>
+<div class="subtitle">2026年8月10日—14日 | 两大一小 | 自驾</div>
+
+<div class="flowchart-card">
+  <div class="mermaid">
+flowchart TD
+    D1A["🏨 前门酒店 · 入住"]
+    D1B["🏔️ 景山公园"]
+    D1C["🏮 南锣鼓巷"]
+
+    D2A["🇨🇳 天安门升旗 · 05:20"]
+    D2B["🏯 故宫博物院 · 08:30-15:00"]
+    D2C["🚗 开车出五环 · 去海淀上地"]
+    D2D["🏨 上地/清河酒店"]
+
+    D3A["🏯 颐和园 · 昆明湖划船"]
+    D3B["🏫 清华大学"]
+    D3C["🏫 北京大学"]
+
+    D4A["🚂 铁道博物馆 · 东郊馆"]
+    D4B["🎬 中国电影博物馆"]
+    D4C["🏟️ 鸟巢水立方 · 19:30亮灯"]
+    D4D["🏨 顺义国展酒店"]
+
+    D5A["🏆 国展新馆 · 比赛日"]
+    D5B["🚗 返程"]
+
+    D1A --> D1B --> D1C
+    D1C --> D2A
+    D2A --> D2B --> D2C --> D2D
+    D2D --> D3A
+    D3A --> D3B --> D3C
+    D3C --> D4A
+    D4A --> D4B --> D4C --> D4D
+    D4D --> D5A --> D5B
+
+    classDef d1 fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#1b5e20
+    classDef d2 fill:#ffcdd2,stroke:#c62828,stroke-width:2px,color:#b71c1c
+    classDef d3 fill:#bbdefb,stroke:#1565c0,stroke-width:2px,color:#0d47a1
+    classDef d4 fill:#ffe0b2,stroke:#e65100,stroke-width:2px,color:#bf360c
+    classDef d5 fill:#e1bee7,stroke:#6a1b9a,stroke-width:2px,color:#4a148c
+
+    class D1A,D1B,D1C d1
+    class D2A,D2B,D2C,D2D d2
+    class D3A,D3B,D3C d3
+    class D4A,D4B,D4C,D4D d4
+    class D5A,D5B d5
+  </div>
+</div>
+
+<div class="legend">
+  <span><span class="dot" style="background:#c8e6c9;border:2px solid #388e3c"></span> Day 1 · 抵达</span>
+  <span><span class="dot" style="background:#ffcdd2;border:2px solid #c62828"></span> Day 2 · 核心</span>
+  <span><span class="dot" style="background:#bbdefb;border:2px solid #1565c0"></span> Day 3 · 地铁日</span>
+  <span><span class="dot" style="background:#ffe0b2;border:2px solid #e65100"></span> Day 4 · 转移日</span>
+  <span><span class="dot" style="background:#e1bee7;border:2px solid #6a1b9a"></span> Day 5 · 比赛</span>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: {
+      useMaxWidth: false,
+      htmlLabels: false,
+      curve: 'basis',
+      padding: 18,
+      nodeSpacing: 45,
+      rankSpacing: 65,
+    },
+    themeVariables: {
+      fontFamily: '"Microsoft YaHei", "PingFang SC", sans-serif',
+    },
+    securityLevel: 'loose',
+  });
+</script>
+
+</body>
+</html>
