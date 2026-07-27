@@ -57,10 +57,17 @@
 <script>
   var map = L.map('map').setView([39.95, 116.38], 11);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  // 高德地图瓦片 — 国内加载稳定
+  L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+    subdomains: '1234',
     maxZoom: 18,
-    attribution: '&copy; OpenStreetMap'
+    attribution: '&copy; 高德地图'
   }).addTo(map);
+
+  // 备用：天地图（高德万一挂了也能用）
+  // L.tileLayer('http://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles', {
+  //   subdomains: '01234567', maxZoom: 18, attribution: '&copy; 天地图'
+  // }).addTo(map);
 
   var colors = {
     d1: '#4caf50', d2: '#e53935', d3: '#1e88e5', d4: '#fb8c00', d5: '#8e24aa'
