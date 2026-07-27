@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北京5天4夜亲子自驾游攻略 | 2026年8月10-14日</title>
+<style>
+  :root {
+    --primary: #c41e3a;
+    --primary-light: #fef0f2;
+    --bg: #faf8f5;
+    --card: #fff;
+    --text: #2c2c2c;
+    --muted: #888;
+    --border: #e8e4df;
+    --warning: #e6a817;
+    --warning-bg: #fffdf5;
+    --success: #2d8c4a;
+    --tag-ok: #d4edda;
+    --tag-no: #f8d7da;
+    --tag-drive: #d1ecf1;
+    --tag-metro: #fff3cd;
+    --tag-walk: #e8daef;
+    --tag-taxi: #e8f5e9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #c41e3a 0%, #a01830 100%);
+    color: #fff; padding: 32px 20px 28px; text-align: center;
+  }
+  .hero h1 { font-size: clamp(1.4rem, 4vw, 2rem); margin-bottom: 6px; }
+  .hero .sub { opacity: .85; font-size: .95rem; }
+  .hero .tags { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .hero .tags span { background: rgba(255,255,255,.18); padding: 4px 14px; border-radius: 20px; font-size: .85rem; }
+
+  .container { max-width: 760px; margin: 0 auto; padding: 0 16px 40px; }
+
+  section {
+    background: var(--card); border-radius: 14px; padding: 24px 20px;
+    margin: 20px 0; box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  }
+  section h2 { font-size: 1.2rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  section h2 .icon { font-size: 1.3rem; }
+  section h3 { font-size: 1rem; margin: 16px 0 8px; color: var(--primary); }
+
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 10px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 480px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: #f9f7f4; font-weight: 600; white-space: nowrap; }
+
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: .78rem; font-weight: 600; }
+  .tag-ok   { background: var(--tag-ok); color: #155724; }
+  .tag-no   { background: var(--tag-no); color: #721c24; }
+  .tag-drive{ background: var(--tag-drive); color: #0c5460; }
+  .tag-metro{ background: var(--tag-metro); color: #856404; }
+  .tag-walk { background: var(--tag-walk); color: #6c3483; }
+  .tag-taxi { background: var(--tag-taxi); color: #1b5e20; }
+
+  .alert {
+    padding: 14px 16px; border-radius: 10px; margin: 12px 0; font-size: .9rem;
+  }
+  .alert-danger { background: #fff5f5; border-left: 4px solid #c41e3a; color: #721c24; }
+  .alert-warn   { background: var(--warning-bg); border-left: 4px solid var(--warning); color: #856404; }
+  .alert-info   { background: #f0f7ff; border-left: 4px solid #1a73e8; color: #0c3b6b; }
+  .alert-success{ background: #f4faf6; border-left: 4px solid var(--success); color: #155724; }
+  .alert p { margin: 4px 0; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 10px; top: 6px; bottom: 6px;
+    width: 2px; background: var(--border);
+  }
+  .tl-item { position: relative; margin-bottom: 16px; }
+  .tl-item::before {
+    content: ''; position: absolute; left: -22px; top: 7px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--primary); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--primary);
+  }
+  .tl-time { font-weight: 700; color: var(--primary); font-size: .88rem; }
+  .tl-text { margin-top: 2px; font-size: .9rem; }
+  .tl-drive::before { background: #0c5460; box-shadow: 0 0 0 2px #0c5460; }
+  .tl-drive .tl-time { color: #0c5460; }
+
+  .day-card { border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin: 16px 0; }
+  .day-card h3 { margin: 0 0 12px; font-size: 1.05rem; }
+  .day-card .day-label { font-size: .75rem; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; }
+
+  .hotel-grid { display: grid; gap: 12px; }
+  .hotel-card {
+    border: 1px solid var(--border); border-radius: 10px; padding: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .hotel-card .name { font-weight: 700; }
+  .hotel-card .meta { font-size: .82rem; color: var(--muted); }
+  .hotel-card .price { font-weight: 700; color: var(--primary); white-space: nowrap; }
+  .hotel-card .stars { color: #e6a817; }
+
+  .checklist { list-style: none; }
+  .checklist li { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 10px; }
+  .checklist .date { background: var(--primary-light); color: var(--primary); padding: 3px 10px; border-radius: 6px; font-size: .8rem; font-weight: 700; white-space: nowrap; }
+  .checklist .desc { font-size: .9rem; }
+
+  .sources { font-size: .78rem; color: var(--muted); }
+  .sources li { margin: 3px 0; }
+
+  .food-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .food-item .emoji { font-size: 1.5rem; }
+  .food-item .info { flex: 1; }
+  .food-item .info strong { display: block; }
+  .food-item .info span { font-size: .82rem; color: var(--muted); }
+  .food-item .price { font-weight: 700; color: var(--primary); white-space: nowrap; }
+
+  .budget-table td:last-child, .budget-table th:last-child { text-align: right; }
+  .budget-table tfoot td { font-weight: 700; border-top: 2px solid var(--border); }
+
+  .map-line {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 12px; background: #f9f7f4; border-radius: 8px;
+    font-size: .85rem; margin: 10px 0;
+  }
+  .map-line .station {
+    background: #fff; border: 1.5px solid var(--primary); border-radius: 6px;
+    padding: 3px 8px; white-space: nowrap; font-weight: 600;
+  }
+  .map-line .arrow { color: var(--muted); }
+
+  @media (max-width: 600px) {
+    section { padding: 18px 14px; border-radius: 10px; margin: 14px 0; }
+    .container { padding: 0 8px 24px; }
+    .hero { padding: 24px 14px 20px; }
+    .hero h1 { font-size: 1.3rem; }
+    .hotel-card { flex-direction: column; align-items: flex-start; }
+    .map-line { font-size: .78rem; gap: 4px; }
+    .map-line .station { padding: 2px 5px; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .hero { background: #c41e3a !important; -webkit-print-color-adjust: exact; }
+    section { box-shadow: none; break-inside: avoid; }
+    .container { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ HERO ════════════ -->
+<div class="hero">
+  <h1>🏯 北京5天4夜亲子自驾游攻略</h1>
+  <div class="sub">2026年8月10日（周一）— 8月14日（周五）| 两大一小 | 自驾</div>
+  <div class="tags">
+    <span>🚗 外地牌照·尾号8</span>
+    <span>👶 亲子出行</span>
+    <span>🏨 预算300-800/晚</span>
+    <span>🏆 8/14 国展比赛</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ════════════ 关键日期 ════════════ -->
+<section style="border: 2px solid var(--primary); background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);">
+  <h2 style="color: var(--primary);"><span class="icon">🔔</span> 关键日期提醒 — 错过一个行程全乱！</h2>
+  <table style="font-size:.95rem">
+    <tr style="background:#fff5f5">
+      <td style="font-size:1.4rem;text-align:center;width:50px">🏨</td>
+      <td><strong>现在</strong></td>
+      <td>订酒店（暑期紧张，越早越好）</td>
+    </tr>
+    <tr>
+      <td style="font-size:1.4rem;text-align:center">📱</td>
+      <td><strong>7月31日前后</strong></td>
+      <td>预约清华大学、北京大学参观（提前7天）</td>
+    </tr>
+    <tr style="background:#fff5f5">
+      <td style="font-size:1.4rem;text-align:center">⚠️</td>
+      <td><strong>8月3日</strong></td>
+      <td>预约天安门广场"升旗"时段（微信小程序）</td>
+    </tr>
+    <tr style="background:#fff0f0">
+      <td style="font-size:1.4rem;text-align:center">🔥</td>
+      <td><strong style="color:var(--primary);font-size:1.1rem">8月4日 20:00</strong></td>
+      <td><strong style="color:var(--primary)">抢故宫门票！</strong>8月11日参观，晚了秒没</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ════════════ 限行分析 ════════════ -->
+<section>
+  <h2><span class="icon">⚠️</span> 自驾限制分析</h2>
+  <div class="alert alert-danger"><p><strong>你的车：外地牌照，尾号8</strong></p></div>
+
+  <h3>📋 限行日历</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>日期</th><th>星期</th><th>尾号限行（五环内 7-20点）</th><th>你的尾号8</th><th>外地牌高峰禁入五环</th></tr>
+      <tr><td>8月10日</td><td>周一</td><td>限 1 和 6</td><td><span class="tag tag-ok">✅</span></td><td>7-9 / 17-20 禁入</td></tr>
+      <tr><td>8月11日</td><td>周二</td><td>限 2 和 7</td><td><span class="tag tag-ok">✅</span></td><td>7-9 / 17-20 禁入</td></tr>
+      <tr><td>8月12日</td><td>周三</td><td><strong>限 3 和 8</strong></td><td><span class="tag tag-no">❌ 全天禁行</span></td><td>全天禁入五环</td></tr>
+      <tr><td>8月13日</td><td>周四</td><td>限 4 和 9</td><td><span class="tag tag-ok">✅</span></td><td>7-9 / 17-20 禁入</td></tr>
+      <tr><td>8月14日</td><td>周五</td><td>限 5 和 0</td><td><span class="tag tag-ok">✅</span></td><td>国展五环外，无限制</td></tr>
+    </table>
+  </div>
+  <p style="font-size:.82rem;color:var(--muted);margin-top:8px">
+    📌 来源：Wikipedia "Road space rationing in Beijing" — End-number license plate policy。限行区域五环路（含）以内，违者¥200。
+  </p>
+
+  <div class="alert alert-warn">
+    <p><strong>💡 核心策略：</strong></p>
+    <p>• 市区核心景点（天安门、故宫）→ <strong>不开车，打车+地铁+步行</strong></p>
+    <p>• 8/11（周二）傍晚 <strong>开车出五环</strong>，住海淀上地/清河 → 8/12（周三）限行日正好步行+地铁串游颐和园→清华→北大</p>
+    <p>• 外地牌在五环内仅 9:00-17:00 可行驶，开车进市区得不偿失</p>
+  </div>
+</section>
+
+<!-- ════════════ 每日行程 ════════════ -->
+<section>
+  <h2><span class="icon">🗺️</span> 每日精确行程</h2>
+
+  <!-- Day 1 -->
+  <div class="day-card">
+    <div class="day-label">Day 1</div>
+    <h3>🏔️ 8月10日（周一）| 抵达 + 老北京初体验</h3>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-time">9:00后</div><div class="tl-text"><span class="tag tag-drive">自驾</span> 抵达北京（避开7-9点早高峰），导航到酒店。<strong>到店后车停酒店不再动。</strong></div></div>
+      <div class="tl-item"><div class="tl-time">10:30</div><div class="tl-text">🏨 入住（前门/王府井区域），休整</div></div>
+      <div class="tl-item"><div class="tl-time">12:00</div><div class="tl-text">🍜 午餐</div></div>
+      <div class="tl-item"><div class="tl-time">13:30</div><div class="tl-text"><span class="tag tag-metro">地铁</span> 🏔️ <strong>景山公园</strong> — 门票2元，万春亭俯瞰故宫全景</div></div>
+      <div class="tl-item"><div class="tl-time">15:30</div><div class="tl-text"><span class="tag tag-walk">步行</span> 🏮 <strong>南锣鼓巷 → 什刹海</strong> — 老北京胡同+后海</div></div>
+      <div class="tl-item"><div class="tl-time">18:00</div><div class="tl-text">🍲 晚餐：东来顺/聚宝源 铜锅涮肉（什刹海附近）</div></div>
+      <div class="tl-item"><div class="tl-time">20:00</div><div class="tl-text"><span class="tag tag-metro">地铁</span> 回酒店，早休息（明天要凌晨起床）</div></div>
+    </div>
+    <div class="alert alert-info" style="margin-top:10px">
+      <p>⚠️ 故宫周一闭馆（故宫官网 dpm.org.cn 标注"全年实行周一闭馆"），今天去不了。景山正好替代。</p>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="day-card">
+    <div class="day-label">Day 2 · 核心日</div>
+    <h3>🇨🇳 8月11日（周二）| 升旗 → 故宫 → 傍晚出五环住海淀</h3>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-time">~3:00</div><div class="tl-text"><span class="tag tag-taxi">打车</span> 去天安门（不开车！）</div></div>
+      <div class="tl-item"><div class="tl-time">3:20</div><div class="tl-text">🧍 到达排队（暑期3点到可排前5排）</div></div>
+      <div class="tl-item"><div class="tl-time">4:30</div><div class="tl-text">🛂 安检通过，占好位置</div></div>
+      <div class="tl-item"><div class="tl-time">5:20</div><div class="tl-text">🇨🇳 <strong>升旗！</strong>（日出精确时间）</div></div>
+      <div class="tl-item"><div class="tl-time">6:00-8:00</div><div class="tl-text">📸 天安门广场拍照</div></div>
+      <div class="tl-item"><div class="tl-time">8:30-14:30</div><div class="tl-text"><span class="tag tag-walk">步行</span> 🏯 <strong>故宫博物院</strong>（提前预约！中轴线3-4小时）</div></div>
+      <div class="tl-item tl-drive"><div class="tl-time">14:30</div><div class="tl-text"><span class="tag tag-walk">步行</span> 回酒店退房，行李装车</div></div>
+      <div class="tl-item tl-drive"><div class="tl-time">15:00</div><div class="tl-text"><span class="tag tag-drive">自驾</span> 🚗 <strong>驱车出五环，前往海淀上地/清河</strong><br>
+        ⚠️ 必须在17:00前离开五环！前门→京藏高速→上地，约40分钟</div></div>
+      <div class="tl-item"><div class="tl-time">16:00</div><div class="tl-text">🏨 入住上地/清河酒店（五环外，近清华北大）</div></div>
+      <div class="tl-item"><div class="tl-time">18:00</div><div class="tl-text">🍗 晚餐：上地华联/五彩城，或打车去五道口美食区</div></div>
+    </div>
+    <div class="alert alert-warn" style="margin-top:10px">
+      <p>⚠️ 今天有一个硬死线：<strong>15:00前必须离开酒店出发，17:00前必须出五环。</strong>故宫建议14:00前逛完主线。</p>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="day-card">
+    <div class="day-label">Day 3 · 最顺路日</div>
+    <h3>🏯 8月12日（周三）| 颐和园 → 清华 → 北大（一线串）</h3>
+    <div class="alert alert-danger" style="margin-bottom:12px">
+      <p>⚠️ <strong>今天尾号8全天禁入五环！但你已经住在五环外，不开车也能玩。</strong></p>
+    </div>
+    <div class="alert alert-success">
+      <p>💡 <strong>这三个景点在地铁4号线上一字排开，从北到南：颐和园（北宫门站）→ 圆明园站（清华）→ 北京大学东门站。全程地铁串联，不走回头路！</strong></p>
+    </div>
+
+    <div class="map-line">
+      <span class="station">🏨 上地/清河酒店</span><span class="arrow">→</span>
+      <span class="station">🚇 颐和园 北宫门</span><span class="arrow">→</span>
+      <span class="station">🚇 圆明园（清华）</span><span class="arrow">→</span>
+      <span class="station">🚇 北京大学东门</span>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-time">7:30</div><div class="tl-text"><span class="tag tag-taxi">打车/公交</span> 从酒店到颐和园（约15分钟，都在海淀）</div></div>
+      <div class="tl-item"><div class="tl-time">8:00-11:00</div><div class="tl-text">🏯 <strong>颐和园</strong> — 清晨人少，昆明湖划船，走长廊看万寿山</div></div>
+      <div class="tl-item"><div class="tl-time">11:00</div><div class="tl-text"><span class="tag tag-metro">地铁4号线</span> 北宫门站→圆明园站（2站，5分钟）</div></div>
+      <div class="tl-item"><div class="tl-time">11:30-14:00</div><div class="tl-text">🏫 <strong>清华大学</strong>（提前预约）→ 🍜 午餐：清华万人食堂</div></div>
+      <div class="tl-item"><div class="tl-time">14:00</div><div class="tl-text"><span class="tag tag-metro">地铁4号线</span> 圆明园站→北京大学东门站（1站）</div></div>
+      <div class="tl-item"><div class="tl-time">14:30-17:00</div><div class="tl-text">🏫 <strong>北京大学</strong>（提前预约）— 未名湖、博雅塔</div></div>
+      <div class="tl-item"><div class="tl-time">17:30</div><div class="tl-text"><span class="tag tag-taxi">打车</span> 回上地/清河酒店（10分钟）</div></div>
+      <div class="tl-item"><div class="tl-time">18:30</div><div class="tl-text">🍲 晚餐：上地/清河商圈</div></div>
+    </div>
+    <p style="font-size:.82rem;margin-top:8px">
+      📱 两校预约：清华→"参观清华"小程序；北大→pku.edu.cn→访客→个人预约参观（来源：北大官网）
+    </p>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="day-card">
+    <div class="day-label">Day 4 · 转移日</div>
+    <h3>🚂 8月13日（周四）| 铁道馆 → 电影馆 → 🏟️鸟巢夜景 → 移师国展</h3>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-time">8:00</div><div class="tl-text">🏨 退房，行李装车</div></div>
+      <div class="tl-item tl-drive"><div class="tl-time">8:50</div><div class="tl-text"><span class="tag tag-drive">自驾</span> 🚗 上地→北五环向东→酒仙桥（约30分钟）</div></div>
+      <div class="tl-item"><div class="tl-time">9:30-11:30</div><div class="tl-text">🚂 <strong>中国铁道博物馆（东郊馆）</strong> — 🎯 男孩天堂！<br>
+        · 真实火车头、蒸汽机车、绿皮车，爬上去摸、钻进驾驶室</div></div>
+      <div class="tl-item"><div class="tl-time">11:30</div><div class="tl-text">🍜 午餐：博物馆附近简餐</div></div>
+      <div class="tl-item"><div class="tl-time">12:30-14:30</div><div class="tl-text">🎬 <strong>中国电影博物馆</strong>（开车5分钟）<br>
+        · IMAX巨幕、绿幕互动、中央环形展厅</div></div>
+      <div class="tl-item tl-drive"><div class="tl-time">14:30</div><div class="tl-text"><span class="tag tag-drive">自驾</span> 🚗 酒仙桥→北四环→奥林匹克公园（约20分钟）<br>⚠️ 17:00前必须到达并停好车（外地牌17:00-20:00五环内禁行）</div></div>
+      <div class="tl-item"><div class="tl-time">15:00-17:00</div><div class="tl-text">🏟️ <strong>鸟巢·水立方</strong> 白天外观 → 奥林匹克公园散步<br>
+        · 钢结构鸟巢在阳光下质感极好，水立方蓝色气泡墙出片</div></div>
+      <div class="tl-item"><div class="tl-time">17:00-19:00</div><div class="tl-text">🍲 <strong>晚餐</strong>：新奥购物中心（鸟巢地下，餐饮选择多）<br>
+        ⚠️ 车已停好，17-20点不能动车，正好吃饭等天黑</div></div>
+      <div class="tl-item"><div class="tl-time">19:30</div><div class="tl-text">🌃 <strong>鸟巢水立方亮灯！</strong>夜景比白天震撼10倍<br>
+        · 鸟巢红色灯光+水立方蓝色灯光，孩子会"哇"出来</div></div>
+      <div class="tl-item tl-drive"><div class="tl-time">20:00</div><div class="tl-text"><span class="tag tag-drive">自驾</span> 🚗 北五环→机场高速→顺义（约40分钟）<br>
+        ✅ 20:00后外地牌解禁，全程高速无阻</div></div>
+      <div class="tl-item"><div class="tl-time">20:45</div><div class="tl-text">🏨 入住国展附近酒店</div></div>
+    </div>
+    <div class="alert alert-warn" style="margin-top:10px">
+      <p>⚠️ <strong>今天的核心策略：利用限行窗口反向操作。</strong>15:00到鸟巢停好车→17:00-20:00禁行期间正好吃饭+等亮灯→20:00解禁后开车去顺义。限行不但没耽误事，反而逼出了一个完美节奏。</p>
+    </div>
+    <table style="margin-top:12px">
+      <tr><th></th><th>铁道博物馆</th><th>电影博物馆</th><th>鸟巢水立方</th></tr>
+      <tr><td>🎫 门票</td><td>20元/成人</td><td><strong>免费</strong></td><td>外观免费</td></tr>
+      <tr><td>⏰ 时间</td><td>9:00-16:30</td><td>9:00-17:00</td><td>全天（亮灯~19:30）</td></tr>
+      <tr><td>📱 预约</td><td>公众号"中国铁道博物馆"→参观预约</td><td>公众号"中国电影博物馆"→参观预约</td><td>无需预约</td></tr>
+    </table>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="day-card">
+    <div class="day-label">Day 5</div>
+    <h3>🏆 8月14日（周五）| 国展比赛日</h3>
+    <p>全天陪同孩子在<strong>中国国际展览中心（顺义新馆）</strong>参加比赛。国展在五环外，全天无交通限制。赛后直接返程。</p>
+  </div>
+</section>
+
+<!-- ════════════ 酒店推荐 ════════════ -->
+<section>
+  <h2><span class="icon">🏨</span> 酒店推荐 — 按天分段</h2>
+
+  <h3>📍 第1段｜8月10日（1晚）前门/王府井</h3>
+  <p style="font-size:.82rem;color:var(--muted)">只住1晚，核心诉求：离天安门/故宫近，方便凌晨打车看升旗</p>
+  <div class="hotel-grid">
+    <div class="hotel-card">
+      <div>
+        <div class="name">🥇 汉庭（前门天安门店）</div>
+        <div class="meta">步行15分钟到天安门 | 打车到升旗排队口5分钟</div>
+      </div>
+      <div class="price">¥400-550</div>
+    </div>
+    <div class="hotel-card">
+      <div>
+        <div class="name">🥈 北京首都宾馆</div>
+        <div class="meta"><span class="stars">⭐4.7</span> 6153评 | 紧邻天安门·国博</div>
+      </div>
+      <div class="price">¥600-800</div>
+    </div>
+    <div class="hotel-card">
+      <div>
+        <div class="name">如家精选neo（王府井店）</div>
+        <div class="meta">步行可达故宫 | 最实惠</div>
+      </div>
+      <div class="price">¥350-500</div>
+    </div>
+  </div>
+
+  <h3>📍 第2段｜8月11-12日（2晚）海淀上地/清河（五环外）</h3>
+  <p style="font-size:.82rem;color:var(--muted)">住五环外靠近清华北大。8/12限行日不开车，打车+地铁串联颐和园→清华→北大。</p>
+  <div class="hotel-grid">
+    <div class="hotel-card">
+      <div>
+        <div class="name">🥇 全季酒店（北京上地店）</div>
+        <div class="meta">品质稳定 | 打车到颐和园15分钟 | 近地铁13号线上地站</div>
+      </div>
+      <div class="price">¥400-550</div>
+    </div>
+    <div class="hotel-card">
+      <div>
+        <div class="name">汉庭（北京上地西二旗店）</div>
+        <div class="meta">连锁品质 | 近地铁13号线西二旗站</div>
+      </div>
+      <div class="price">¥350-500</div>
+    </div>
+    <div class="hotel-card">
+      <div>
+        <div class="name">如家商旅（北京清河店）</div>
+        <div class="meta">性价比高 | 清河商圈配套齐全</div>
+      </div>
+      <div class="price">¥300-450</div>
+    </div>
+  </div>
+
+  <h3>📍 第3段｜8月13日（1晚）顺义国展</h3>
+  <div class="hotel-grid">
+    <div class="hotel-card">
+      <div>
+        <div class="name">🥇 北京远航国际酒店（新国展店）</div>
+        <div class="meta"><span class="stars">⭐4.9</span> 24661评 | 距国展最近</div>
+      </div>
+      <div class="price">¥350-500</div>
+    </div>
+    <div class="hotel-card">
+      <div>
+        <div class="name">汉庭（新国展后沙峪店）</div>
+        <div class="meta">连锁品质</div>
+      </div>
+      <div class="price">¥300-400</div>
+    </div>
+  </div>
+
+  <h3>💰 预算模拟（4晚3家酒店）</h3>
+  <table class="budget-table">
+    <tr><td>8/10</td><td>汉庭前门天安门店</td><td>~480</td></tr>
+    <tr><td>8/11</td><td>全季上地店</td><td>~480</td></tr>
+    <tr><td>8/12</td><td>全季上地店</td><td>~480</td></tr>
+    <tr><td>8/13</td><td>远航国际新国展</td><td>~380</td></tr>
+    <tfoot><tr><td colspan="2"><strong>4晚合计</strong></td><td><strong>~1,820元</strong></td></tr></tfoot>
+  </table>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:4px">来源：携程 hotels.ctrip.com 参考价格（暑期浮动，以实际预订为准）</p>
+</section>
+
+<!-- ════════════ 升旗攻略 ════════════ -->
+<section>
+  <h2><span class="icon">🇨🇳</span> 8月11日升旗仪式详细攻略</h2>
+
+  <h3>⏰ 精确时间线</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>节点</th><th>时间</th><th>行动</th></tr>
+      <tr><td>🔔 预约</td><td><strong>8月3日</strong></td><td>微信小程序"天安门广场预约参观"，选"<strong>升旗</strong>"时段</td></tr>
+      <tr><td>🚕 出发</td><td>8/11 <strong>3:00</strong></td><td>从酒店打车去天安门（不开车！打车不受限行影响）</td></tr>
+      <tr><td>🧍 排队</td><td>3:20</td><td>开始排队，暑期3点到可排前5排</td></tr>
+      <tr><td>🛂 安检</td><td>4:30</td><td>身份证必带，儿童户口本/身份证</td></tr>
+      <tr><td>📍 占位</td><td>5:00</td><td>等待约20分钟</td></tr>
+      <tr><td>🇨🇳 <strong>升旗</strong></td><td><strong>5:20</strong></td><td>日出精确时间（来源：sunrise-sunset.org API，坐标39.9042°N,116.4074°E）</td></tr>
+    </table>
+  </div>
+
+  <h3>🎫 预约须知</h3>
+  <table>
+    <tr><td>📱 渠道</td><td>微信小程序"天安门广场预约参观"</td></tr>
+    <tr><td>🕐 时段</td><td>必须选"<strong>升旗</strong>"（⚠️ 选"上午"进不去升旗区！）</td></tr>
+    <tr><td>📅 提前量</td><td>至少提前1-9天</td></tr>
+    <tr><td>🆔 证件</td><td>成人身份证，儿童户口本或身份证</td></tr>
+    <tr><td>💰 费用</td><td>免费</td></tr>
+  </table>
+
+  <h3>📍 带娃推荐位置</h3>
+  <p>广场<strong>东侧</strong>（国家博物馆一侧）：人相对少，视野好，不拥挤。避免国旗杆正前方中心区域。</p>
+
+  <h3>👶 带娃清单</h3>
+  <table>
+    <tr><td>折叠小板凳</td><td>排队2-3小时，孩子需要坐</td></tr>
+    <tr><td>零食+水</td><td>凌晨消耗大</td></tr>
+    <tr><td>薄外套</td><td>8月凌晨约22°C</td></tr>
+    <tr><td>前一天20:00前睡</td><td>保证孩子精力</td></tr>
+    <tr><td>禁带</td><td>打火机、尖锐物品、无人机、大包</td></tr>
+  </table>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:8px">
+    📌 来源：百度百科"天安门广场升降国旗仪式" + DuckDuckGo用户攻略 + sunrise-sunset.org API
+  </p>
+</section>
+
+<!-- ════════════ 故宫 ════════════ -->
+<section>
+  <h2><span class="icon">🏯</span> 故宫博物院 — 关键信息</h2>
+  <p style="font-size:.82rem;color:var(--muted)">来源：故宫官网 dpm.org.cn（2026年7月27日实时查询）</p>
+  <table>
+    <tr><td>⏰ 开放时间</td><td>8:30 入馆 / 16:00 停止入馆 / 17:00 闭馆</td></tr>
+    <tr><td>📅 闭馆日</td><td><strong>周一闭馆</strong>（法定节假日除外）</td></tr>
+    <tr><td>🎫 预约规则</td><td><strong>提前7天，每晚20:00放票</strong></td></tr>
+    <tr><td>⚠️ 抢票日</td><td><strong style="color:var(--primary)">8月4日 20:00</strong> 抢8月11日的票</td></tr>
+    <tr><td>📱 渠道</td><td>微信小程序"故宫博物院" → 购票约展</td></tr>
+    <tr><td>💰 票价</td><td>旺季60元/成人，学生20元，1.2m以下免费</td></tr>
+    <tr><td>☎️ 电话</td><td>400-950-1925（8:00-20:00）</td></tr>
+    <tr><td>📍 入口</td><td>午门（天安门城楼北侧），只进不出；神武门/东华门出</td></tr>
+  </table>
+</section>
+
+<!-- ════════════ 用车策略 ════════════ -->
+<section>
+  <h2><span class="icon">🚗</span> 5天用车策略</h2>
+  <table>
+    <tr><th>日期</th><th>用车</th><th>操作</th></tr>
+    <tr><td>8/10 周一</td><td><span class="tag tag-ok">仅抵达</span></td><td>9:00后进城，到酒店停好</td></tr>
+    <tr><td>8/11 周二</td><td><span class="tag tag-drive">关键转移</span></td><td>凌晨打车看升旗；下午<strong>15:00前</strong>开车出五环去海淀</td></tr>
+    <tr><td>8/12 周三</td><td><span class="tag tag-no">绝对不动</span></td><td>尾号8+外地牌，双禁！打车+地铁照样玩</td></tr>
+    <tr><td>8/13 周四</td><td><span class="tag tag-drive">移动</span></td><td>9:00后去奥林匹克中心→顺义国展</td></tr>
+    <tr><td>8/14 周五</td><td><span class="tag tag-ok">自由</span></td><td>国展五环外，无限制，赛后返程</td></tr>
+  </table>
+  <div class="alert alert-info" style="margin-top:12px">
+    <p>📱 出发前务必在"北京交警"APP办理<strong>进京证</strong>（每年限12次，每次7天）。</p>
+  </div>
+</section>
+
+<!-- ════════════ 美食 ════════════ -->
+<section>
+  <h2><span class="icon">🍜</span> 美食推荐</h2>
+  <div class="food-item">
+    <span class="emoji">🦆</span>
+    <div class="info"><strong>四季民福烤鸭店（故宫店）</strong><span>北京必吃 · 8/11故宫出来后正好去吃</span></div>
+    <span class="price">¥120-180/人</span>
+  </div>
+  <div class="food-item">
+    <span class="emoji">🍲</span>
+    <div class="info"><strong>东来顺饭庄（什刹海店）</strong><span>老北京铜锅涮肉 · 8/10晚</span></div>
+    <span class="price">¥100-150/人</span>
+  </div>
+  <div class="food-item">
+    <span class="emoji">🍜</span>
+    <div class="info"><strong>清华万人食堂（观畴园）</strong><span>体验大学食堂 · 8/12午餐</span></div>
+    <span class="price">¥20-40/人</span>
+  </div>
+  <div class="food-item">
+    <span class="emoji">☕</span>
+    <div class="info"><strong>五道口/上地华联</strong><span>大学城美食区 · 8/11或8/12晚餐</span></div>
+    <span class="price">¥60-100/人</span>
+  </div>
+  <p style="font-size:.78rem;color:var(--muted);margin-top:8px">⚠️ 出发前用大众点评确认营业状态。</p>
+</section>
+
+<!-- ════════════ 倒计时 ════════════ -->
+<section>
+  <h2><span class="icon">📋</span> 出发前倒计时</h2>
+  <ul class="checklist">
+    <li><span class="date">现在</span><span class="desc">订酒店（分3段：前门1晚+上地2晚+国展1晚，暑期紧张）</span></li>
+    <li><span class="date">现在</span><span class="desc">办进京证（"北京交警"APP）</span></li>
+    <li><span class="date">7月31日</span><span class="desc">预约清华、北大参观（提前7天）</span></li>
+    <li><span class="date">8月3日</span><span class="desc">预约天安门广场"升旗"时段</span></li>
+    <li><span class="date">🔥 8月4日 20:00</span><span class="desc"><strong>抢故宫门票！</strong>（8月11日参观）</span></li>
+    <li><span class="date">出发前</span><span class="desc">确认升旗具体时间（天安门管委会网站）</span></li>
+  </ul>
+</section>
+
+<!-- ════════════ 溯源 ════════════ -->
+<section>
+  <h2><span class="icon">📚</span> 信息来源</h2>
+  <ul class="sources">
+    <li>✅ <strong>尾号限行</strong>：Wikipedia "Road space rationing in Beijing" — End-number license plate policy</li>
+    <li>✅ <strong>故宫周一闭馆/预约规则</strong>：故宫博物院官网 dpm.org.cn（2026年7月27日实时验证）</li>
+    <li>✅ <strong>天安门广场预约</strong>：百度百科"天安门广场升降国旗仪式"</li>
+    <li>✅ <strong>日出精确时间</strong>：sunrise-sunset.org API（39.9042°N, 116.4074°E）</li>
+    <li>✅ <strong>北大预约参观</strong>：北京大学官网 pku.edu.cn → 访客 → 个人预约参观</li>
+    <li>✅ <strong>酒店信息</strong>：携程 hotels.ctrip.com 实时搜索结果</li>
+    <li>⚠️ <strong>排队时间经验</strong>：综合网络用户攻略（建议出发前自行确认）</li>
+  </ul>
+</section>
+
+</div>
+</body>
+</html>
