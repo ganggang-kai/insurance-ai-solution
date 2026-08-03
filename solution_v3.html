@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI外呼+公众号 保险智能转化解决方案</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<title>AI外呼+公众号 保险智能转化解决方案 V3</title>
 <style>
   :root {
     --primary: #1a56db;
@@ -119,8 +118,16 @@
     color: #fff; display: flex; align-items: center; justify-content: center;
     font-weight: 700; font-size: 16px; flex-shrink: 0;
   }
+  .flow-list li.agentic { border-left: 4px solid #7c3aed; }
+  .flow-list li.canvas { border-left: 4px solid #16a34a; }
   .flow-list li .step-content h4 { font-size: 16px; margin-bottom: 4px; }
   .flow-list li .step-content p { font-size: 13px; color: var(--text-secondary); margin: 0; }
+  .flow-list li .step-content .tag-impl {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 8px;
+    font-weight: 600; margin-left: 8px; vertical-align: middle;
+  }
+  .tag-canvas { background: #dcfce7; color: #166534; }
+  .tag-agentic { background: #f3e8ff; color: #7c3aed; }
 
   /* ── Highlight box ── */
   .highlight-box {
@@ -136,16 +143,11 @@
     background: linear-gradient(135deg, #f0fdf4, #dcfce7);
     border-left-color: var(--success);
   }
+  .highlight-box.purple {
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border-left-color: #7c3aed;
+  }
   .highlight-box h4 { font-size: 16px; margin-bottom: 6px; }
-
-  .highlight-box.purple { background: linear-gradient(135deg, #faf5ff, #f3e8ff); border-left-color: #7c3aed; }
-  .flow-list li.agentic { border-left: 4px solid #7c3aed; }
-  .flow-list li.canvas { border-left: 4px solid #16a34a; }
-  .flow-list li .step-content h4 { font-size: 16px; margin-bottom: 4px; }
-  .flow-list li .step-content p { font-size: 13px; color: var(--text-secondary); margin: 0; }
-  .flow-list li .step-content .tag-impl { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 8px; font-weight: 600; margin-left: 8px; vertical-align: middle; }
-  .tag-canvas { background: #dcfce7; color: #166534; }
-  .tag-agentic { background: #f3e8ff; color: #7c3aed; }
 
   /* ── Timeline ── */
   .timeline { position: relative; padding-left: 32px; margin: 24px 0; }
@@ -164,41 +166,78 @@
   .timeline-item .period { font-size: 12px; color: var(--primary); font-weight: 600; margin-bottom: 4px; }
   .timeline-item p { font-size: 14px; color: var(--text-secondary); }
 
+  /* ── Architecture Diagram ── */
+  .arch-diagram { margin: 20px 0; font-size: 13px; line-height: 1.6; }
+  .arch-journey {
+    display: flex; align-items: center; gap: 0;
+    background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 16px;
+  }
+  .arch-journey .label {
+    font-size: 14px; font-weight: 700; color: #1e40af;
+    white-space: nowrap; margin-right: 16px; flex-shrink: 0;
+  }
+  .arch-journey .steps { display: flex; align-items: center; gap: 0; flex: 1; overflow-x: auto; }
+  .arch-journey .step {
+    display: flex; align-items: center; gap: 6px;
+    background: #fff; border-radius: 8px; padding: 8px 14px;
+    font-weight: 500; font-size: 12px; white-space: nowrap;
+    border: 1px solid #bfdbfe;
+  }
+  .arch-journey .step .dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #3b82f6; color: #fff; display: flex;
+    align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0;
+  }
+  .arch-journey .step.done { background: #dcfce7; border-color: #86efac; }
+  .arch-journey .step.done .dot { background: #16a34a; }
+  .arch-journey .arrow { color: #93c5fd; font-size: 16px; padding: 0 6px; flex-shrink: 0; }
+
+  .arch-bottom { display: flex; gap: 16px; }
+  .arch-col { border-radius: 12px; padding: 24px 20px; }
+  .arch-col.platform { flex: 1; background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%); border: 2px solid #86efac; }
+  .arch-col.coop { flex: 0 0 240px; background: #fff7ed; border: 2px solid #fed7aa; }
+
+  .arch-col h4 {
+    font-size: 15px; font-weight: 700; margin: 0 0 16px 0; text-align: center;
+    padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .arch-col.platform h4 { color: #166534; }
+  .arch-col.coop h4 { color: #9a3412; }
+
+  .arch-step {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 12px; margin-bottom: 8px; border-radius: 8px;
+    background: rgba(255,255,255,0.7); font-weight: 500;
+  }
+  .arch-step .dot {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .arch-step.coop-s .dot { background: #ea580c; }
+
+  .arch-module {
+    background: #fff; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px;
+    border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+  .arch-module h5 { font-size: 14px; font-weight: 700; margin: 0 0 4px 0; color: #166534; }
+  .arch-module .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .arch-module .tag {
+    font-size: 11px; padding: 2px 10px; border-radius: 10px;
+    background: #dcfce7; color: #166534; font-weight: 500;
+  }
+  .arch-module .tag.blue { background: #dbeafe; color: #1e40af; }
+  .arch-module .tag.purple { background: #f3e8ff; color: #7c3aed; }
+  .arch-module .tag.orange { background: #fff7ed; color: #c2410c; }
+
   /* ── Footer ── */
   .footer {
     background: var(--primary-dark); color: rgba(255,255,255,0.7);
     text-align: center; padding: 40px 32px; font-size: 13px;
   }
   .footer strong { color: #fff; }
-
-  /* ── Architecture Diagram ── */
-  .arch-diagram { margin: 20px 0; font-size: 13px; line-height: 1.6; }
-  .arch-journey { display: flex; align-items: center; gap: 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; }
-  .arch-journey .label { font-size: 14px; font-weight: 700; color: #1e40af; flex-shrink: 0; }
-  .arch-journey .steps { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
-  .arch-journey .step { display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: #dbeafe; color: #1e40af; font-weight: 600; font-size: 12px; white-space: nowrap; }
-  .arch-journey .step.done { background: #dcfce7; color: #166534; }
-  .arch-journey .step .dot { width: 20px; height: 20px; border-radius: 50%; background: #3b82f6; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
-  .arch-journey .step.done .dot { background: #16a34a; }
-  .arch-journey .arrow { color: #93c5fd; font-size: 16px; padding: 0 6px; flex-shrink: 0; }
-  .arch-bottom { display: flex; gap: 16px; }
-  .arch-col { border-radius: 12px; padding: 24px 20px; }
-  .arch-col.platform { flex: 1; background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%); border: 2px solid #86efac; }
-  .arch-col.coop { flex: 0 0 240px; background: #fff7ed; border: 2px solid #fed7aa; }
-  .arch-col h4 { font-size: 15px; font-weight: 700; margin: 0 0 16px 0; text-align: center; padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.08); }
-  .arch-col.platform h4 { color: #166534; }
-  .arch-col.coop h4 { color: #9a3412; }
-  .arch-step { display: flex; align-items: flex-start; gap: 8px; padding: 8px 12px; margin-bottom: 8px; border-radius: 8px; background: rgba(255,255,255,0.7); font-weight: 500; }
-  .arch-step .dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
-  .arch-step.coop-s .dot { background: #ea580c; }
-  .arch-module { background: #fff; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
-  .arch-module h5 { font-size: 14px; font-weight: 700; margin: 0 0 4px 0; color: #166534; }
-  .arch-module .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-  .arch-module .tag { font-size: 11px; padding: 2px 10px; border-radius: 10px; background: #dcfce7; color: #166534; font-weight: 500; }
-  .arch-module .tag.blue { background: #dbeafe; color: #1e40af; }
-  .arch-module .tag.purple { background: #f3e8ff; color: #7c3aed; }
-  .arch-module .tag.orange { background: #fff7ed; color: #c2410c; }
-  @media (max-width: 900px) { .arch-bottom { flex-direction: column; } .arch-col.coop { flex: auto; } .arch-journey { flex-direction: column; align-items: flex-start; gap: 10px; } .arch-journey .steps { flex-wrap: wrap; } }
 
   /* ── Responsive ── */
   @media (max-width: 768px) {
@@ -207,6 +246,12 @@
     .container { padding: 0 20px; }
     .section h2 { font-size: 23px; }
     .card-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) {
+    .arch-bottom { flex-direction: column; }
+    .arch-col.coop { flex: auto; }
+    .arch-journey { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .arch-journey .steps { flex-wrap: wrap; }
   }
 </style>
 </head>
@@ -217,15 +262,16 @@
   <div class="badge">保险科技 · 智能转化</div>
   <h1>AI外呼 + 公众号<br>保险智能转化解决方案</h1>
   <p class="subtitle">
-    基于AI语音外呼精准筛选意向客户，采用「流程画布 + Agentic AI 有机结合」方案，实时引导客户进入微信公众号完成双产品投保全流程，
+    流程画布精准筛选意向客户，Agentic AI自主引导客户完成公众号投保全流程，
     实现从「触达→转化→成交」的端到端闭环。
   </p>
-  <p class="meta">版本 V1.0 ｜ 2026年7月 ｜ 仅供合作方参阅</p>
+  <p class="meta">版本 V3.0 ｜ 2026年7月 ｜ 仅供合作方参阅</p>
 </section>
+
+<div class="container">
 
 <!-- ════════════════ 项目概述 ════════════════ -->
 <section class="section">
-  <div class="container">
   <h2>一、项目概述</h2>
   <p>
     本项目旨在构建一套<strong>「画布编排筛意向 + Agentic AI自主引导投保」</strong>的混合智能转化体系。
@@ -253,8 +299,9 @@
       <p>LLM通过Tool调用获取四位专属码，口播给客户后自动关联手机号，零手动输入。</p>
     </div>
   </div>
-  </div>
 </section>
+
+</div>
 
 <!-- ════════════════ 技术架构 ════════════════ -->
 <section class="section section-alt">
@@ -326,15 +373,15 @@
           <h5>🔧 Tool能力层</h5>
           <p style="margin:0;font-size:12px;color:#6b7280;">LLM可调用的外部工具接口</p>
           <div class="tags">
-            <span class="tag orange">专属码获取（POC）</span>
-            <span class="tag" style="opacity:0.5;">埋点查询（投产）</span>
-            <span class="tag" style="opacity:0.5;">支付结果查询（投产）</span>
+            <span class="tag orange">专属码获取（Demo）</span>
+            <span class="tag" style="opacity:0.5;">埋点查询（POC）</span>
+            <span class="tag" style="opacity:0.5;">支付结果查询（POC）</span>
           </div>
         </div>
 
         <div class="arch-module">
-          <h5>📈 运营报表</h5>
-          <p style="margin:0;font-size:12px;color:#6b7280;">外呼数据分析</p>
+          <h5>📈 运营报表与看板</h5>
+          <p style="margin:0;font-size:12px;color:#6b7280;">外呼数据分析 · 简易运营看板</p>
           <div class="tags">
             <span class="tag">日报/周报</span>
           </div>
@@ -348,7 +395,7 @@
         <div class="arch-step coop-s"><span class="dot">1</span> <span>白名单数据<br><span style="font-size:11px;color:#9ca3af;">合规授权客户手机号</span></span></div>
         <div class="arch-step coop-s"><span class="dot">2</span> <span>公众号配置<br><span style="font-size:11px;color:#9ca3af;">菜单·自动回复</span></span></div>
         <div class="arch-step coop-s"><span class="dot">3</span> <span>投保H5页面<br><span style="font-size:11px;color:#9ca3af;">专属码接收·支付</span></span></div>
-        <div class="arch-step coop-s"><span class="dot">4</span> <span>API接口（分期）<br><span style="font-size:11px;color:#9ca3af;">POC:专属码 / 投产:+埋点+支付</span></span></div>
+        <div class="arch-step coop-s"><span class="dot">4</span> <span>API接口（分期）<br><span style="font-size:11px;color:#9ca3af;">Demo:专属码 / POC:+埋点+支付</span></span></div>
         <div class="arch-step coop-s"><span class="dot">5</span> <span>产品方案对接<br><span style="font-size:11px;color:#9ca3af;">保障范围·保费·投保规则</span></span></div>
       </div>
     </div>
@@ -362,9 +409,9 @@
     <tbody>
       <tr><td><strong>画布流程引擎</strong></td><td>主流程编排 + 子流程调度</td><td>开场白由画布普通节点实现（合规可控），意向筛选由LLM分类节点完成。后续各阶段以子流程形式编排，每个子流程内嵌LLM回复节点</td></tr>
       <tr><td><strong>LLM回复节点</strong></td><td>自主对话 + 退出意图跳转</td><td>每个子流程中，LLM回复节点自主与客户多轮对话完成阶段目标。当目标达成时触发「退出意图」，画布自动跳转至下一子流程</td></tr>
-      <tr><td><strong>Tool能力层</strong></td><td>LLM可调用工具接口</td><td>POC阶段仅对接专属码获取Tool；投产阶段追加埋点查询Tool和支付结果查询Tool，增强AI感知能力</td></tr>
+      <tr><td><strong>Tool能力层</strong></td><td>LLM可调用工具接口</td><td>Demo阶段仅对接专属码获取Tool；POC投产阶段追加埋点查询Tool和支付结果查询Tool，增强AI感知能力</td></tr>
       <tr><td><strong>专属码机制</strong></td><td>四位数字码 + Tool获取</td><td>LLM在对话中通过Tool调用获取客户专属码并口播，客户在公众号输入后自动关联手机号</td></tr>
-      <tr><td><strong>运营报表</strong></td><td>运营数据报表</td><td>提供日报/周报形式的外呼运营数据</td></tr>
+      <tr><td><strong>运营报表</strong></td><td>运营数据报表 + 简易看板</td><td>提供日报/周报形式的外呼运营数据，支持简易可视化看板</td></tr>
     </tbody>
   </table>
 
@@ -384,9 +431,8 @@
 <!-- ════════════════ 核心流程 ════════════════ -->
 <section class="section">
   <div class="container">
-  <h2>三、Agentic方案详解</h2>
-  <p>本项目采用「流程画布 + Agentic AI 有机结合」的技术方案，将全链路拆分为 8个子流程：开场白使用画布普通节点保证合规，后续阶段以子流程方式串联，每个子流程内部署 LLM回复节点实现动态交互，由 LLM 自主完成当前阶段的对话目标。目标达成后触发「退出LLM」→ 画布自动跳转至下一子流程，直至通话结束。</p>
-
+  <h2>三、核心业务流程</h2>
+  <p>全链路共9个阶段，前2阶段由流程画布驱动，后7阶段由Agentic LLM自主引导：</p>
 
   <div style="display:flex; gap:16px; margin:16px 0; font-size:13px;">
     <span><span style="display:inline-block;width:12px;height:12px;background:#16a34a;border-radius:3px;margin-right:4px;vertical-align:middle;"></span>流程画布</span>
@@ -408,8 +454,14 @@
     </li>
     <li class="agentic">
       <div class="step-content">
-        <h4>🎯 引导进入专属码输入入口并输入专属码 <span class="tag-impl tag-agentic">LLM回复节点 + Tool</span></h4>
-        <p>引导客户在公众号找到指定入口。LLM调用「专属码获取」Tool拿到客户专属码并口播，引导客户输入后确认手机号反显成功。</p>
+        <h4>🎯 引导进入专属码输入入口 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>引导客户在公众号找到指定入口。LLM根据客户描述判断是否已到达正确页面，灵活纠偏。</p>
+      </div>
+    </li>
+    <li class="agentic">
+      <div class="step-content">
+        <h4>🔑 输入专属码 <span class="tag-impl tag-agentic">LLM回复节点 + Tool</span></h4>
+        <p>LLM调用「专属码获取」Tool拿到客户专属码并口播。引导客户输入后确认手机号反显成功。</p>
       </div>
     </li>
     <li class="agentic">
@@ -438,130 +490,226 @@
     </li>
     <li class="agentic">
       <div class="step-content">
-        <h4>🏁 投保完成 → 结束挂机</h4>
-        <p>确认投保成功，礼貌结束通话。</p>
+        <h4>🏁 投保完成 → 结束挂机 <span class="tag-impl tag-agentic">LLM回复节点</span></h4>
+        <p>确认投保成功，告知保障生效时间和权益，礼貌结束通话。</p>
       </div>
     </li>
   </ol>
+  </div>
+</section>
 
-  <h3 style="color:#ea580c;">▎API 接口分阶段对接策略</h3>
+<!-- ════════════════ 我司工作内容 ════════════════ -->
+<section class="section section-alt">
+  <div class="container">
+  <h2>四、我司工作内容</h2>
 
-  <p>为降低初期联调风险、快速验证基础链路，API 接口分两个阶段逐步对接：</p>
-
-  <table class="info-table">
-    <thead>
-      <tr><th>阶段</th><th style="width:200px;">对接接口</th><th>说明</th></tr>
-    </thead>
-    <tbody>
-      <tr style="background:#fefce8;">
-        <td><strong>POC 阶段</strong></td>
-        <td>仅 <strong>get_exclusive_code</strong></td>
-        <td>验证基础链路：外呼→关注→输码→投保→签约。LLM回复节点通过对话确认客户进度（如"您关注了吗？""码输好了吗？"），不依赖埋点数据。</td>
-      </tr>
-      <tr style="background:#f0fdf4;">
-        <td><strong>投产阶段</strong></td>
-        <td>+ <strong>query_tracking</strong> + <strong>query_payment</strong></td>
-        <td>接入埋点查询实现页面进度监控，接入支付查询实现签约结果轮询。LLM回复节点可根据实时数据动态调整引导策略，大幅提升转化效率。</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p><strong>POC 阶段的已知局限：</strong>由于仅有专属码接口，LLM无法实时感知客户在页面上的操作进度（如是否已点击按钮、是否进入收银台），只能通过对话询问客户来确认。这将导致引导话术的精准度有限，部分场景需要客户主动告知当前状态。</p>
-
-  <h3>3.1 整体落地复杂度</h3>
-
-  <p>本项目覆盖双产品链路、8 个子流程，涉及 4 种节点类型（普通/LLM分类/LLM回复/跳转）的组合编排。POC 阶段仅需对接 1 个 API 接口，投产阶段扩展至 3 个接口。全链路需调试的子流程跳转逻辑、LLM退出判断阈值、以及 Tool 调用时序。</p>
-
-  <p>其中<strong>收银台签约子流程</strong>为全链路复杂度最高的环节：LLM需分步引导银行卡签约全流程，在 POC 阶段仅靠对话确认进度，对 Prompt 设计质量要求极高。任何一个跳转条件或退出阈值设置不当，都会导致客户被错误分流。</p>
-
-  <h3>3.2 多方系统对接成本</h3>
-  <table class="info-table">
-    <thead>
-      <tr><th style="width:30px;">#</th><th>对接系统</th><th>难点说明</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>1</td><td><strong>客户微信公众号</strong></td><td>菜单配置、模板消息、关注自动回复均需客户侧操作且我方无法直接调试，任何配置变更都需沟通确认。</td></tr>
-      <tr><td>2</td><td><strong>客户投保H5页面</strong></td><td>专属码参数接收、手机号反显、投被保人页面、银行卡收银台等功能均依赖客户侧前端开发。POC 阶段不依赖埋点，投产阶段需客户预置埋点SDK。</td></tr>
-      <tr><td>3</td><td><strong>客户API接口</strong></td><td>POC 阶段仅对接专属码获取 1 个接口；投产阶段新增页面埋点查询和支付结果查询 2 个接口。接口响应延迟和数据格式差异是联调阶段最常见的耗时点。</td></tr>
-      <tr><td>4</td><td><strong>我司AI外呼系统</strong></td><td>语音合成质量、ASR识别准确率、外呼并发调度、号码健康度管理、外呼时段策略等，均需根据客户白名单特征进行专项调优。</td></tr>
-      <tr><td>5</td><td><strong>LLM回复节点调优</strong></td><td>8 个子流程中 6 个部署了 LLM回复节点，每个需独立设计 Prompt 和退出条件。POC 阶段 LLM 仅靠对话判断进度，对 Prompt 的精准度和容错性要求更高。预计每个子流程至少 3 轮 Prompt 迭代。</td></tr>
-    </tbody>
-  </table>
-
-  <h3>3.3 综合工程评估</h3>
-  <p>综合以上分析，本项目 POC 阶段仅需对接专属码获取 1 个接口即可跑通基础链路，投产阶段叠加埋点和支付接口增强AI感知能力。建设期预计投入 1–2 名研发 + 1 名产品经理，持续 4 周左右。上线后需持续投入至少 1 人进行 Prompt 迭代优化和日常运营维护。</p>
-
-  <div class="highlight-box orange" style="margin-top:20px;">
-    <h4>⚠️ 关键风险提示</h4>
-    <p style="margin:0;">POC 阶段 LLM 回复节点完全依赖对话确认客户进度，无法通过 Tool 获取页面实时状态，对 Prompt 设计质量要求极高。投产阶段接入埋点和支付接口后，客户侧接口响应需达到毫秒级，延迟过高将直接影响 LLM回复节点的实时判断效果。以上风险需在项目启动前与客户明确对齐。</p>
+  <div class="highlight-box">
+    <h4>📍 我方交付范围</h4>
+    <p style="margin:0;">以下所有工作由我方团队完成，无需客户投入研发资源。</p>
   </div>
 
-  <div class="highlight-box green" style="margin-top:20px;">
-    <h4>✅ 方案优势总结</h4>
+  <table class="info-table">
+    <thead>
+      <tr><th style="width:40px;">#</th><th>工作项</th><th>详细内容</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>开场话术 + 意向筛选设计</strong></td>
+        <td>画布阶段话术编写：开场建信、异议处理、意向分流。LLM分类节点Prompt指令与分类标签配置</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>画布主流程搭建</strong></td>
+        <td>主流程编排：开场白普通节点 → LLM分类节点（意向筛选）→ 各子流程跳转配置</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Agentic子流程Prompt设计</strong></td>
+        <td>7个Agentic子流程的Prompt策略设计：每个阶段的目标定义、引导话术策略、退出条件、异常处理逻辑</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Tool对接与配置</strong></td>
+        <td>Demo阶段：对接「专属码获取」Tool并完成LLM调用测试。POC阶段：追加埋点查询、支付结果查询Tool</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>联调测试</strong></td>
+        <td>端到端全链路测试：外呼→意向筛选→公众号关注→专属码→填写→支付→复购→闭环</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>上线后运营支持</strong></td>
+        <td>提供运营数据分析、Prompt策略迭代优化、异常case修复</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ════════════════ 客户配合内容 ════════════════ -->
+<section class="section">
+  <div class="container">
+  <h2>五、客户需配合内容</h2>
+
+  <div class="highlight-box orange">
+    <h4>📍 客户侧需提供</h4>
+    <p style="margin:0;">以下内容需客户侧配合提供或完成配置，我方提供全程技术指导。</p>
+  </div>
+
+  <table class="info-table">
+    <thead>
+      <tr><th style="width:40px;">#</th><th>配合项</th><th>具体内容</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>白名单数据提供</strong></td>
+        <td>提供合规授权的客户手机号列表（用于AI外呼），需确保数据来源合法、已获用户授权</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>公众号配置</strong></td>
+        <td>配合完成公众号菜单设置（添加投保入口）、关注自动回复设置</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>投保页面准备</strong></td>
+        <td>提供投保H5页面链接，需支持：①专属码参数接收 ②手机号自动反显 ③姓名身份证填写 ④银行卡签约快捷支付</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>API接口提供（分期交付）</strong></td>
+        <td>
+          <strong>Demo阶段：</strong>专属码获取接口<br>
+          <strong>POC投产阶段：</strong>+页面埋点查询接口 +支付结果查询接口
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ════════════════ 方案优势与落地要点 ════════════════ -->
+<section class="section section-alt">
+  <div class="container">
+  <h2>六、方案优势与落地要点</h2>
+
+  <h3>6.1 混合架构优势</h3>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="icon">🛡️</div>
+      <h4>开场合规可控</h4>
+      <p>开场白与意向筛选由画布固定话术实现，零Token成本，100%合规可控，不会出现LLM"胡说"风险。</p>
+    </div>
+    <div class="card">
+      <div class="icon">🧠</div>
+      <h4>后续灵活应对</h4>
+      <p>投保引导阶段由LLM自主对话，可灵活应对客户千变万化的问题和操作情况，无需为每种分支预设节点。</p>
+    </div>
+    <div class="card">
+      <div class="icon">📉</div>
+      <h4>节点大幅精简</h4>
+      <p>原纯画布方案需30+节点、40+分支逐一编排。混合方案画布仅需编排主流程骨架，复杂对话逻辑交由LLM处理。</p>
+    </div>
+    <div class="card">
+      <div class="icon">🚀</div>
+      <h4>分阶段快速上线</h4>
+      <p>Demo阶段仅对接专属码API即可跑通全流程，快速验证效果。POC阶段渐进增加Tool能力，降低启动门槛。</p>
+    </div>
+  </div>
+
+  <h3>6.2 落地要点</h3>
+
+  <table class="info-table">
+    <thead>
+      <tr><th>要点</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>子流程Prompt设计</strong></td><td>每个子流程需精确定义阶段目标、退出条件、异常兜底策略。Prompt质量直接决定对话效果</td></tr>
+      <tr><td><strong>退出意图准确性</strong></td><td>LLM需准确判断当前阶段是否完成，避免过早跳转（客户实际未完成）或迟迟不跳转（客户已完成但AI还在引导）</td></tr>
+      <tr><td><strong>响应延时控制</strong></td><td>LLM回复节点需保持低延时响应（&lt;2秒），避免客户等待过长。选用推理速度快的模型或对话场景做专项优化</td></tr>
+      <tr><td><strong>Tool调用稳定性</strong></td><td>专属码获取等Tool需保证接口稳定和响应速度，Tool调用失败时LLM需有兜底话术</td></tr>
+      <tr><td><strong>上下文窗口管理</strong></td><td>子流程切换时可重置上下文，每个子流程仅保留当前阶段相关信息，避免长对话导致的上下文溢出</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 预估人力与周期</h3>
+  <div class="highlight-box orange">
     <table class="info-table" style="margin:8px 0;">
-      <thead><tr><th style="width:120px;">优势</th><th>说明</th></tr></thead>
+      <thead><tr><th>角色</th><th>人数</th><th>主要职责</th></tr></thead>
       <tbody>
-        <tr><td><strong>阶段性交付</strong></td><td>POC 阶段仅需 1 个 API 接口即可跑通基础链路，3–4 周快速验证；投产阶段逐步叠加埋点和支付接口，分步迭代、风险可控。</td></tr>
-        <tr><td><strong>合规可控</strong></td><td>开场白使用画布普通节点，话术预审可追溯。后续 LLM回复节点通过子流程隔离，每个节点上下文有限，降低合规风险。</td></tr>
-        <tr><td><strong>灵活交互</strong></td><td>每个子流程中 LLM 可动态应对客户各种反应（不关注、不会操作、卡在签约等），无需像纯画布方案预枚举所有分支。</td></tr>
-        <tr><td><strong>快速启动</strong></td><td>无复杂 Tool 封装需求，流程画布编排 + Prompt 设计即可上线，项目启动速度远快于全 Agentic AI 方案。</td></tr>
+        <tr><td>产品经理</td><td>1 人</td><td>流程梳理及方案设计、客户沟通、联调协调</td></tr>
+        <tr><td>交付运营人员</td><td>1 人</td><td>画布主流程搭建、Prompt策略设计与调优、Tool配置、全链路调试</td></tr>
+        <tr style="background:#fff7ed;"><td><strong>合计</strong></td><td><strong>2 人</strong></td><td><strong>Demo阶段预计 2–3 周可跑通</strong></td></tr>
       </tbody>
     </table>
+  </div>
+
   </div>
 </section>
 
 <!-- ════════════════ 实施周期 ════════════════ -->
 <section class="section">
   <div class="container">
-  <h2>四、实施周期</h2>
+  <h2>七、实施周期</h2>
 
+  <h3>▎ Demo阶段（快速验证）</h3>
   <div class="timeline">
     <div class="timeline-item">
       <div class="period">第 1 周</div>
       <h4>需求对齐与资源准备</h4>
-      <p>确认产品方案、白名单数据交付、公众号配置、API接口规范对齐</p>
+      <p>确认产品方案、白名单数据交付、公众号配置、专属码API接口规范对齐</p>
     </div>
     <div class="timeline-item">
-      <div class="period">第 2–3 周</div>
-      <h4>语音Agent搭建 & 话术设计<br/><span style="font-size:12px;color:#9ca3af;">（与技术开发并行）</span></h4>
-      <p>AI外呼Agent搭建与调试、8阶段全链路话术编写和调优、LLM分类节点配置</p>
+      <div class="period">第 2 周</div>
+      <h4>画布主流程 + Agentic子流程搭建</h4>
+      <p>开场白话术编写、LLM分类节点配置、7个子流程Prompt策略设计与调优、专属码Tool对接</p>
     </div>
     <div class="timeline-item">
-      <div class="period">第 2–3 周</div>
-      <h4>技术开发与联调<br/><span style="font-size:12px;color:#9ca3af;">（与话术设计并行）</span></h4>
-      <p>画布流程搭建、API接口对接、埋点策略配置、投保页面联调</p>
+      <div class="period">第 3 周</div>
+      <h4>联调测试与灰度上线</h4>
+      <p>端到端全链路测试、小批量外呼灰度验证、Prompt迭代优化、问题修复</p>
     </div>
+  </div>
+
+  <div class="highlight-box green">
+    <h4>⏱ Demo阶段：从启动到灰度验证预计 2–3 周</h4>
+    <p style="margin:0;">仅对接专属码API即可跑通全流程，快速验证转化效果。</p>
+  </div>
+
+  <h3 style="margin-top:36px;">▎ POC投产阶段（完整能力）</h3>
+  <div class="timeline">
     <div class="timeline-item">
       <div class="period">第 4 周</div>
-      <h4>端到端测试与灰度上线</h4>
-      <p>全链路正负向分支测试、小批量外呼灰度（建议5000+/日）、话术调优、问题修复</p>
+      <h4>埋点 + 支付Tool对接</h4>
+      <p>对接埋点查询API和支付结果查询API，增强AI实时感知客户行为的能力</p>
+    </div>
+    <div class="timeline-item">
+      <div class="period">第 5 周</div>
+      <h4>策略优化与正式放量</h4>
+      <p>基于Demo阶段数据优化Prompt策略，全量外呼上线，运营数据监控</p>
     </div>
   </div>
 
-  <div class="highlight-box green" style="margin-top:20px;">
-    <h4>⏱ 从启动到灰度上线预计 4 周左右</h4>
-    <p style="margin:0;">以上周期为基于历史同类项目的预期估算，不作为正式上线承诺依据，实际进度以项目执行情况为准。</p>
+  <div class="highlight-box green">
+    <h4>⏱ 含POC阶段：整体预计 4–5 周完成全能力上线</h4>
+    <p style="margin:0;">以上周期为预期估算，实际进度以项目执行情况为准。</p>
   </div>
 
-  </section>
-
   </div>
+</section>
 
-  <!-- ════════════════ FOOTER ════════════════ -->
+</div>
+
+<!-- ════════════════ FOOTER ════════════════ -->
 <footer class="footer">
   <strong>AI外呼 + 公众号 保险智能转化解决方案</strong><br>
-  版本 V1.0 · 2026年7月 · 仅供合作方参阅<br>
+  版本 V3.0 · 2026年7月 · 仅供合作方参阅<br>
   如有疑问，请联系项目团队获取更多技术细节
 </footer>
-
-<script>
-mermaid.initialize({
-  startOnLoad: true,
-  theme: 'default',
-  flowchart: { useMaxWidth: true, htmlLabels: false, curve: 'basis', padding: 15 },
-  securityLevel: 'loose',
-});
-</script>
 
 </body>
 </html>
